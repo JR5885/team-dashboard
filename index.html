@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Dept Dashboard — Talent, Budget & Org Architecture</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --surface-1: #fcfcfb; --page-plane: #080c15; --text-primary: #ffffff; --text-secondary: #94a3b8;
+    --text-muted: #64748b; --gridline: #1e293b; --baseline: #334155; --border: rgba(255,255,255,0.08);
+    --series-1: #38bdf8; --series-3: #34d399; --series-6: #10b981; --good: #10b981;
+    --warning: #fbbf24; --serious: #f97316; --critical: #f87171; --card-bg: #0f172a;
+    --cyan: #06b6d4; --purple: #a855f7; --pink: #ec4899;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page-plane); color: var(--text-primary); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 13.5px; line-height: 1.5; padding: 24px; }
+  .wrap { max-width: 1480px; margin: 0 auto; }
+
+  header.top { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+  header.top h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--border); color: var(--text-secondary); }
+
+  .lang-switcher { display: inline-flex; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 3px; gap: 2px; }
+  .lang-btn { background: none; border: none; color: var(--text-muted); padding: 4px 12px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 6px; }
+  .lang-btn.active { background: var(--text-primary); color: var(--page-plane); }
+
+  /* 核心導航 */
+  .main-nav { display: flex; gap: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; font-size: 13px; font-weight: 600; overflow-x: auto; }
+  .main-nav-item { color: var(--text-muted); cursor: pointer; padding-bottom: 8px; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .main-nav-item.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+  /* 部門切換列 */
+  .dept-tabs { display: flex; gap: 8px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; }
+  .dept-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 7px 16px; border-radius: 6px; cursor: pointer; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+  .dept-btn.active { background: color-mix(in srgb, var(--cyan) 16%, var(--card-bg)); border-color: var(--cyan); color: var(--cyan); }
+
+  .pane { display: none; }
+  .pane.active { display: block; }
+
+  /* 區塊樣式 */
+  .sec-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .sec-title span.num { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; background: var(--cyan); color: #000; font-size: 12px; align-items: center; justify-content: center; font-weight: 800; }
+
+  /* Top Dashboard 橫幅 */
+  .dash-banner { background: #0c1427; border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .dash-banner-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 14px; }
+  .dash-kpi-card { background: #070b14; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 14px 18px; }
+  .dash-kpi-card .lbl { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .dash-kpi-card .val { font-size: 26px; font-weight: 800; margin-top: 4px; }
+  .dash-banner-notes { font-size: 12px; color: var(--text-secondary); line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; }
+
+  /* 表格體系 */
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 24px; }
+  thead th { text-align: left; padding: 10px 12px; background: #090d16; color: var(--text-muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--gridline); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+  .pill.b1 { background: rgba(16,185,129,0.15); color: #34d399; }
+  .pill.b2, .pill.b4 { background: rgba(56,189,248,0.15); color: #38bdf8; }
+  .pill.b3 { background: rgba(251,191,36,0.15); color: #fbbf24; }
+  .pill.b5 { background: rgba(148,163,184,0.15); color: #94a3b8; }
+  .pill.b9, .pill.b6 { background: rgba(248,113,113,0.15); color: #f87171; }
+
+  /* 九宮格佈局 */
+  .grid-dual { display: grid; grid-template-columns: 1.25fr 1fr; gap: 20px; margin-bottom: 24px; align-items: start; }
+  .box-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 2px; background: var(--gridline); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; aspect-ratio: 1.35/1; }
+  .box-cell { background: var(--card-bg); padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
+  .box-cell .name { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+  .box-cell .count { font-size: 24px; font-weight: 800; }
+  .box-cell.tone-good { box-shadow: inset 3px 0 0 var(--good); }
+  .box-cell.tone-growth { box-shadow: inset 3px 0 0 var(--series-1); }
+  .box-cell.tone-warn { box-shadow: inset 3px 0 0 var(--warning); }
+  .box-cell.tone-crit { box-shadow: inset 3px 0 0 var(--critical); background: color-mix(in srgb, var(--critical) 6%, var(--card-bg)); }
+
+  /* 組織樹視覺 */
+  .org-chart-wrapper { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; overflow-x: auto; margin-bottom: 24px; }
+  .org-tree { display: flex; flex-direction: column; align-items: center; gap: 20px; min-width: 800px; }
+  .org-level-row { display: flex; justify-content: center; gap: 14px; position: relative; width: 100%; flex-wrap: wrap; }
+  .org-node { background: #080c15; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; min-width: 140px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+  .org-node .lvl { font-size: 10px; font-weight: 700; color: var(--cyan); text-transform: uppercase; }
+  .org-node .role { font-size: 12px; font-weight: 700; margin: 2px 0; }
+  .org-node .tag { font-size: 10.5px; padding: 1px 6px; border-radius: 4px; background: rgba(56,189,248,0.12); color: var(--series-1); display: inline-block; }
+
+  /* Playbook 卡片 */
+  .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+  .pcard { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .pcard.crit { border-left: 4px solid var(--critical); }
+  .pcard.star { border-left: 4px solid var(--good); }
+  .pcard .phead { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; font-size: 14px; font-weight: 700; }
+  .pcard .act-box { background: #080d16; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 12px; line-height: 1.5; }
+  .dialogue { padding: 8px 12px; border-radius: 6px; font-size: 11.5px; font-style: italic; background: #080d16; margin-top: 6px; }
+
+  /* OKR 與招聘卡片 */
+  .okr-row { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; align-items: start; }
+  .hire-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 12px; border-left: 3px solid var(--series-3); }
+
+  @media (max-width: 1024px) {
+    .dash-banner-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-dual, .cards-grid, .okr-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Executive Department Dashboard <span class="badge" id="syncStatus">同步中...</span></h1>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btnZh" onclick="setLanguage('zh')">繁中</button>
+      <button class="lang-btn" id="btnEn" onclick="setLanguage('en')">EN</button>
+    </div>
+  </header>
+
+  <!-- 部門切換 Tab 列 -->
+  <div class="dept-tabs" id="deptTabBar"></div>
+
+  <!-- 主功能 3 大模組切換 -->
+  <div class="main-nav">
+    <div class="main-nav-item active" id="nav_m1" onclick="switchMainPane('m1')">1. 團隊年度預算與編制 (Live O-Chart & Budget)</div>
+    <div class="main-nav-item" id="nav_m2" onclick="switchMainPane('m2')">2. 團隊架構、人才盤點與晉升/PIP 清單</div>
+    <div class="main-nav-item" id="nav_m3" onclick="switchMainPane('m3')">3. OKR 對齊、新招募職缺與動態預算</div>
+  </div>
+
+  <!-- ================= 模組 1：團隊年度預算和編制 ================= -->
+  <div id="pane_m1" class="pane active">
+    <!-- 頂置橫幅 DASHBOARD (按截圖規格實作) -->
+    <div class="dash-banner">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2 style="font-size:18px; font-weight:800;" id="banner_title">研發部門 人事成本與預算預測</h2>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <label style="font-size:12px; color:var(--text-muted);" id="lbl_tier">市場梯隊：</label>
+          <select id="sel_tier" onchange="recalculateAll()" style="background:#080d16; border:1px solid var(--border); color:#fff; padding:4px 8px; border-radius:6px; font-size:12px;">
+            <option value="1.40">T1 頂尖梯隊 (×1.40)</option>
+            <option value="1.00" selected>T2 全球基準 (×1.00)</option>
+            <option value="0.75">T3 初創梯隊 (×0.75)</option>
+          </select>
+        </div>
+      </div>
+      <div class="dash-banner-grid">
+        <div class="dash-kpi-card">
+          <div class="lbl" id="kpi_lbl_hc">總編制總人數</div>
+          <div class="val" id="disp_banner_hc" style="color:var(--cyan);">0 人</div>
+        </div>
+        <div class="dash-kpi-card">
+          <div class="lbl" id="kpi_lbl_budget">年度總薪酬預算 (USD)</div>
+          <div class="val" id="disp_banner_budget" style="color:#34d399;">$0</div>
+        </div>
+        <div class="dash-kpi-card">
+          <div class="lbl" id="kpi_lbl_avg">人均年薪成本 (USD)</div>
+          <div class="val" id="disp_banner_avg" style="color:var(--series-1);">$0</div>
+        </div>
+        <div class="dash-kpi-card">
+          <div class="lbl" id="kpi_lbl_tax">雇主法定準備金 (~12%)</div>
+          <div class="val" id="disp_banner_tax" style="color:var(--warning);">$0</div>
+        </div>
+      </div>
+      <div class="dash-banner-notes">
+        <div id="disp_banner_runway">• 資本跑道 (Runway)：依據 T2 結合跨國地區係數計算，已自動折算跨國雇主法定成本準備金 (約 12%)。</div>
+        <div id="disp_banner_structure">• 職級比例結構：符合 40% 骨幹 (L4) + 25% 初階 (L3) + 25% 資深 (L5) + 10% 領導層之健康分佈。</div>
+      </div>
+    </div>
+
+    <!-- 職階 × 7 大法域人數配置矩陣 -->
+    <div class="sec-title"><span class="num">1</span> <span id="sec1_mat_title">跨國編制人數矩陣與預算小計</span></div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:110px;" id="th_m_lvl">職階</th>
+          <th id="th_m_role">職務角色</th>
+          <th style="text-align:center;">🇺🇸 US (1.10)</th>
+          <th style="text-align:center;">🇸🇬 SG (0.95)</th>
+          <th style="text-align:center;">🇦🇪 UAE (0.90)</th>
+          <th style="text-align:center;">🇪🇺 EU (0.80)</th>
+          <th style="text-align:center;">🇹🇼 TW (0.65)</th>
+          <th style="text-align:center;">🇲🇾 MY (0.45)</th>
+          <th style="text-align:center;">🇮🇳 IN (0.40)</th>
+          <th style="text-align:center;" id="th_m_hc">該階人數 (佔比 %)</th>
+          <th style="text-align:right;" id="th_m_sub">年薪預算小計 (USD)</th>
+        </tr>
+      </thead>
+      <tbody id="matrixTableBody"></tbody>
+    </table>
+
+    <!-- 即時連動動態組織圖 -->
+    <div class="sec-title"><span class="num">2</span> <span id="sec1_org_title">部門即時動態組織圖 (Live Org Chart)</span></div>
+    <div class="org-chart-wrapper">
+      <div class="org-tree" id="orgTreeContainer"></div>
+    </div>
+  </div>
+
+  <!-- ================= 模組 2：團隊架構與人才盤點及晉升/PIP ================= -->
+  <div id="pane_m2" class="pane">
+    <div class="grid-dual">
+      <div>
+        <div class="sec-title"><span class="num">1</span> <span id="sec2_box_title">部門人才九宮格分佈 (9-Box Placement)</span></div>
+        <div class="box-grid" id="boxGrid"></div>
+      </div>
+      <div>
+        <div class="sec-title"><span class="num">2</span> <span id="sec2_risk_title">結構性風險與合規摘要</span></div>
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:20px; line-height:1.7;" id="cohortSummaryBox"></div>
+      </div>
+    </div>
+
+    <!-- 員工名單與考績/潛力明細 -->
+    <div class="sec-title"><span class="num">3</span> <span id="sec2_tbl_title">人才盤點與處置明細表</span></div>
+    <div style="display:flex; gap:8px; margin-bottom:12px;">
+      <select id="sel_box_filter" onchange="renderEmpTable()" style="background:#090d16; border:1px solid var(--border); color:#fff; padding:6px 12px; border-radius:6px; font-size:12px;">
+        <option value="">全部九宮格落點 (All)</option>
+        <option value="Box 1">Box 1 · Star (優先晉升)</option>
+        <option value="Box 2">Box 2 · High Potential (儲備)</option>
+        <option value="Box 4">Box 4 · High Performer (儲備)</option>
+        <option value="Box 3">Box 3 · Rough Diamond (輪調)</option>
+        <option value="Box 5">Box 5 · Core Player (深耕)</option>
+        <option value="Box 9">Box 9 · Underperformer (PIP)</option>
+        <option value="Box 6">Box 6 · Dilemma (輔導)</option>
+      </select>
+      <input type="text" id="inp_emp_search" placeholder="搜尋姓名 / 工號..." oninput="renderEmpTable()" style="background:#090d16; border:1px solid var(--border); color:#fff; padding:6px 12px; border-radius:6px; font-size:12px; width:220px;">
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th id="th_emp_name">姓名</th><th>職級</th><th>地區</th>
+          <th id="th_emp_perf">績效均分</th><th id="th_emp_pot">潛力加權</th><th>九宮格落點</th>
+          <th id="th_emp_act">2027/04 處置狀態</th><th id="th_emp_tgt">目標職級</th>
+        </tr>
+      </thead>
+      <tbody id="empTableBody"></tbody>
+    </table>
+
+    <!-- 晉升準備與 PIP 具體處置卡片 (三方行動 + 雙人對話) -->
+    <div class="sec-title"><span class="num">4</span> <span id="sec2_card_title">晉升護航與合規 PIP 淘汰策略手冊 (Playbook)</span></div>
+    <div class="cards-grid" id="playbookCardsContainer"></div>
+  </div>
+
+  <!-- ================= 模組 3：OKR 對齊、新招募職缺與預算 ================= -->
+  <div id="pane_m3" class="pane">
+    <div class="okr-row">
+      <div>
+        <div class="sec-title"><span class="num">1</span> <span id="sec3_okr_title">年度戰略 OKR 與組織目標分解</span></div>
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom:20px;" id="okrObjectiveList"></div>
+      </div>
+      <div>
+        <div class="sec-title"><span class="num">2</span> <span id="sec3_hire_title">基於 OKR 之新招募崗位需求與薪酬試算</span></div>
+        <div id="newHirePositionsList"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// 試算表發布連結與 GID
+const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRGPWPZC10sDW7DNW_X21iuKxKNwGhmERDWdBI8RdXPBjunnRelJtf9I2PYPzSBE80EvHrgyLgyWs8C/pub?output=csv&single=true&gid=";
+const INDEX_SHEET_GID = "50466109";
+
+let currentLang = 'zh';
+let currentMainPane = 'm1';
+let deptList = [];
+let currentDept = null;
+let currentDeptEmployees = [];
+
+// 7 大法域
+const REGIONS = [
+  { code: 'US', labelZh: '美國', labelEn: 'United States', flag: '🇺🇸', factor: 1.10 },
+  { code: 'SG', labelZh: '新加坡', labelEn: 'Singapore', flag: '🇸🇬', factor: 0.95 },
+  { code: 'UAE', labelZh: '阿聯酋', labelEn: 'UAE', flag: '🇦🇪', factor: 0.90 },
+  { code: 'EU', labelZh: '歐洲', labelEn: 'Europe', flag: '🇪🇺', factor: 0.80 },
+  { code: 'TW', labelZh: '台灣', labelEn: 'Taiwan', flag: '🇹🇼', factor: 0.65 },
+  { code: 'MY', labelZh: '馬來西亞', labelEn: 'Malaysia', flag: '🇲🇾', factor: 0.45 },
+  { code: 'IN', labelZh: '印度', labelEn: 'India', flag: '🇮🇳', factor: 0.40 }
+];
+
+// T2 基準薪酬 (USD)
+const BASE_RATES = {
+  L3: 95000, L4: 140000, L5: 190000, L6_M1: 240000, L7_M2: 330000, L8_M3: 500000
+};
+
+// 矩陣配置狀態
+const MATRIX_CONFIG = {
+  L7_M2: { key: 'L7_M2', code: 'L7 / M2', titleZh: '部門總監 / 負責人', titleEn: 'Director / Dept Head', US: 0, SG: 1, UAE: 0, EU: 0, TW: 0, MY: 0, IN: 0 },
+  L6_M1: { key: 'L6_M1', code: 'L6 / M1', titleZh: '組長 / 主任架構師', titleEn: 'Team Lead / Staff', US: 0, SG: 1, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
+  L5:    { key: 'L5',    code: 'L5',      titleZh: '資深專家 / 骨幹', titleEn: 'Senior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
+  L4:    { key: 'L4',    code: 'L4',      titleZh: '中階主力執行者', titleEn: 'Mid-Level Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 3, MY: 2, IN: 0 },
+  L3:    { key: 'L3',    code: 'L3',      titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 4, MY: 2, IN: 0 }
+};
+
+const perfMap = { "S": 5.0, "A": 4.0, "B": 3.0, "B-": 2.0, "C": 1.0 };
+const potMap = { "高": 5.0, "中": 3.0, "低": 1.5, "HIGH": 5.0, "MED": 3.0, "LOW": 1.5 };
+
+const boxDefs = {
+  1: { zh: "Box 1 · 頂尖之星 (Star)", en: "Box 1 · Star", poolZh: "Fast-Track 優先晉升", poolEn: "Fast-Track Promotion" },
+  2: { zh: "Box 2 · 成長高潛 (High Pot)", en: "Box 2 · High Potential", poolZh: "儲備池 (6-12mo)", poolEn: "Growth Pool (6-12mo)" },
+  3: { zh: "Box 3 · 璞玉待磨 (Rough Diamond)", en: "Box 3 · Rough Diamond", poolZh: "關注調崗 / 潛力激發", poolEn: "Mobility Review" },
+  4: { zh: "Box 4 · 高績效標竿 (High Perf)", en: "Box 4 · High Performer", poolZh: "儲備池 (6-12mo)", poolEn: "Succession Pool" },
+  5: { zh: "Box 5 · 核心骨幹 (Core Player)", en: "Box 5 · Core Player", poolZh: "維持現職深耕", poolEn: "Maintain & Deepen" },
+  6: { zh: "Box 6 · 瓶頸待激發 (Dilemma)", en: "Box 6 · Dilemma", poolZh: "限期觀察 / 雙週輔導", poolEn: "Watch / Coach" },
+  7: { zh: "Box 7 · 資深專家 (Solid Pro)", en: "Box 7 · Solid Pro", poolZh: "技術深耕 (不轉管理)", poolEn: "Maintain" },
+  8: { zh: "Box 8 · 穩定貢獻 (Effective)", en: "Box 8 · Effective", poolZh: "標準維持者", poolEn: "Maintain" },
+  9: { zh: "Box 9 · 風險淘汰 (Underperformer)", en: "Box 9 · Underperformer", poolZh: "啟動 2-4 週 PIP", poolEn: "Action / PIP Pool" }
+};
+
+// 切換主模組
+function switchMainPane(paneId) {
+  currentMainPane = paneId;
+  ['m1', 'm2', 'm3'].forEach(id => {
+    document.getElementById('nav_' + id).classList.toggle('active', id === paneId);
+    document.getElementById('pane_' + id).classList.toggle('active', id === paneId);
+  });
+  if(paneId === 'm1') recalculateAll();
+  else if(paneId === 'm2') renderModule2();
+  else if(paneId === 'm3') renderModule3();
+}
+
+function parseCSV(text) {
+  const p = [];
+  let row = [''], i = 0, inQuote = false;
+  text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  for (let ch of text) {
+    if (ch === '"') inQuote = !inQuote;
+    else if (ch === ',' && !inQuote) { row.push(''); i++; }
+    else if (ch === '\n' && !inQuote) { p.push(row.map(s => s.trim().replace(/^"|"$/g, ''))); row = ['']; i = 0; }
+    else row[i] += ch;
+  }
+  if (row.length > 1 || row[0] !== '') p.push(row.map(s => s.trim().replace(/^"|"$/g, '')));
+  if (p.length < 2) return [];
+  const headers = p[0].map(h => h.replace(/^[\uFEFF\s]+|[\s]+$/g, ''));
+  return p.slice(1).map(r => {
+    let o = {};
+    headers.forEach((h, idx) => o[h] = r[idx] || '');
+    return o;
+  });
+}
+
+function processRow(row) {
+  const q1 = perfMap[String(row.Q1).trim().toUpperCase()] || parseFloat(row.Q1) || 0;
+  const q2 = perfMap[String(row.Q2).trim().toUpperCase()] || parseFloat(row.Q2) || 0;
+  const q3 = perfMap[String(row.Q3).trim().toUpperCase()] || parseFloat(row.Q3) || 0;
+  const q4 = perfMap[String(row.Q4).trim().toUpperCase()] || parseFloat(row.Q4) || 0;
+  const perf = (q1 + q2 + q3 + q4) / 4;
+
+  const leadRaw = row.Manager_Pot || row.Lead_Pot || "中";
+  const headRaw = row.HRBP_Pot || row.Head_Pot || "中";
+  const leadPot = potMap[String(leadRaw).trim()] || parseFloat(leadRaw) || 3.0;
+  const headPot = potMap[String(headRaw).trim()] || parseFloat(headRaw) || 3.0;
+  const pot = (leadPot * 0.7) + (headPot * 0.3);
+
+  let perfTier = perf >= 4.2 ? 'High' : (perf >= 3.0 ? 'Med' : 'Low');
+  let potTier = pot >= 4.0 ? 'High' : (pot >= 2.8 ? 'Med' : 'Low');
+  let boxNum = 9;
+
+  if (perfTier === 'High' && potTier === 'High') boxNum = 1;
+  else if (perfTier === 'Med' && potTier === 'High') boxNum = 2;
+  else if (perfTier === 'Low' && potTier === 'High') boxNum = 3;
+  else if (perfTier === 'High' && potTier === 'Med') boxNum = 4;
+  else if (perfTier === 'Med' && potTier === 'Med') boxNum = 5;
+  else if (perfTier === 'Low' && potTier === 'Med') boxNum = 6;
+  else if (perfTier === 'High' && potTier === 'Low') boxNum = 7;
+  else if (perfTier === 'Med' && potTier === 'Low') boxNum = 8;
+  else boxNum = 9;
+
+  let target = row.Current_Level || '';
+  if (boxNum === 1) target = target.startsWith('L4') ? 'M1 / L5' : (target.startsWith('M') ? `M${parseInt(target[1]||1)+1}` : `L${parseInt(target[1]||1)+1}`);
+
+  return {
+    id: row.Employee_ID || '',
+    name: row.Name || '',
+    level: row.Current_Level || '',
+    loc: (row.Location || row.Region || '').toUpperCase(),
+    perf: Number(perf.toFixed(2)),
+    pot: Number(pot.toFixed(2)),
+    boxNum,
+    box: `Box ${boxNum}`,
+    target,
+    notes: row.Notes || '',
+    flagged: (boxNum === 9 && pot >= 2.5 && pot < 2.8)
+  };
+}
+
+// ===================== 模組 1 預算與組織圖邏輯 =====================
+function renderMatrixTable() {
+  const tbody = document.getElementById('matrixTableBody');
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+
+  tbody.innerHTML = levels.map(k => {
+    const item = MATRIX_CONFIG[k];
+    const roleTitle = currentLang === 'zh' ? item.titleZh : item.titleEn;
+    return `
+      <tr>
+        <td><span style="font-weight:700; color:var(--cyan);">${item.code}</span></td>
+        <td><b style="color:var(--text-primary); font-size:12.5px;">${roleTitle}</b></td>
+        ${REGIONS.map(r => `<td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item[r.code]}" oninput="updateMatrixVal('${k}','${r.code}',this.value)"></td>`).join('')}
+        <td style="text-align:center;"><span id="subhc_${k}" style="font-weight:700; color:var(--cyan);">0</span></td>
+        <td style="text-align:right;"><span id="subcost_${k}" style="color:#34d399; font-weight:700;">$0</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function updateMatrixVal(levelKey, regCode, val) {
+  MATRIX_CONFIG[levelKey][regCode] = Math.max(parseInt(val) || 0, 0);
+  recalculateAll();
+}
+
+function recalculateAll() {
+  const deptName = currentDept ? currentDept.name : (currentLang === 'zh' ? '研發部門' : 'Engineering Dept');
+  const tierMultiplier = parseFloat(document.getElementById('sel_tier').value) || 1.0;
+  let totalHc = 0;
+  let totalBudget = 0;
+
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+  const rowStats = {};
+
+  levels.forEach(k => {
+    const item = MATRIX_CONFIG[k];
+    const base = BASE_RATES[k];
+    let rowHc = 0;
+    let rowCost = 0;
+
+    REGIONS.forEach(r => {
+      const cnt = item[r.code] || 0;
+      rowHc += cnt;
+      rowCost += cnt * (base * tierMultiplier * r.factor);
+    });
+
+    rowStats[k] = { hc: rowHc, cost: rowCost };
+    totalHc += rowHc;
+    totalBudget += rowCost;
+  });
+
+  levels.forEach(k => {
+    const stat = rowStats[k];
+    const pct = totalHc > 0 ? ((stat.hc / totalHc) * 100).toFixed(1) : "0.0";
+    const subhcEl = document.getElementById(`subhc_${k}`);
+    const subcostEl = document.getElementById(`subcost_${k}`);
+    if(subhcEl) subhcEl.innerHTML = `${stat.hc} ${currentLang==='zh'?'人':'HC'} <span style="font-size:10.5px; color:var(--text-muted);">(${pct}%)</span>`;
+    if(subcostEl) subcostEl.innerText = '$' + Math.round(stat.cost).toLocaleString();
+  });
+
+  const avgCost = totalHc > 0 ? Math.round(totalBudget / totalHc) : 0;
+  const statutory = Math.round(totalBudget * 0.12);
+
+  const tierText = document.getElementById('sel_tier').options[document.getElementById('sel_tier').selectedIndex].text.split(' ')[0];
+
+  document.getElementById('banner_title').innerText = currentLang === 'zh' ? `${deptName} 人事成本與預算預測` : `${deptName} Budget & HC Forecast`;
+  document.getElementById('disp_banner_hc').innerText = `${totalHc} ${currentLang==='zh'?'人':'HC'}`;
+  document.getElementById('disp_banner_budget').innerText = '$' + Math.round(totalBudget).toLocaleString();
+  document.getElementById('disp_banner_avg').innerText = '$' + avgCost.toLocaleString();
+  document.getElementById('disp_banner_tax').innerText = '$' + statutory.toLocaleString();
+
+  document.getElementById('disp_banner_runway').innerHTML = currentLang === 'zh'
+    ? `• 資本跑道 (Runway)：依據 <b>${tierText}</b> 結合跨國地區係數加權計算，已預留法定雇主負擔準備金 (約 12%)。`
+    : `• Runway Benchmark: Calculated based on <b>${tierText}</b> with blended regional multipliers & statutory reserve (~12%).`;
+
+  renderLiveOrgChart(deptName);
+}
+
+function renderLiveOrgChart(deptName) {
+  const container = document.getElementById('orgTreeContainer');
+  if(!container) return;
+  container.innerHTML = '';
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+
+  levels.forEach(k => {
+    const item = MATRIX_CONFIG[k];
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'org-level-row';
+
+    let hasMember = false;
+    REGIONS.forEach(r => {
+      const cnt = item[r.code] || 0;
+      if(cnt > 0) {
+        hasMember = true;
+        const roleName = currentLang === 'zh' ? item.titleZh : item.titleEn;
+        let borderTop = 'var(--border)';
+        if(k === 'L7_M2') borderTop = 'var(--pink)';
+        else if(k === 'L6_M1') borderTop = 'var(--purple)';
+        else if(k === 'L5') borderTop = 'var(--cyan)';
+
+        rowDiv.innerHTML += `
+          <div class="org-node" style="border-top:3px solid ${borderTop};">
+            <div class="lvl">${item.code}</div>
+            <div class="role">${roleName}</div>
+            <div class="tag">${r.flag} ${r.code} × ${cnt}</div>
+          </div>
+        `;
+      }
+    });
+
+    if(!hasMember && k === 'L7_M2') {
+      rowDiv.innerHTML = `
+        <div class="org-node" style="border-top:3px solid var(--pink); opacity:0.6;">
+          <div class="lvl">L7 / M2</div>
+          <div class="role">${deptName} 總監 (TBD)</div>
+          <div class="tag">0 HC</div>
+        </div>
+      `;
+    }
+
+    if(rowDiv.children.length > 0) container.appendChild(rowDiv);
+  });
+}
+
+// ===================== 模組 2 人才盤點與 PIP =====================
+function renderModule2() {
+  const list = currentDeptEmployees;
+
+  // 9-Box Grid
+  const counts = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  list.forEach(e => { if(counts[e.boxNum] !== undefined) counts[e.boxNum]++; });
+
+  const gridCells = [
+    { num:3, tone:'tone-warn' }, { num:2, tone:'tone-growth' }, { num:1, tone:'tone-good' },
+    { num:6, tone:'tone-crit' }, { num:5, tone:'' },            { num:4, tone:'tone-growth' },
+    { num:9, tone:'tone-crit' }, { num:8, tone:'' },            { num:7, tone:'' }
+  ];
+
+  document.getElementById('boxGrid').innerHTML = gridCells.map(c => {
+    const d = boxDefs[c.num];
+    const name = currentLang === 'zh' ? d.zh : d.en;
+    return `
+      <div class="box-cell ${c.tone}">
+        <div class="name">${name}</div>
+        <div class="count">${counts[c.num]}</div>
+      </div>
+    `;
+  }).join('');
+
+  // 結構摘要
+  const pipCount = counts[9] + counts[6];
+  const starCount = counts[1];
+  const growthCount = counts[2] + counts[4];
+  document.getElementById('cohortSummaryBox').innerHTML = currentLang === 'zh' ? `
+    <b>人才健康度診斷：</b><br>
+    • <b>明星人才 (Fast-Track)</b>：共有 <b>${starCount} 位</b> 列入 2027/04 優先晉升通道。<br>
+    • <b>儲備蓄水池 (Growth Pool)</b>：共有 <b>${growthCount} 位</b> 具備 6–12 個月晉階潛質。<br>
+    • <b>風險汰劣 (PIP Exposure)</b>：共有 <b style="color:var(--critical);">${pipCount} 位</b> 觸發 2–4 週 PIP 績效改善計畫，需注意跨國法定勞動法規與書面輔導紀實。
+  ` : `
+    <b>Talent Health Diagnostics:</b><br>
+    • <b>Fast-Track (Box 1)</b>: <b>${starCount} candidates</b> mapped for April 2027 promotion runway.<br>
+    • <b>Growth Pool (Box 2+4)</b>: <b>${growthCount} candidates</b> developing for next level readiness.<br>
+    • <b>PIP Risk (Box 9+6)</b>: <b style="color:var(--critical);">${pipCount} individuals</b> flagged for immediate 2-4 week PIP under statutory notice rules.
+  `;
+
+  renderEmpTable();
+  renderPlaybookCards();
+}
+
+function renderEmpTable() {
+  const filterVal = document.getElementById('sel_box_filter').value;
+  const q = document.getElementById('inp_emp_search').value.trim().toLowerCase();
+
+  let rows = currentDeptEmployees.filter(e => {
+    const matchBox = !filterVal || e.box.includes(filterVal);
+    const matchQ = !q || e.name.toLowerCase().includes(q) || e.id.toLowerCase().includes(q);
+    return matchBox && matchQ;
+  });
+
+  document.getElementById('empTableBody').innerHTML = rows.map(e => {
+    const d = boxDefs[e.boxNum];
+    const pillCls = (e.boxNum===1)?'b1':((e.boxNum===2||e.boxNum===4)?'b2':((e.boxNum===3)?'b3':((e.boxNum===9||e.boxNum===6)?'b9':'b5')));
+    return `
+      <tr>
+        <td style="font-family:monospace;">${e.id}</td>
+        <td><b>${e.name}</b> ${e.flagged ? '<span style="color:var(--critical);">⚠️</span>':''}</td>
+        <td>${e.level}</td>
+        <td>${e.loc}</td>
+        <td style="font-family:monospace;">${e.perf.toFixed(2)}</td>
+        <td style="font-family:monospace;">${e.pot.toFixed(2)}</td>
+        <td><span class="pill ${pillCls}">${currentLang==='zh'?d.zh:d.en}</span></td>
+        <td>${currentLang==='zh'?d.poolZh:d.poolEn}</td>
+        <td>${e.target}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderPlaybookCards() {
+  const pips = currentDeptEmployees.filter(e => e.boxNum === 9 || e.boxNum === 6);
+  const stars = currentDeptEmployees.filter(e => e.boxNum === 1);
+  const container = document.getElementById('playbookCardsContainer');
+
+  let html = '';
+
+  // 明星卡片
+  stars.forEach(s => {
+    html += `
+      <div class="pcard star">
+        <div class="phead">
+          <span style="color:var(--good);">${s.name} (${s.level} · ${s.loc})</span>
+          <span>Target ➔ ${s.target}</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:6px;">${s.notes || '卓越交付與架構標竿'}</div>
+        <div class="act-box">
+          <b>主管 Action:</b> 賦予跨團隊策略專案主導權，鋪設晉升通道。<br>
+          <b>HRBP Action:</b> 啟動外部市場薪酬對標（Global Benchmark），鎖定長效 Retention Package。<br>
+          <b>員工本人:</b> 制定年度 IDP，負責架構傳承與團隊知識賦能。
+        </div>
+        <div class="dialogue">
+          <b>主管話術：</b> “你在過去四季的交付是組織標竿，我們已為你啟動 2027 年 4 月晉升準備，接下來你希望在哪些策略專案中發揮更大影響力？”
+        </div>
+      </div>
+    `;
+  });
+
+  // PIP 卡片
+  pips.forEach(p => {
+    html += `
+      <div class="pcard crit">
+        <div class="phead">
+          <span style="color:var(--critical);">${p.name} (${p.level} · ${p.loc})</span>
+          <span class="pill b9">啟動 2-4 週 PIP</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:6px;">${p.notes || '績效存在明確落差，需限期改善'}</div>
+        <div class="act-box">
+          <b>主管 Action:</b> 設定二元化（Pass/Fail）客觀標準，實施每週 1:1 書面進度日誌。<br>
+          <b>HRBP Action:</b> 審計輔導合規紀錄與最後手段性，把控法定預告期，必要時主導協議離職談判。<br>
+          <b>員工本人:</b> 簽署改善計畫書，每週五提交量化產出日誌。
+        </div>
+        <div class="dialogue" style="border-left:3px solid var(--critical);">
+          <b>主管話術：</b> “我們檢視了四季量化產出，數據與組織標準存在明確落差。自今日起啟動為期 2-4 週的績效改善計畫，每週書面覆核進度。”
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html || `<div style="color:var(--text-muted); padding:16px;">目前該部門無需要特別關注的 Star 或 PIP 人員。</div>`;
+}
+
+// ===================== 模組 3 OKR 與新職缺招聘 =====================
+function renderModule3() {
+  const deptName = currentDept ? currentDept.name : '研發部門';
+
+  document.getElementById('okrObjectiveList').innerHTML = `
+    <div style="margin-bottom:16px;">
+      <div style="font-size:14px; font-weight:700; color:var(--cyan); margin-bottom:4px;">Objective 1: 全球核心系統高併發與 99.99% 高可用性</div>
+      <div style="font-size:12px; color:var(--text-secondary);">
+        • KR1: 完成多幣種核心清算架構重構，延遲降低 40%<br>
+        • KR2: 通過 SOC2 Type II 審計與零重大安全資安事故<br>
+        • KR3: 建立 24/7 全球分佈式 SRE 輪值保障體系
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border); pt:14px;">
+      <div style="font-size:14px; font-weight:700; color:var(--purple); margin-bottom:4px;">Objective 2: 降本增效與全球交付人效提升</div>
+      <div style="font-size:12px; color:var(--text-secondary);">
+        • KR1: 將自動化測試覆蓋率自 65% 提升至 85%<br>
+        • KR2: 利用 Geo-Arbitrage 將邊際人力成本優化 25%<br>
+        • KR3: 建立各序列 L3-L8 雙軌職能模型與能力基準
+      </div>
+    </div>
+  `;
+
+  // 新招募崗位與薪酬預算 (基於 Global Benchmark 試算)
+  const hirePositions = [
+    { title: "Staff Protocol Architect (主任架構師)", lvl: "L6", loc: "SG (新加坡)", base: 240000, factor: 0.95, okr: "對齊 O1-KR1 核心清算架構重構" },
+    { title: "Senior Security/SRE Engineer (資深資安工程師)", lvl: "L5", loc: "TW (台灣)", base: 190000, factor: 0.65, okr: "對齊 O1-KR2 SOC2 審計與資安防禦" },
+    { title: "Mid-Level Backend Engineer (中階後端工程師)", lvl: "L4", loc: "MY (馬來西亞)", base: 140000, factor: 0.45, okr: "對齊 O2-KR1 自動化與核心模組擴充" }
+  ];
+
+  document.getElementById('newHirePositionsList').innerHTML = hirePositions.map(h => {
+    const budget = Math.round(h.base * h.factor);
+    return `
+      <div class="hire-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px;">
+          <div><b style="font-size:13.5px; color:#fff;">${h.title}</b> <span class="pill b2">${h.lvl}</span></div>
+          <div style="font-size:15px; font-weight:800; color:#34d399;">$${budget.toLocaleString()} <span style="font-size:10px; color:var(--text-muted);">USD/yr</span></div>
+        </div>
+        <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">配置地點：${h.loc} ｜ 基準定價：$${h.base.toLocaleString()} × ${h.factor}</div>
+        <div style="font-size:11.5px; color:var(--cyan); background:rgba(6,182,212,0.08); padding:4px 8px; border-radius:4px;">🎯 戰略對齊：${h.okr}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 語系切換
+function setLanguage(lang) {
+  currentLang = lang;
+  document.getElementById('btnZh').className = `lang-btn ${lang==='zh'?'active':''}`;
+  document.getElementById('btnEn').className = `lang-btn ${lang==='en'?'active':''}`;
+
+  if(lang === 'zh') {
+    document.getElementById('nav_m1').innerText = "1. 團隊年度預算與編制 (Live O-Chart & Budget)";
+    document.getElementById('nav_m2').innerText = "2. 團隊架構、人才盤點與晉升/PIP 清單";
+    document.getElementById('nav_m3').innerText = "3. OKR 對齊、新招募職缺與動態預算";
+    document.getElementById('kpi_lbl_hc').innerText = "總編制總人數";
+    document.getElementById('kpi_lbl_budget').innerText = "年度總薪酬預算 (USD)";
+    document.getElementById('kpi_lbl_avg').innerText = "人均年薪成本 (USD)";
+    document.getElementById('kpi_lbl_tax').innerText = "雇主法定準備金 (~12%)";
+    document.getElementById('sec1_mat_title').innerText = "跨國編制人數矩陣與預算小計";
+    document.getElementById('sec1_org_title').innerText = "部門即時動態組織圖 (Live Org Chart)";
+    document.getElementById('sec2_box_title').innerText = "部門人才九宮格分佈 (9-Box Placement)";
+    document.getElementById('sec2_risk_title').innerText = "結構性風險與合規摘要";
+    document.getElementById('sec2_tbl_title').innerText = "人才盤點與處置明細表";
+    document.getElementById('sec2_card_title').innerText = "晉升護航與合規 PIP 淘汰策略手冊 (Playbook)";
+    document.getElementById('sec3_okr_title').innerText = "年度戰略 OKR 與組織目標分解";
+    document.getElementById('sec3_hire_title').innerText = "基於 OKR 之新招募崗位需求與薪酬試算";
+  } else {
+    document.getElementById('nav_m1').innerText = "1. Annual Budget & Headcount (Live O-Chart & Budget)";
+    document.getElementById('nav_m2').innerText = "2. Talent Review, Promotion & PIP Roster";
+    document.getElementById('nav_m3').innerText = "3. OKR Alignment, New Hires & Headcount Budget";
+    document.getElementById('kpi_lbl_hc').innerText = "Total Headcount";
+    document.getElementById('kpi_lbl_budget').innerText = "Annual Payroll Budget (USD)";
+    document.getElementById('kpi_lbl_avg').innerText = "Avg Cost per Head (USD)";
+    document.getElementById('kpi_lbl_tax').innerText = "Statutory Reserve (~12%)";
+    document.getElementById('sec1_mat_title').innerText = "Cross-Border Headcount Matrix & Budget Subtotal";
+    document.getElementById('sec1_org_title').innerText = "Department Live Org Chart";
+    document.getElementById('sec2_box_title').innerText = "Department 9-Box Distribution";
+    document.getElementById('sec2_risk_title').innerText = "Structural Risk & Legal Summary";
+    document.getElementById('sec2_tbl_title').innerText = "Talent Calibration & Action Table";
+    document.getElementById('sec2_card_title').innerText = "Promotion Care & Statutory PIP Playbook";
+    document.getElementById('sec3_okr_title').innerText = "Strategic OKR & Operational Alignment";
+    document.getElementById('sec3_hire_title').innerText = "OKR-Driven Hiring Requisitions & Compensation";
+  }
+
+  renderMatrixTable();
+  recalculateAll();
+  if(currentMainPane === 'm2') renderModule2();
+  else if(currentMainPane === 'm3') renderModule3();
+}
+
+// 核心啟動：讀取 GID 目錄表並建立部門連動
+async function boot() {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.innerText = "連線 Google 試算表中...";
+
+  try {
+    const res = await fetch(BASE_CSV_URL + INDEX_SHEET_GID);
+    const csv = await res.text();
+    const rows = parseCSV(csv);
+    if(rows.length > 0 && rows[0].Department && rows[0].GID) {
+      deptList = rows.map(r => ({ name: r.Department, gid: String(r.GID).trim() }));
+    } else throw new Error();
+  } catch(e) {
+    deptList = [
+      { name: "法幣部門 (Fiat)", gid: "1952213325" },
+      { name: "安全部門 (Security)", gid: "1349594726" },
+      { name: "業務與運營 (Sales & Ops)", gid: "1804429324" },
+      { name: "財務 (Finance)", gid: "2080233148" },
+      { name: "法務 (Compliance)", gid: "1224573719" }
+    ];
+  }
+
+  renderDeptTabBar();
+  loadDeptData(deptList[0]);
+}
+
+function renderDeptTabBar() {
+  const container = document.getElementById('deptTabBar');
+  container.innerHTML = deptList.map(d => `
+    <button class="dept-btn ${currentDept && currentDept.name===d.name?'active':''}" onclick="onSelectDept('${d.gid}')">
+      ${d.name}
+    </button>
+  `).join('');
+}
+
+function onSelectDept(gid) {
+  const dept = deptList.find(d => d.gid === gid);
+  if(dept) {
+    loadDeptData(dept);
+  }
+}
+
+async function loadDeptData(dept) {
+  currentDept = dept;
+  renderDeptTabBar();
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.innerText = `同步 ${dept.name} 中...`;
+
+  try {
+    const res = await fetch(BASE_CSV_URL + dept.gid);
+    const csv = await res.text();
+    currentDeptEmployees = parseCSV(csv).map(processRow);
+    syncEl.innerText = `已同步 ${dept.name} (${currentDeptEmployees.length} 人)`;
+
+    // 依據抓取到的員工清單，即時自動填入矩陣初始值
+    resetMatrixByActualEmployees(currentDeptEmployees);
+    recalculateAll();
+    if(currentMainPane === 'm2') renderModule2();
+  } catch(err) {
+    syncEl.innerText = `載入失敗: ${err.message}`;
+  }
+}
+
+// 根據實際載入的員工清單，智慧映射至 7 大法域矩陣
+function resetMatrixByActualEmployees(employees) {
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+  levels.forEach(k => {
+    REGIONS.forEach(r => MATRIX_CONFIG[k][r.code] = 0);
+  });
+
+  employees.forEach(e => {
+    let lvlKey = 'L4';
+    if(e.level.startsWith('M2') || e.level.startsWith('L7')) lvlKey = 'L7_M2';
+    else if(e.level.startsWith('M1') || e.level.startsWith('L6')) lvlKey = 'L6_M1';
+    else if(e.level.startsWith('L5')) lvlKey = 'L5';
+    else if(e.level.startsWith('L3')) lvlKey = 'L3';
+
+    let regCode = e.loc;
+    if(!REGIONS.some(r => r.code === regCode)) regCode = 'TW';
+
+    if(MATRIX_CONFIG[lvlKey] && MATRIX_CONFIG[lvlKey][regCode] !== undefined) {
+      MATRIX_CONFIG[lvlKey][regCode]++;
+    }
+  });
+
+  renderMatrixTable();
+}
+
+window.onload = () => {
+  renderMatrixTable();
+  setLanguage(currentLang);
+  boot();
+};
+</script>
+</body>
+</html>

@@ -89,7 +89,6 @@
   .tag-pills{display:flex; flex-wrap:wrap; gap:6px;}
   .tag-pill{background:#090d16; border:1px solid var(--border); border-radius:20px; font-size:11px; padding:3px 10px; color:var(--text-secondary);}
 
-  /* 表格樣式優化：確保資料列絕對可見 */
   .table-responsive-wrap { width: 100%; overflow-x: auto; margin-bottom: 24px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); }
   table.matrix-calc-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--card-bg); margin-bottom: 0; }
   table.matrix-calc-table th { background: #0d1527; font-size: 11px; text-align: center; padding: 10px 6px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
@@ -115,7 +114,6 @@
   .tier-ctrl{display:flex; align-items:center; gap:8px;}
   .tier-ctrl select{background:#090d16; border:1px solid var(--border); color:#fff; padding:6px 12px; border-radius:6px; font-size:12.5px; font-weight:600; cursor:pointer;}
 
-  /* 緊湊型人數輸入格 */
   .matrix-calc-table input.hc-input{
     width: 38px;
     height: 28px;
@@ -445,7 +443,7 @@
       </div>
     </div>
 
-    <!-- 緊湊型人數矩陣表 (附帶響應式捲動容器防護) -->
+    <!-- 緊湊型人數矩陣表 (加入響應式捲動容器保障可視性) -->
     <div class="table-responsive-wrap">
       <table class="matrix-calc-table">
         <thead>
@@ -667,7 +665,7 @@ const COMP_FUNCTIONS = {
       { lvlKey: "L5", lvl: "L5", titleZh: "Senior Finance / HR Specialist", titleEn: "Senior Finance / HR Specialist", scopeZh: "跨國稅收籌劃與多主體合併 ｜ 9-Box 人才盤點與爭議離職談判", scopeEn: "International tax planning, consolidation | 9-Box calibration & separation" },
       { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal Architect / People Lead", titleEn: "Principal Architect / Lead", scopeZh: "專家軌：全球資金池或薪酬架構 ｜ 管理軌：領導會計/HR小組", scopeEn: "IC: Global treasury/comp model | Mgmt: Lead accounting/people pods" },
       { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Financial Controller / HR Director", titleEn: "Controller / HR Director", scopeZh: "四大審計無保留通過 ｜ 大區人力成本上限控制與文化治理", scopeEn: "Big 4 clean audit sign-off | Headcount budget governance & culture" },
-      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "CFO / CHRO", titleEn: "CFO / CHRO", scopeZh: "全面掌控全球資本水庫, 海外上市進程 ｜ 全球高管繼任佈局", scopeEn: "Capital treasury & overseas IPO readiness | Global executive succession" }
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "CFO / CHRO", titleEn: "CFO / CHRO", scopeZh: "全面掌控全球資本水庫，海外上市進程 ｜ 全球高管繼任佈局", scopeEn: "Capital treasury & overseas IPO readiness | Global executive succession" }
     ]
   }
 };
@@ -684,7 +682,12 @@ function switchTab(tabId) {
 
   if(tabId === 'tab01') renderCompTab();
   else if(tabId === 'tab02') renderLadderTab();
-  else if(tabId === 'tab03') { renderMatrixTable(); runBudgetCalc(); }
+  else if(tabId === 'tab03') { 
+    setTimeout(() => {
+      renderMatrixTable(); 
+      runBudgetCalc();
+    }, 10);
+  }
   else if(tabId === 'tab04') { renderOkrHireTab(); }
 }
 
@@ -1417,11 +1420,10 @@ function setLanguage(lang) {
 }
 
 window.onload = () => {
-  renderMatrixTable();
   setLanguage(currentLang);
-  runBudgetCalc();
-  renderOkrHireTab();
-  switchTab('tab03');
+  setTimeout(() => {
+    switchTab('tab03');
+  }, 50);
 };
 </script>
 </body>

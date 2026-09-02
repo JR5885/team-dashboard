@@ -175,6 +175,35 @@
   .okr-content-grid{display:grid; grid-template-columns: 1.15fr 1fr; gap:24px; align-items:start;}
   
   .okr-box{background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:18px; margin-bottom:14px; position:relative;}
+  
+  /* 上級 OKR 對照欄位樣式 */
+  .parent-okr-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #070b14;
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+  }
+  .parent-okr-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--purple);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .parent-okr-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .parent-okr-input:focus { outline: none; color: #fff; }
+
   .okr-input-obj{width:calc(100% - 30px); background:#090d16; border:1px solid var(--border); color:var(--cyan); font-weight:700; font-size:13.5px; padding:8px 10px; border-radius:6px; margin-bottom:8px;}
   .okr-textarea-kr{width:100%; background:#090d16; border:1px solid var(--border); color:var(--text-secondary); font-size:12px; padding:8px 10px; border-radius:6px; resize:vertical; min-height:65px; line-height:1.5;}
   .btn-del-okr{position:absolute; top:16px; right:16px; background:none; border:none; color:var(--critical); cursor:pointer; font-weight:bold; font-size:14px;}
@@ -187,7 +216,6 @@
   .btn-del-hire{background:none; border:none; color:var(--critical); cursor:pointer; font-weight:bold; font-size:14px;}
   .btn-add-okr{background:color-mix(in srgb, var(--purple) 15%, var(--card-bg)); border:1px solid var(--purple); color:var(--purple); font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer; font-size:12px;}
 
-  /* 崗位專屬 OKR 樣式 */
   .role-okr-container {
     background: #070b14;
     border: 1px dashed var(--border);
@@ -213,7 +241,6 @@
     margin-bottom: 4px;
   }
 
-  /* ★★★ 招募漏斗階段追蹤與動態圖表樣式 (支援手動輸入數字) ★★★ */
   .funnel-container {
     background: #070b14;
     border: 1px solid var(--border);
@@ -269,7 +296,6 @@
     white-space: nowrap;
   }
 
-  /* 動態長條漏斗視覺化圖 */
   .dynamic-funnel-viz {
     background: #0f172a;
     border-radius: 6px;
@@ -518,7 +544,7 @@ const MATRIX_CONFIG = {
   L3:    { key: 'L3',    code: 'L3',      titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 1, UAE: 1, EU: 0, TW: 2, MY: 1, IN: 1 }
 };
 
-// 新招募職缺：內建 3 個對應 O1-KR1 等的 3 個專屬 OKR 目標與招募漏斗手動輸入數據
+// ★★★ 新招募職缺：內建 3 個對應 O1-KR1 等的 OKR 專屬目標與招募漏斗手動輸入數據 ★★★
 let NEW_HIRES = [
   { 
     id: 1, 
@@ -558,9 +584,20 @@ let NEW_HIRES = [
   }
 ];
 
+// ★★★ 戰略目標陣列：加入上級公司級 OKR 對照欄位 parentOkr ★★★
 let STRATEGIC_OKRS = [
-  { id: 1, obj: 'Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性', kr: '• KR1: 完成多幣種虛擬資金池路由引擎重構，降低 40% 延遲\n• KR2: 通過 SOC2 Type II 審計與零重大資安漏洞\n• KR3: 建立全球分佈式 24/7 SRE 自動化自愈體系' },
-  { id: 2, obj: 'Objective 2: 區域交付中心降本增效與人才密度優化', kr: '• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%\n• KR2: 自動化覆蓋率提升至 85%，壓縮月結週期至 T+2\n• KR3: 落地 L3-L8 全序列雙軌職涯階梯與能力錨定' }
+  { 
+    id: 1, 
+    parentOkr: 'O0-公司總部 2027 年全球化佈局與核心吞吐量翻倍藍圖',
+    obj: 'Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性', 
+    kr: '• KR1: 完成多幣種虛擬資金池路由引擎重構，降低 40% 延遲\n• KR2: 通過 SOC2 Type II 審計與零重大資安漏洞\n• KR3: 建立全球分佈式 24/7 SRE 自動化自愈體系' 
+  },
+  { 
+    id: 2, 
+    parentOkr: 'O0-公司總部跨國人效優化與研發成本結構精實目標',
+    obj: 'Objective 2: 區域交付中心降本增效與人才密度優化', 
+    kr: '• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%\n• KR2: 自動化覆蓋率提升至 85%，壓縮月結週期至 T+2\n• KR3: 落地 L3-L8 全序列雙軌職涯階梯與能力錨定' 
+  }
 ];
 
 const COMP_FUNCTIONS = {
@@ -1004,10 +1041,22 @@ function renderOkrBoxList() {
   container.innerHTML = STRATEGIC_OKRS.map((o, idx) => `
     <div class="okr-box" id="okr_box_${o.id}">
       ${STRATEGIC_OKRS.length > 1 ? `<button class="btn-del-okr" onclick="deleteOkrBox(${o.id})" title="刪除此目標">✕</button>` : ''}
+      
+      <!-- 上級公司級 OKR 對照輸入列 -->
+      <div class="parent-okr-bar">
+        <span class="parent-okr-label">🔗 ${currentLang==='zh'?'上級對照:':'Parent OKR:'}</span>
+        <input type="text" class="parent-okr-input" value="${o.parentOkr || ''}" placeholder="輸入對應的上級公司級戰略 OKR..." oninput="updateParentOkr(${o.id}, this.value)">
+      </div>
+
       <input type="text" class="okr-input-obj" value="${o.obj}" oninput="updateOkrObj(${o.id}, this.value)">
       <textarea class="okr-textarea-kr" oninput="updateOkrKr(${o.id}, this.value)">${o.kr}</textarea>
     </div>
   `).join('');
+}
+
+function updateParentOkr(id, val) {
+  const item = STRATEGIC_OKRS.find(o => o.id === id);
+  if(item) item.parentOkr = val;
 }
 
 function updateOkrObj(id, val) {
@@ -1025,6 +1074,7 @@ function addNewOkrBox() {
   const nextNum = STRATEGIC_OKRS.length + 1;
   STRATEGIC_OKRS.push({
     id: newId,
+    parentOkr: currentLang === 'zh' ? `O0-公司總部 2027 年核心戰略對照` : `O0-Company 2027 Strategy Alignment`,
     obj: currentLang === 'zh' ? `Objective ${nextNum}: 新增戰略目標與成果導向` : `Objective ${nextNum}: New Strategic Priority`,
     kr: currentLang === 'zh' ? `• KR1: 關鍵執行結果 1\n• KR2: 關鍵執行結果 2` : `• KR1: Key Result 1\n• KR2: Key Result 2`
   });
@@ -1048,7 +1098,6 @@ function renderHireList() {
     const regObj = COMP_REGIONS.find(r => r.code === h.loc) || COMP_REGIONS[1];
     const cost = Math.round(base * tierMultiplier * regObj.factor);
 
-    // 招募漏斗階段 (7個階段)
     const funnelSteps = [
       { key: 'hr', label: 'HR SCREEN' },
       { key: 'tech', label: 'TECH SCREEN' },
@@ -1069,11 +1118,20 @@ function renderHireList() {
       `;
     }).join('');
 
-    // 動態長條漏斗視覺化數據計算
-    const maxVal = Math.max(h.funnel.hr || 1, 1);
+    const maxVal = Math.max(
+      h.funnel.hr || 0, 
+      h.funnel.tech || 0, 
+      h.funnel.lm || 0, 
+      h.funnel.coding || 0, 
+      h.funnel.dep || 0, 
+      h.funnel.design || 0, 
+      h.funnel.offer || 0, 
+      1
+    );
+
     const vizRows = funnelSteps.map(step => {
       const val = h.funnel[step.key] || 0;
-      const pct = Math.round((val / maxVal) * 100);
+      const pct = Math.min(Math.round((val / maxVal) * 100), 100);
       return `
         <div class="viz-bar-row">
           <div class="viz-label">${step.label}</div>
@@ -1083,12 +1141,11 @@ function renderHireList() {
       `;
     }).join('');
 
-    // 崗位專屬 3 個 OKR 目標渲染
     if(!h.okrs) {
       h.okrs = [
-        { id: h.id*10+1, title: currentLang==='zh'?'O1-KR1.1: 核心架構重構與效能優化':'O1-KR1.1: Core Architecture & Optimization', status: 'In Progress' },
-        { id: h.id*10+2, title: currentLang==='zh'?'O1-KR1.2: 模組化單元測試覆蓋率達 85%':'O1-KR1.2: Unit Test Coverage to 85%', status: 'Planned' },
-        { id: h.id*10+3, title: currentLang==='zh'?'O1-KR1.3: 零重大線上故障與 SLA 達標':'O1-KR1.3: Zero Incident SLA Baseline', status: 'Completed' }
+        { id: h.id*10+1, title: currentLang==='zh'?'O1-KR1.1: 核心架構重構與效能優化':'O1-KR1.1: Core Architecture & Optimization' },
+        { id: h.id*10+2, title: currentLang==='zh'?'O1-KR1.2: 模組化單元測試覆蓋率達 85%':'O1-KR1.2: Unit Test Coverage to 85%' },
+        { id: h.id*10+3, title: currentLang==='zh'?'O1-KR1.3: 零重大線上故障與 SLA 達標':'O1-KR1.3: Zero Incident SLA Baseline' }
       ];
     }
 
@@ -1130,19 +1187,19 @@ function renderHireList() {
           </div>
         </div>
 
-        <!-- 崗位專屬 3 個 OKR 目標 -->
+        <!-- 崗位專屬 3 個 OKR -->
         <div class="role-okr-container">
           <div class="role-okr-title">🎯 ${currentLang==='zh'?'崗位專屬 3 大 OKR / KR 目標':'Role-Specific OKR Objectives (3 KRs)'}</div>
           ${okrsHtml}
         </div>
 
-        <!-- 招募漏斗階段追蹤與動態圖表 (支援直接輸入數字) -->
+        <!-- 招募漏斗階段追蹤與即時動態長條圖 -->
         <div class="funnel-container">
-          <div class="funnel-title">${currentLang==='zh'?'招募漏斗階段追蹤 (手動輸入候選人數)':'Hiring Funnel Pipeline (Editable Candidate Counts)'}</div>
+          <div class="funnel-title">${currentLang==='zh'?'招募漏斗階段追蹤 (手動輸入候選人數)':'Hiring Funnel Pipeline (Editable Counts)'}</div>
           <div class="funnel-steps-grid">
             ${funnelHtml}
           </div>
-          <div class="dynamic-funnel-viz">
+          <div class="dynamic-funnel-viz" id="viz_container_${h.id}">
             ${vizRows}
           </div>
         </div>
@@ -1157,6 +1214,44 @@ function updateFunnelCount(hireId, stepKey, val) {
     if(!item.funnel) item.funnel = { hr:0, tech:0, lm:0, coding:0, dep:0, design:0, offer:0 };
     const cleanNum = parseInt(val.replace(/\D/g, '')) || 0;
     item.funnel[stepKey] = Math.min(Math.max(cleanNum, 0), 999);
+    
+    // 即時動態重繪該職缺的長條圖
+    const cardEl = document.getElementById(`hire_card_${hireId}`);
+    if(cardEl) {
+      const maxVal = Math.max(
+        item.funnel.hr || 0, 
+        item.funnel.tech || 0, 
+        item.funnel.lm || 0, 
+        item.funnel.coding || 0, 
+        item.funnel.dep || 0, 
+        item.funnel.design || 0, 
+        item.funnel.offer || 0, 
+        1
+      );
+      const funnelSteps = [
+        { key: 'hr', label: 'HR SCREEN' },
+        { key: 'tech', label: 'TECH SCREEN' },
+        { key: 'lm', label: 'LINE MGR' },
+        { key: 'coding', label: 'CODING' },
+        { key: 'dep', label: 'DEPT HEAD' },
+        { key: 'design', label: 'SYS DESIGN' },
+        { key: 'offer', label: 'OFFER' }
+      ];
+      const vizContainer = cardEl.querySelector('.dynamic-funnel-viz');
+      if(vizContainer) {
+        vizContainer.innerHTML = funnelSteps.map(step => {
+          const v = item.funnel[step.key] || 0;
+          const pct = Math.min(Math.round((v / maxVal) * 100), 100);
+          return `
+            <div class="viz-bar-row">
+              <div class="viz-label">${step.label}</div>
+              <div class="viz-track"><div class="viz-fill" style="width: ${pct}%;"></div></div>
+              <div class="viz-val">${v}</div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
   }
 }
 
@@ -1186,10 +1281,10 @@ function addNewHireRow() {
     loc: 'TW',
     okrs: [
       { id: newId*10+1, title: currentLang==='zh'?'O-XX.1: 執行關鍵戰略 KR 目標 1':'O-XX.1: Execute key strategic KR 1' },
-      { id: newId*10+2, title: currentLang==='zh'?'O-XX.2: 交付高效交付交付成果 2':'O-XX.2: Deliver output target 2' },
+      { id: newId*10+2, title: currentLang==='zh'?'O-XX.2: 交付高效產出成果 2':'O-XX.2: Deliver output target 2' },
       { id: newId*10+3, title: currentLang==='zh'?'O-XX.3: 維護系統零重大故障基線':'O-XX.3: Maintain zero incident baseline' }
     ],
-    funnel: { hr: 12, tech: 6, lm: 4, coding: 2, dep: 1, design: 1, offer: 0 }
+    funnel: { hr: 15, tech: 8, lm: 4, coding: 3, dep: 2, design: 1, offer: 0 }
   });
   renderHireList();
   recalculateOkrSummary();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Global Benchmark</title>
+<title>Executive Team Dashboard</title>
 <style>
   :root{
     color-scheme: light dark;
@@ -89,12 +89,9 @@
   .tag-pills{display:flex; flex-wrap:wrap; gap:6px;}
   .tag-pill{background:#090d16; border:1px solid var(--border); border-radius:20px; font-size:11px; padding:3px 10px; color:var(--text-secondary);}
 
-  .table-responsive-wrap { width: 100%; overflow-x: auto; margin-bottom: 24px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); }
-  table.matrix-calc-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--card-bg); margin-bottom: 0; }
-  table.matrix-calc-table th { background: #0d1527; font-size: 11px; text-align: center; padding: 10px 6px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
-  table.matrix-calc-table td { padding: 10px 8px; border-bottom: 1px solid var(--gridline); vertical-align: middle; }
-  table.matrix-calc-table tbody tr:hover { background: color-mix(in srgb, var(--cyan) 4%, transparent); }
-
+  table{width:100%; border-collapse:collapse; font-size:12px; background:var(--card-bg); border-radius:10px; overflow:hidden; border:1px solid var(--border); margin-bottom:24px;}
+  thead th{text-align:left; padding:9px 10px; background:#090d16; color:var(--text-muted); font-weight:600; font-size:11px; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody td{padding:8px 10px; border-bottom:1px solid var(--gridline); vertical-align:middle;}
   .comp-badge{width:56px; height:26px; background:#090d16; border:1px solid var(--border); border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; color:var(--cyan);}
   .num-green{color:#34d399; font-weight:700; font-size:13.5px;}
   .num-sub{font-size:10.5px; color:var(--text-muted);}
@@ -113,6 +110,12 @@
   .dept-ctrl input{background:#090d16; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; border-radius:6px; font-size:13px; font-weight:600; width:170px;}
   .tier-ctrl{display:flex; align-items:center; gap:8px;}
   .tier-ctrl select{background:#090d16; border:1px solid var(--border); color:#fff; padding:6px 12px; border-radius:6px; font-size:12.5px; font-weight:600; cursor:pointer;}
+
+  .table-responsive-wrap { width: 100%; overflow-x: auto; margin-bottom: 24px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); }
+  table.matrix-calc-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--card-bg); margin-bottom: 0; }
+  table.matrix-calc-table th { background: #0d1527; font-size: 11px; text-align: center; padding: 10px 6px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  table.matrix-calc-table td { padding: 10px 8px; border-bottom: 1px solid var(--gridline); vertical-align: middle; }
+  table.matrix-calc-table tbody tr:hover { background: color-mix(in srgb, var(--cyan) 4%, transparent); }
 
   .matrix-calc-table input.hc-input{
     width: 38px;
@@ -370,7 +373,7 @@
 
   <header class="top">
     <div>
-      <h1 id="headerTitle">Global Benchmark</h1>
+      <h1 id="headerTitle">Executive Team Dashboard</h1>
     </div>
     <div class="lang-switcher">
       <button class="lang-btn active" id="btnZh" onclick="setLanguage('zh')">繁中</button>
@@ -443,7 +446,7 @@
       </div>
     </div>
 
-    <!-- 緊湊型人數矩陣表 (加入響應式捲動容器保障可視性) -->
+    <!-- 緊湊型人數矩陣表 (附帶響應式捲動容器保障可視性) -->
     <div class="table-responsive-wrap">
       <table class="matrix-calc-table">
         <thead>
@@ -540,11 +543,11 @@ const BASE_RATES = {
 };
 
 const MATRIX_CONFIG = {
-  L7_M2: { key: 'L7_M2', code: 'L7 / M2', titleZh: '部門總監 / 負責人', titleEn: 'Dept Head / Director', US: 0, SG: 0, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
-  L6_M1: { key: 'L6_M1', code: 'L6 / M1', titleZh: '組長 / 主任架構師', titleEn: 'Team Lead / Staff', US: 0, SG: 0, UAE: 0, EU: 0, TW: 2, MY: 0, IN: 0 },
-  L5:    { key: 'L5',    code: 'L5',      titleZh: '資深專家 / 骨幹', titleEn: 'Senior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 0, MY: 0, IN: 0 },
-  L4:    { key: 'L4',    code: 'L4',      titleZh: '中階主力執行者', titleEn: 'Mid-Level Specialist', US: 1, SG: 1, UAE: 1, EU: 0, TW: 1, MY: 1, IN: 1 },
-  L3:    { key: 'L3',    code: 'L3',      titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 1, UAE: 1, EU: 0, TW: 2, MY: 1, IN: 1 }
+  L7_M2: { key: 'L7_M2', code: 'L7 / M2', titleZh: '部門總監 / 負責人', titleEn: 'Dept Head / Director', US: 0, SG: 1, UAE: 0, EU: 0, TW: 0, MY: 0, IN: 0 },
+  L6_M1: { key: 'L6_M1', code: 'L6 / M1', titleZh: '組長 / 主任架構師', titleEn: 'Team Lead / Staff', US: 0, SG: 1, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
+  L5:    { key: 'L5',    code: 'L5',      titleZh: '資深專家 / 骨幹', titleEn: 'Senior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
+  L4:    { key: 'L4',    code: 'L4',      titleZh: '中階主力執行者', titleEn: 'Mid-Level Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 3, MY: 2, IN: 0 },
+  L3:    { key: 'L3',    code: 'L3',      titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 4, MY: 2, IN: 0 }
 };
 
 let NEW_HIRES = [
@@ -597,7 +600,7 @@ let STRATEGIC_OKRS = [
     id: 2, 
     parentOkr: 'O0-公司總部跨國人效優化與研發成本結構精實目標',
     obj: 'Objective 2: 區域交付中心降本增效與人才密度優化', 
-    kr: '• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%\n• KR2: 自動化覆蓋率提升至 85%，壓縮月結週期至 T+2\n• KR3: 落地 L3-L8 全序列雙軌職涯階梯與能力錨定' 
+    kr: '• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%\n• KR2: 自動化覆蓋率提升至 85%, 壓縮月結週期至 T+2\n• KR3: 落地 L3-L8 全序列雙軌職涯階梯與能力錨定' 
   }
 ];
 
@@ -879,10 +882,10 @@ function renderMatrixTable() {
   if(!tbody) return;
   const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
 
-  document.getElementById('th_matrix_lvl').innerText = currentLang === 'zh' ? '職階' : 'Level';
-  document.getElementById('th_matrix_role').innerText = currentLang === 'zh' ? '職務角色' : 'Role Representation';
-  document.getElementById('th_matrix_subhc').innerText = currentLang === 'zh' ? '該階人數 (佔比 %)' : 'Headcount (%)';
-  document.getElementById('th_matrix_subcost').innerText = currentLang === 'zh' ? '年薪小計 (USD)' : 'Subtotal (USD)';
+  document.getElementById('th_matrix_lvl').innerText = currentLang === 'zh' ? '職階代碼' : 'Level';
+  document.getElementById('th_matrix_role').innerText = currentLang === 'zh' ? '職位代表' : 'Role Representation';
+  document.getElementById('th_matrix_subhc').innerText = currentLang === 'zh' ? '該職階人數 (佔比 %)' : 'Headcount (%)';
+  document.getElementById('th_matrix_subcost').innerText = currentLang === 'zh' ? '年薪預算小計 (USD)' : 'Subtotal Cost (USD)';
 
   tbody.innerHTML = levels.map(k => {
     const item = MATRIX_CONFIG[k];
@@ -890,10 +893,10 @@ function renderMatrixTable() {
     return `
       <tr>
         <td><div class="comp-badge">${item.code}</div></td>
-        <td style="text-align:left;"><b style="color:var(--text-primary); font-size:12px;">${roleTitle}</b></td>
+        <td><b style="color:var(--text-primary); font-size:13px;">${roleTitle}</b></td>
         ${REGIONS.map(r => `
           <td style="text-align:center;">
-            <input type="text" maxlength="2" class="hc-input" value="${item[r.code]}" oninput="updateMatrixVal('${k}','${r.code}',this.value)">
+            <input type="number" min="0" class="hc-input" value="${item[r.code]}" oninput="updateMatrixVal('${k}','${r.code}',this.value)">
           </td>
         `).join('')}
         <td style="text-align:center;"><span id="subhc_${k}" style="font-weight:700; color:var(--cyan);">0 人 (0.0%)</span></td>
@@ -904,8 +907,7 @@ function renderMatrixTable() {
 }
 
 function updateMatrixVal(levelKey, regCode, val) {
-  const cleanVal = parseInt(val.replace(/\D/g, '')) || 0;
-  MATRIX_CONFIG[levelKey][regCode] = Math.min(Math.max(cleanVal, 0), 99);
+  MATRIX_CONFIG[levelKey][regCode] = Math.max(parseInt(val) || 0, 0);
   runBudgetCalc();
 }
 
@@ -948,7 +950,7 @@ function runBudgetCalc() {
     
     if(subhcEl) {
       const unit = currentLang === 'zh' ? '人' : 'HC';
-      subhcEl.innerHTML = `${stat.hc} ${unit} <span style="font-size:10.5px; color:var(--text-muted); font-weight:normal;">(${pct}%)</span>`;
+      subhcEl.innerHTML = `${stat.hc} ${unit} <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(${pct}%)</span>`;
     }
     if(subcostEl) {
       subcostEl.innerText = '$' + Math.round(stat.cost).toLocaleString();
@@ -996,12 +998,11 @@ function renderLiveOrgChart(deptName) {
     const rowDiv = document.createElement('div');
     rowDiv.className = 'org-level-row';
 
-    let hasAnyDataInRow = false;
-
+    let hasMember = false;
     COMP_REGIONS.forEach(r => {
       const cnt = item[r.code] || 0;
       if (cnt > 0) {
-        hasAnyDataInRow = true;
+        hasMember = true;
         const roleName = currentLang === 'zh' ? item.titleZh : item.titleEn;
         let borderTopColor = 'var(--border)';
         if(k==='L7_M2') borderTopColor = 'var(--pink)';
@@ -1009,7 +1010,7 @@ function renderLiveOrgChart(deptName) {
         else if(k==='L5') borderTopColor = 'var(--cyan)';
 
         rowDiv.innerHTML += `
-          <div class="org-node" style="border-top: 3px solid ${borderTopColor};">
+          <div class="org-node" style="border-top:3px solid ${borderTopColor};">
             <div class="lvl">${item.code}</div>
             <div class="role">${roleName}</div>
             <div class="loc-tag">${r.flag} ${r.code} × ${cnt}</div>
@@ -1018,18 +1019,19 @@ function renderLiveOrgChart(deptName) {
       }
     });
 
-    if (!hasAnyDataInRow) {
-      const roleName = currentLang === 'zh' ? item.titleZh : item.titleEn;
+    if(!hasMember && k==='L7_M2') {
       rowDiv.innerHTML = `
-        <div class="org-node empty-slot">
-          <div class="lvl">${item.code}</div>
-          <div class="role">${roleName}</div>
-          <div class="loc-tag" style="color:var(--text-muted); background:none;">0 ${currentLang==='zh'?'人 (待配置)':'HC (Unassigned)'}</div>
+        <div class="org-node" style="border-top:3px solid var(--pink); opacity:0.6;">
+          <div class="lvl">L7 / M2</div>
+          <div class="role">${deptName} ${currentLang==='zh'?'總監 (待補)':'Lead (TBD)'}</div>
+          <div class="loc-tag">0 ${currentLang==='zh'?'人':'HC'}</div>
         </div>
       `;
     }
 
-    container.appendChild(rowDiv);
+    if(rowDiv.children.length > 0) {
+      container.appendChild(rowDiv);
+    }
   });
 }
 
@@ -1343,7 +1345,7 @@ function setLanguage(lang) {
   localStorage.setItem('talent_dashboard_lang', lang);
   document.getElementById('btnZh').className = `lang-btn ${lang==='zh'?'active':''}`;
   document.getElementById('btnEn').className = `lang-btn ${lang==='en'?'active':''}`;
-  document.getElementById('headerTitle').innerText = "Global Benchmark";
+  document.getElementById('headerTitle').innerText = "Executive Team Dashboard";
 
   if (lang === 'zh') {
     document.getElementById('disp_rbac_notice').innerHTML = "<b>數據權限控管：</b>本看板實施部門資料隔離機制，各部門負責人僅限查閱所屬團隊之年度預算、編制名單與考績明細；跨部門全域彙整資料依最小特權原則（PoLP）予以嚴格隔離保護。";
@@ -1352,7 +1354,7 @@ function setLanguage(lang) {
     document.getElementById('nav_01').innerText = "01 全球雙軌薪酬對標";
     document.getElementById('nav_02').innerText = "02 雙軌晉升示意圖";
     document.getElementById('nav_03').innerText = "03 LIVE O-CHART 對照 年度預算預測";
-    document.getElementById('nav_04').innerText = "04 OKR 對齊、新招募職缺與預算";
+    document.getElementById('nav_04').innerText = "04 初創團隊破局方案";
 
     document.getElementById('lbl_top_hc').innerText = "總編制總人數";
     document.getElementById('lbl_top_budget').innerText = "年度總薪酬預算 (USD)";
@@ -1375,7 +1377,7 @@ function setLanguage(lang) {
     document.getElementById('nav_01').innerText = "01 Global Compensation Benchmark";
     document.getElementById('nav_02').innerText = "02 Dual-Track Career Ladder";
     document.getElementById('nav_03').innerText = "03 Live Org Chart & Annual Budget";
-    document.getElementById('nav_04').innerText = "04 OKR Alignment, New Hires & Headcount Budget";
+    document.getElementById('nav_04').innerText = "04 Startup Compensation Strategy";
 
     document.getElementById('lbl_top_hc').innerText = "Total Headcount";
     document.getElementById('lbl_top_budget').innerText = "Annual Payroll Budget (USD)";
@@ -1420,10 +1422,10 @@ function setLanguage(lang) {
 }
 
 window.onload = () => {
+  renderMatrixTable();
   setLanguage(currentLang);
-  setTimeout(() => {
-    switchTab('tab03');
-  }, 50);
+  runBudgetCalc();
+  switchTab('tab03');
 };
 </script>
 </body>

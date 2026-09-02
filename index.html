@@ -89,9 +89,13 @@
   .tag-pills{display:flex; flex-wrap:wrap; gap:6px;}
   .tag-pill{background:#090d16; border:1px solid var(--border); border-radius:20px; font-size:11px; padding:3px 10px; color:var(--text-secondary);}
 
-  table{width:100%; border-collapse:collapse; font-size:12px; background:var(--card-bg); border-radius:10px; overflow:hidden; border:1px solid var(--border); margin-bottom:24px;}
-  thead th{text-align:left; padding:9px 10px; background:#090d16; color:var(--text-muted); font-weight:600; font-size:11px; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap;}
-  tbody td{padding:8px 10px; border-bottom:1px solid var(--gridline); vertical-align:middle;}
+  /* 表格樣式優化：確保資料列絕對可見 */
+  .table-responsive-wrap { width: 100%; overflow-x: auto; margin-bottom: 24px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); }
+  table.matrix-calc-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--card-bg); margin-bottom: 0; }
+  table.matrix-calc-table th { background: #0d1527; font-size: 11px; text-align: center; padding: 10px 6px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  table.matrix-calc-table td { padding: 10px 8px; border-bottom: 1px solid var(--gridline); vertical-align: middle; }
+  table.matrix-calc-table tbody tr:hover { background: color-mix(in srgb, var(--cyan) 4%, transparent); }
+
   .comp-badge{width:56px; height:26px; background:#090d16; border:1px solid var(--border); border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; color:var(--cyan);}
   .num-green{color:#34d399; font-weight:700; font-size:13.5px;}
   .num-sub{font-size:10.5px; color:var(--text-muted);}
@@ -111,7 +115,7 @@
   .tier-ctrl{display:flex; align-items:center; gap:8px;}
   .tier-ctrl select{background:#090d16; border:1px solid var(--border); color:#fff; padding:6px 12px; border-radius:6px; font-size:12.5px; font-weight:600; cursor:pointer;}
 
-  .matrix-calc-table th{background:#0d1527; font-size:11px; text-align:center; padding:8px 4px;}
+  /* 緊湊型人數輸入格 */
   .matrix-calc-table input.hc-input{
     width: 38px;
     height: 28px;
@@ -187,6 +191,33 @@
   .btn-add-hire{background:color-mix(in srgb, var(--cyan) 15%, var(--card-bg)); border:1px solid var(--cyan); color:var(--cyan); font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer; font-size:12px;}
   .btn-del-hire{background:none; border:none; color:var(--critical); cursor:pointer; font-weight:bold; font-size:14px;}
   .btn-add-okr{background:color-mix(in srgb, var(--purple) 15%, var(--card-bg)); border:1px solid var(--purple); color:var(--purple); font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer; font-size:12px;}
+
+  .parent-okr-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #070b14;
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+  }
+  .parent-okr-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--purple);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .parent-okr-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .parent-okr-input:focus { outline: none; color: #fff; }
 
   .role-okr-container {
     background: #070b14;
@@ -414,24 +445,27 @@
       </div>
     </div>
 
-    <table class="matrix-calc-table">
-      <thead>
-        <tr>
-          <th style="width:75px;" id="th_matrix_lvl">職階</th>
-          <th style="width:130px; text-align:left;" id="th_matrix_role">職務角色</th>
-          <th>🇺🇸 US<br><span style="font-size:9.5px; color:var(--text-muted);">×1.10</span></th>
-          <th>🇸🇬 SG<br><span style="font-size:9.5px; color:var(--text-muted);">×0.95</span></th>
-          <th>🇦🇪 UAE<br><span style="font-size:9.5px; color:var(--text-muted);">×0.90</span></th>
-          <th>🇪🇺 EU<br><span style="font-size:9.5px; color:var(--text-muted);">×0.80</span></th>
-          <th>🇹🇼 TW<br><span style="font-size:9.5px; color:var(--text-muted);">×0.65</span></th>
-          <th>🇲🇾 MY<br><span style="font-size:9.5px; color:var(--text-muted);">×0.45</span></th>
-          <th>🇮🇳 IN<br><span style="font-size:9.5px; color:var(--text-muted);">×0.40</span></th>
-          <th style="width:130px;" id="th_matrix_subhc">該階人數 (佔比 %)</th>
-          <th style="width:130px; text-align:right;" id="th_matrix_subcost">年薪小計 (USD)</th>
-        </tr>
-      </thead>
-      <tbody id="matrixTableBody"></tbody>
-    </table>
+    <!-- 緊湊型人數矩陣表 (附帶響應式捲動容器防護) -->
+    <div class="table-responsive-wrap">
+      <table class="matrix-calc-table">
+        <thead>
+          <tr>
+            <th style="width:75px;" id="th_matrix_lvl">職階</th>
+            <th style="width:130px; text-align:left;" id="th_matrix_role">職務角色</th>
+            <th>🇺🇸 US<br><span style="font-size:9.5px; color:var(--text-muted);">×1.10</span></th>
+            <th>🇸🇬 SG<br><span style="font-size:9.5px; color:var(--text-muted);">×0.95</span></th>
+            <th>🇦🇪 UAE<br><span style="font-size:9.5px; color:var(--text-muted);">×0.90</span></th>
+            <th>🇪🇺 EU<br><span style="font-size:9.5px; color:var(--text-muted);">×0.80</span></th>
+            <th>🇹🇼 TW<br><span style="font-size:9.5px; color:var(--text-muted);">×0.65</span></th>
+            <th>🇲🇾 MY<br><span style="font-size:9.5px; color:var(--text-muted);">×0.45</span></th>
+            <th>🇮🇳 IN<br><span style="font-size:9.5px; color:var(--text-muted);">×0.40</span></th>
+            <th style="width:130px;" id="th_matrix_subhc">該階人數 (佔比 %)</th>
+            <th style="width:130px; text-align:right;" id="th_matrix_subcost">年薪小計 (USD)</th>
+          </tr>
+        </thead>
+        <tbody id="matrixTableBody"></tbody>
+      </table>
+    </div>
 
     <div class="org-chart-wrapper">
       <h3 id="org_chart_title" style="font-size:15px; margin-bottom:18px; color:var(--cyan);">研發部門 動態組織架構圖 (Live Org Chart)</h3>
@@ -440,8 +474,7 @@
   </div>
 
   <!-- ================= 04 OKR 對齊、新招募職缺與預算 ================= -->
-  <div id="pane_tab04" class="pane active">
-    <!-- 頂端帶百分比成長的 4 大儀表板卡片 -->
+  <div id="pane_tab04" class="pane">
     <div class="okr-dashboard-top">
       <div class="okr-top-card">
         <div class="lbl" id="lbl_top_base_cost">現有編制年度預算</div>
@@ -484,7 +517,7 @@
 
 <script>
 let currentLang = 'zh';
-let currentTab = 'tab04';
+let currentTab = 'tab03';
 let currentRegionCode = 'SG';
 let currentFnCode = 'eng';
 let currentLadderFn = 'eng';
@@ -516,7 +549,6 @@ const MATRIX_CONFIG = {
   L3:    { key: 'L3',    code: 'L3',      titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 1, UAE: 1, EU: 0, TW: 2, MY: 1, IN: 1 }
 };
 
-// 新招募職缺：內建 3 個對應 O1-KR1 等的 OKR 專屬目標與招募漏斗手動輸入數據
 let NEW_HIRES = [
   { 
     id: 1, 
@@ -557,8 +589,18 @@ let NEW_HIRES = [
 ];
 
 let STRATEGIC_OKRS = [
-  { id: 1, obj: 'Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性', kr: '• KR1: 完成多幣種虛擬資金池路由引擎重構，降低 40% 延遲\n• KR2: 通過 SOC2 Type II 審計與零重大資安漏洞\n• KR3: 建立全球分佈式 24/7 SRE 自動化自愈體系' },
-  { id: 2, obj: 'Objective 2: 區域交付中心降本增效與人才密度優化', kr: '• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%\n• KR2: 自動化覆蓋率提升至 85%，壓縮月結週期至 T+2\n• KR3: 落地 L3-L8 全序列雙軌職涯階梯與能力錨定' }
+  { 
+    id: 1, 
+    parentOkr: 'O0-公司總部 2027 年全球化佈局與核心吞吐量翻倍藍圖',
+    obj: 'Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性', 
+    kr: '• KR1: 完成多幣種虛擬資金池路由引擎重構，降低 40% 延遲\n• KR2: 通過 SOC2 Type II 審計與零重大資安漏洞\n• KR3: 建立全球分佈式 24/7 SRE 自動化自愈體系' 
+  },
+  { 
+    id: 2, 
+    parentOkr: 'O0-公司總部跨國人效優化與研發成本結構精實目標',
+    obj: 'Objective 2: 區域交付中心降本增效與人才密度優化', 
+    kr: '• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%\n• KR2: 自動化覆蓋率提升至 85%，壓縮月結週期至 T+2\n• KR3: 落地 L3-L8 全序列雙軌職涯階梯與能力錨定' 
+  }
 ];
 
 const COMP_FUNCTIONS = {
@@ -625,7 +667,7 @@ const COMP_FUNCTIONS = {
       { lvlKey: "L5", lvl: "L5", titleZh: "Senior Finance / HR Specialist", titleEn: "Senior Finance / HR Specialist", scopeZh: "跨國稅收籌劃與多主體合併 ｜ 9-Box 人才盤點與爭議離職談判", scopeEn: "International tax planning, consolidation | 9-Box calibration & separation" },
       { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal Architect / People Lead", titleEn: "Principal Architect / Lead", scopeZh: "專家軌：全球資金池或薪酬架構 ｜ 管理軌：領導會計/HR小組", scopeEn: "IC: Global treasury/comp model | Mgmt: Lead accounting/people pods" },
       { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Financial Controller / HR Director", titleEn: "Controller / HR Director", scopeZh: "四大審計無保留通過 ｜ 大區人力成本上限控制與文化治理", scopeEn: "Big 4 clean audit sign-off | Headcount budget governance & culture" },
-      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "CFO / CHRO", titleEn: "CFO / CHRO", scopeZh: "全面掌控全球資本水庫、海外上市進程 ｜ 全球高管繼任佈局", scopeEn: "Capital treasury & overseas IPO readiness | Global executive succession" }
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "CFO / CHRO", titleEn: "CFO / CHRO", scopeZh: "全面掌控全球資本水庫, 海外上市進程 ｜ 全球高管繼任佈局", scopeEn: "Capital treasury & overseas IPO readiness | Global executive succession" }
     ]
   }
 };
@@ -1002,10 +1044,21 @@ function renderOkrBoxList() {
   container.innerHTML = STRATEGIC_OKRS.map((o, idx) => `
     <div class="okr-box" id="okr_box_${o.id}">
       ${STRATEGIC_OKRS.length > 1 ? `<button class="btn-del-okr" onclick="deleteOkrBox(${o.id})" title="刪除此目標">✕</button>` : ''}
+      
+      <div class="parent-okr-bar">
+        <span class="parent-okr-label">🔗 ${currentLang==='zh'?'上級對照:':'Parent OKR:'}</span>
+        <input type="text" class="parent-okr-input" value="${o.parentOkr || ''}" placeholder="輸入對應的上級公司級戰略 OKR..." oninput="updateParentOkr(${o.id}, this.value)">
+      </div>
+
       <input type="text" class="okr-input-obj" value="${o.obj}" oninput="updateOkrObj(${o.id}, this.value)">
       <textarea class="okr-textarea-kr" oninput="updateOkrKr(${o.id}, this.value)">${o.kr}</textarea>
     </div>
   `).join('');
+}
+
+function updateParentOkr(id, val) {
+  const item = STRATEGIC_OKRS.find(o => o.id === id);
+  if(item) item.parentOkr = val;
 }
 
 function updateOkrObj(id, val) {
@@ -1023,6 +1076,7 @@ function addNewOkrBox() {
   const nextNum = STRATEGIC_OKRS.length + 1;
   STRATEGIC_OKRS.push({
     id: newId,
+    parentOkr: currentLang === 'zh' ? `O0-公司總部 2027 年核心戰略對照` : `O0-Company 2027 Strategy Alignment`,
     obj: currentLang === 'zh' ? `Objective ${nextNum}: 新增戰略目標與成果導向` : `Objective ${nextNum}: New Strategic Priority`,
     kr: currentLang === 'zh' ? `• KR1: 關鍵執行結果 1\n• KR2: 關鍵執行結果 2` : `• KR1: Key Result 1\n• KR2: Key Result 2`
   });
@@ -1066,7 +1120,17 @@ function renderHireList() {
       `;
     }).join('');
 
-    const maxVal = Math.max(h.funnel.hr || 1, 1);
+    const maxVal = Math.max(
+      h.funnel.hr || 0, 
+      h.funnel.tech || 0, 
+      h.funnel.lm || 0, 
+      h.funnel.coding || 0, 
+      h.funnel.dep || 0, 
+      h.funnel.design || 0, 
+      h.funnel.offer || 0, 
+      1
+    );
+
     const vizRows = funnelSteps.map(step => {
       const val = h.funnel[step.key] || 0;
       const pct = Math.min(Math.round((val / maxVal) * 100), 100);
@@ -1135,7 +1199,7 @@ function renderHireList() {
           <div class="funnel-steps-grid">
             ${funnelHtml}
           </div>
-          <div class="dynamic-funnel-viz">
+          <div class="dynamic-funnel-viz" id="viz_container_${h.id}">
             ${vizRows}
           </div>
         </div>
@@ -1151,7 +1215,6 @@ function updateFunnelCount(hireId, stepKey, val) {
     const cleanNum = parseInt(val.replace(/\D/g, '')) || 0;
     item.funnel[stepKey] = Math.min(Math.max(cleanNum, 0), 999);
     
-    // ★★★ 關鍵修復：每次輸入數字時，零延遲即時刷新對應職缺的動態長條圖 ★★★
     const cardEl = document.getElementById(`hire_card_${hireId}`);
     if(cardEl) {
       const maxVal = Math.max(

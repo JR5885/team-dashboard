@@ -312,7 +312,7 @@
   <div class="site-lock-box">
     <h2>🔒 專案存取驗證</h2>
     <p>此 Executive Team Dashboard 包含機密資料，請輸入全站存取密碼以繼續。</p>
-    <input type="password" id="site_pwd_input" placeholder="請輸入密碼 (預設: 5678)..." onkeydown="if(event.key==='Enter') verifySitePassword()">
+    <input type="password" id="site_pwd_input" placeholder="請輸入密碼 (四位數: __ __ __ __)..." onkeydown="if(event.key==='Enter') verifySitePassword()">
     <button onclick="verifySitePassword()">進入系統</button>
     <div id="site_lock_error" class="site-lock-error"></div>
   </div>

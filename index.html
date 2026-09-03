@@ -17,6 +17,56 @@
   body{background:var(--page-plane); color:var(--text-primary); font-family: system-ui,-apple-system,"Segoe UI",sans-serif; font-size:13.5px; line-height:1.5; padding:16px 24px 80px;}
   .wrap{max-width:1440px; margin:0 auto;}
 
+  /* 全局密碼保護遮罩樣式 */
+  #site_lock_overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--page-plane);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .site-lock-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+  }
+  .site-lock-box h2 { font-size: 20px; margin-bottom: 10px; color: var(--cyan); }
+  .site-lock-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
+  .site-lock-box input {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    background: #090d16;
+    border: 1px solid var(--border);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+  }
+  .site-lock-box input:focus { border-color: var(--cyan); }
+  .site-lock-box button {
+    background: var(--cyan);
+    color: #090d16;
+    border: none;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14px;
+    transition: opacity 0.2s;
+  }
+  .site-lock-box button:hover { opacity: 0.9; }
+  .site-lock-error { color: var(--critical); font-size: 12px; margin-top: 12px; }
+
   .rbac-top-banner {
     background: #0d1527;
     border: 1px solid rgba(6, 182, 212, 0.25);
@@ -420,69 +470,28 @@
   .tr-grid-with-axes { display: grid; grid-template-columns: 18px 1fr; gap: 6px; }
   .tr-grid-x-axis { display: grid; grid-template-columns: 18px 1fr; gap: 6px; margin-top: 4px; }
   .tr-x-labels { display: grid; grid-template-columns: repeat(3,1fr); text-align: center; color: var(--tr-text-muted); font-size: 11px; font-weight: 600; letter-spacing: .02em; }
-  .tr-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px; font-size: 11.5px; color: var(--tr-text-secondary); }
-  .tr-legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
-
   .tr-side-card { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 16px; }
   .tr-side-card h3 { font-size: 12.5px; margin: 0 0 10px; color: var(--tr-text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
   .tr-bar-row { display: grid; grid-template-columns: 60px 1fr 28px; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; }
   .tr-bar-track { height: 10px; background: var(--tr-gridline); border-radius: 4px; overflow: hidden; }
   .tr-bar-fill { height: 100%; background: var(--tr-series-1); border-radius: 4px 0 0 4px; }
   .tr-bar-row .n { text-align: right; color: var(--tr-text-muted); font-variant-numeric: tabular-nums; }
-  .tr-risk-note { margin-top: 16px; padding: 10px 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; background: color-mix(in srgb, var(--tr-critical) 10%, var(--tr-card-bg)); border: 1px solid color-mix(in srgb, var(--tr-critical) 35%, transparent); color: #fff; }
-  .tr-risk-note b { color: var(--tr-critical); }
-
-  .tr-table-tools { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-  .tr-table-tools select, .tr-table-tools input { font-family: inherit; font-size: 12px; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--tr-border); background: var(--tr-card-bg); color: #fff; }
-  .tr-table-wrap table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--tr-card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--tr-border); }
-  .tr-table-wrap thead th { text-align: left; padding: 9px 10px; background: var(--tr-page-plane); color: var(--tr-text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; cursor: pointer; white-space: nowrap; border-bottom: 1px solid var(--tr-border); }
-  .tr-table-wrap thead th:hover { color: #fff; }
-  .tr-table-wrap tbody td { padding: 8px 10px; border-bottom: 1px solid var(--tr-gridline); vertical-align: top; color: #fff; }
-  .tr-table-wrap tbody tr:last-child td { border-bottom: none; }
-  .tr-table-wrap tbody tr:hover { background: color-mix(in srgb, #fff 4%, transparent); }
-  .tr-pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
-  .tr-pill.b1 { background: color-mix(in srgb, var(--tr-series-1) 18%, transparent); color: var(--tr-series-1); }
-  .tr-pill.b2, .tr-pill.b4 { background: color-mix(in srgb, var(--tr-series-3) 18%, transparent); color: var(--tr-series-3); }
-  .tr-pill.b3 { background: color-mix(in srgb, var(--tr-warning) 25%, transparent); color: #ffca47; }
-  .tr-pill.b5 { background: color-mix(in srgb, var(--tr-baseline) 40%, transparent); color: var(--tr-text-secondary); }
-  .tr-pill.b9 { background: color-mix(in srgb, var(--tr-critical) 18%, transparent); color: var(--tr-critical); }
-  .tr-mono { font-variant-numeric: tabular-nums; color: var(--tr-text-secondary); }
-  .tr-flag { color: var(--tr-critical); font-weight: 700; cursor: help; }
-
-  .tr-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
-  .tr-pcard { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
-  .tr-pcard.crit { border-color: color-mix(in srgb, var(--tr-critical) 45%, var(--tr-border)); }
-  .tr-pcard .pc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
-  .tr-pcard .pc-title { font-size: 15px; font-weight: 700; color: #fff; }
-  .tr-pcard .pc-sub { font-size: 11.5px; color: var(--tr-text-muted); }
-  .tr-pcard .section-tag { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--tr-text-muted); font-weight: 700; margin: 10px 0 4px; }
-  
-  .tr-action-grid { display: grid; grid-template-columns: 1fr; gap: 8px; background: color-mix(in srgb, var(--tr-page-plane) 60%, var(--tr-card-bg)); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--tr-border); margin: 8px 0; }
-  .tr-action-item { font-size: 12px; line-height: 1.45; color: #fff; }
-  .tr-action-item b { color: #fff; display: inline-block; width: 130px; }
-
-  .tr-dialogue-box { margin: 6px 0; padding: 8px 12px; border-radius: 6px; font-size: 12px; line-height: 1.45; font-style: italic; }
-  .tr-dialogue-mgr { background: var(--tr-page-plane); border-left: 3px solid var(--tr-series-1); color: #fff; }
-  .tr-dialogue-hr { background: var(--tr-page-plane); border-left: 3px solid var(--tr-series-3); color: #fff; margin-top: 4px; }
-  .tr-pcard.crit .tr-dialogue-mgr { border-left-color: var(--tr-critical); }
-  .tr-pcard.crit .tr-dialogue-hr { border-left-color: var(--tr-warning); }
-
-  .tr-jrisk { margin-top: 10px; padding: 8px 10px; border-radius: 7px; font-size: 11.5px; background: color-mix(in srgb, var(--tr-warning) 16%, var(--tr-card-bg)); border: 1px solid color-mix(in srgb, var(--tr-warning) 45%, transparent); color: #fff; }
-  .tr-jrisk b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 2px; }
-
-  @media (max-width: 1080px){
-    .tr-cards { grid-template-columns: 1fr; }
-    .tr-kpi-row { grid-template-columns: repeat(2,1fr); }
-    .tr-box-grid-wrap { grid-template-columns: 1fr; }
-    .okr-dashboard-top{grid-template-columns:repeat(2,1fr);}
-    .okr-content-grid{grid-template-columns:1fr;}
-    .funnel-steps-grid { grid-template-columns: repeat(4, 1fr); }
-  }
 </style>
 </head>
 <body>
-<div class="wrap">
 
+<!-- 全站密碼保護遮罩 -->
+<div id="site_lock_overlay">
+  <div class="site-lock-box">
+    <h2>🔒 專案存取驗證</h2>
+    <p>此 Executive Team Dashboard 包含機密資料，請輸入全站存取密碼以繼續。</p>
+    <input type="password" id="site_pwd_input" placeholder="請輸入密碼 (預設: 1234)..." onkeydown="if(event.key==='Enter') verifySitePassword()">
+    <button onclick="verifySitePassword()">進入系統</button>
+    <div id="site_lock_error" class="site-lock-error"></div>
+  </div>
+</div>
+
+<div class="wrap">
   <div class="rbac-top-banner">
     <div class="rbac-content">
       <span class="rbac-icon">🔒</span>
@@ -493,7 +502,6 @@
     <div class="rbac-badge" id="disp_rbac_badge">部門專屬檢視 · 權限隔離</div>
   </div>
 
-  <!-- 完整導覽列：包含 01 至 05 -->
   <div class="main-nav">
     <div class="main-nav-item active" id="nav_01" onclick="switchTab('tab01')">01 全球雙軌薪酬對標</div>
     <div class="main-nav-item" id="nav_02" onclick="switchTab('tab02')">02 雙軌晉升示意圖</div>
@@ -735,22 +743,7 @@
 
   <!-- ================= 05 人才盤點與晉升準備 ================= -->
   <div id="pane_tab05" class="pane">
-    <div id="tr_auth_box" class="auth-lock-overlay">
-      <h2>🔐 部門資料隔離存取驗證</h2>
-      <p>請選擇您的所屬部門並輸入對應授權密碼以檢視團隊 Dashboard（測試預設密碼：<code>1234</code>）</p>
-      <select id="auth_dept_select">
-        <option value="FT">法幣部門 (Fiat)</option>
-        <option value="SEC">安全部門 (Security)</option>
-        <option value="BD" selected>業務與運營 (Sales &amp; Ops)</option>
-        <option value="FIN">財務 (Finance)</option>
-        <option value="LEGAL">法務 (Legal)</option>
-      </select>
-      <input type="password" id="auth_pwd_input" placeholder="請輸入部門密碼 (預設: 1234)...">
-      <button onclick="verifyDeptAuth()">解鎖授權檢視</button>
-      <div id="auth_error_msg" class="auth-error"></div>
-    </div>
-
-    <div id="tr_dashboard_content" style="display: none;">
+    <div id="tr_dashboard_content">
       <div class="tr-wrap">
         <header class="top">
           <div>
@@ -760,7 +753,6 @@
           <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
             <div style="display:flex; gap:8px; align-items:center;">
               <span id="tr_current_auth_label" style="font-size:12px; color:var(--cyan); font-weight:700;">🔓 已解鎖檢視</span>
-              <button onclick="lockDeptAuth()" style="background:var(--card-bg); border:1px solid var(--tr-border); color:var(--tr-text-secondary); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:11px;">登出/切換部門</button>
             </div>
             <div id="tr_syncStatus" style="font-size:12px; color:var(--tr-text-muted);">Synced Secure Team</div>
           </div>
@@ -775,20 +767,33 @@
 </div>
 
 <script>
+// 在這裡設定全站解鎖密碼（你可以隨時修改成你想要的密碼）
+const SITE_PASSWORD = "1234";
+
+function verifySitePassword() {
+  const inputVal = document.getElementById('site_pwd_input').value.trim();
+  const errorEl = document.getElementById('site_lock_error');
+  
+  if (inputVal === SITE_PASSWORD) {
+    document.getElementById('site_lock_overlay').style.display = 'none';
+    sessionStorage.setItem('site_unlocked', 'true');
+  } else {
+    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入！";
+  }
+}
+
+// 檢查是否已經解鎖過（重新整理頁面在同個 Session 不用重複輸入）
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('site_unlocked') === 'true') {
+    document.getElementById('site_lock_overlay').style.display = 'none';
+  }
+});
+
 let currentLang = 'en';
 let currentTab = 'tab01';
-let unlockedDeptKey = null;
 let currentRegionCode = 'SG';
 let currentFnCode = 'eng';
 let currentLadderFn = 'eng';
-
-const deptPasswords = {
-  'FT': 'fiat123',
-  'SEC': 'sec123',
-  'BD': 'bd123',
-  'FIN': 'fin123',
-  'LEGAL': 'legal123'
-};
 
 const COMP_REGIONS = [
   { code: 'US', labelZh: '美國', labelEn: 'United States', flag: '🇺🇸', factor: 1.10 },
@@ -886,29 +891,6 @@ const COMP_FUNCTIONS = {
   }
 };
 
-function verifyDeptAuth() {
-  const selectedDept = document.getElementById('auth_dept_select').value;
-  const pwdInput = document.getElementById('auth_pwd_input').value.trim();
-  const errorMsg = document.getElementById('auth_error_msg');
-
-  if (pwdInput === '1234' || pwdInput === deptPasswords[selectedDept]) {
-    unlockedDeptKey = selectedDept;
-    errorMsg.innerText = '';
-    document.getElementById('auth_pwd_input').value = '';
-    document.getElementById('tr_auth_box').style.display = 'none';
-    document.getElementById('tr_dashboard_content').style.display = 'block';
-    initTalentReviewTabForDept(selectedDept);
-  } else {
-    errorMsg.innerText = '⚠️ 授權密碼錯誤，請重新輸入（測試預設密碼：1234）。';
-  }
-}
-
-function lockDeptAuth() {
-  unlockedDeptKey = null;
-  document.getElementById('tr_dashboard_content').style.display = 'none';
-  document.getElementById('tr_auth_box').style.display = 'block';
-}
-
 function switchTab(tabId) {
   currentTab = tabId;
   const navTabs = ['tab01', 'tab02', 'tab03', 'tab04', 'tab05'];
@@ -926,8 +908,8 @@ function switchTab(tabId) {
       renderMatrixTable();
       runBudgetCalc();
     }, 10);
-  } else if(tabId === 'tab05' && unlockedDeptKey) {
-    initTalentReviewTabForDept(unlockedDeptKey);
+  } else if(tabId === 'tab05') {
+    initTalentReviewTabForDept('BD');
   }
 }
 
@@ -1198,55 +1180,15 @@ const trI18n = {
     kpi_reviewed: "評估總人數", kpi_locs: "個地區/國家", kpi_cohort: "佔團隊",
     kpi_b1: "優先晉升 (Box 1)", kpi_growth: "成長儲備池 (Box 2+4)", kpi_core: "深耕骨幹 (Box 5)", kpi_pip: "淘汰/輔導池 (Box 9/6)",
     sec1_title: "部門人才九宮格分佈", sec1_desc: "團隊落點分佈矩陣，涵蓋潛力與績效指標及法務合規風險預警。",
-    sec2_title: "員工盤點總表", sec2_desc: "績效採 Q1–Q4 加權均分。潛力採主管 70% + HRBP 30%。",
-    sec3_title: "高潛留才策略手冊 (Box 1, 2, 4)", sec3_desc: "主管、HRBP 與員工三方具體行動分工。",
-    sec4_title: "績效改善 PIP 計畫 (Box 9 / 6)", sec4_desc: "2–4 週二元化量化指標與多國勞工法規最後手段性防禦機制。",
     axis_pot: "潛力 POTENTIAL →", axis_perf: "績效 PERFORMANCE →",
-    legend_fast: "優先晉升", legend_growth: "儲備池", legend_maintain: "維持深耕", legend_mobility: "輪調觀察", legend_pip: "淘汰/PIP",
-    side_loc: "各地區人數分佈", side_lvl: "各職級人數分佈", all_boxes: "所有落點 (All Boxes)",
-    th_id: "工號", th_name: "姓名", th_level: "職級", th_loc: "地區", th_perf: "績效均分", th_pot: "潛力得分", th_box: "九宮格落點", th_status: "2027/04 處置狀態", th_target: "目標職級",
-    search_placeholder: "搜尋姓名 / 工號...", empty_pool: "此部門目前無人員在此區間。",
-    action_title: "責任分工 (Action Plan)", script_title: "主管與 HRBP 談判話術 (Dialogue Playbook)",
-    tag_ctx: "現況背景與核心貢獻", tag_risk: "績效缺口與合規風險",
-    mgr_label: "主管 Action:", hr_label: "HRBP Action:", self_label: "員工本人 Action:",
-    dialogue_mgr_label: "Direct Manager 話術：", dialogue_hr_label: "HRBP 控場話術：",
-    star_mgr_action: "委任跨團隊策略專案主導權，建立雙週 1:1 職涯護航機制。",
-    star_hr_action: "啟動外部薪酬水位審查（Comp Benchmark），規劃中長期留任激勵。",
-    star_self_action: "制定個人發展計畫（IDP），主動承接架構設計或團隊知識傳承。",
-    star_mgr_script: "“你在過去四季的交付是組織的標竿。我們已正式將你列入 2027 年 4 月晉升計畫。”",
-    star_hr_script: "“組織高度認可你的戰略貢獻，我們正與管理層制定具競爭力的中長期留任配套。”",
-    pip_mgr_action: "設定 2–4 週具體二元化（Binary）檢核標準，落實每週 1:1 書面進度日誌。",
-    pip_hr_action: "建立合規檔案庫（輔導紀錄與轉崗評估），把控法定預告期。",
-    pip_self_action: "簽署改善計畫確認書，每日更新產出日誌並於每週五提交主管覆核。",
-    pip_mgr_script: "“我們檢視了過去四季的量化數據，交付成果與組織標準有顯著落差。今天正式啟動 2–4 週 PIP。”",
-    pip_hr_script: "“公司依法提供合理的改善機會，但若指標未能如期達成，我們將依當地法規進入法定終止程序。”"
+    side_loc: "各地區人數分佈"
   },
   en: {
     kpi_reviewed: "Headcount Reviewed", kpi_locs: "locations", kpi_cohort: "of cohort",
     kpi_b1: "Fast-Track (Box 1)", kpi_growth: "Growth Pool (Box 2+4)", kpi_core: "Maintain & Deepen (Box 5)", kpi_pip: "PIP Pool (Box 9/6)",
     sec1_title: "Departmental 9-Box Distribution", sec1_desc: "Talent matrix distribution across performance and potential dimensions.",
-    sec2_title: "Talent Review Table", sec2_desc: "Performance and Potential calculations with sortable columns.",
-    sec3_title: "High-Potential Retention Playbook", sec3_desc: "Actionable RACI matrix across Manager, HRBP, and Employee.",
-    sec4_title: "Underperformer PIP Plan", sec4_desc: "2–4 week binary milestones and statutory compliance rules.",
     axis_pot: "POTENTIAL →", axis_perf: "PERFORMANCE →",
-    legend_fast: "Fast-Track", legend_growth: "Growth Pool", legend_maintain: "Maintain", legend_mobility: "Mobility Review", legend_pip: "PIP / Action",
-    side_loc: "Headcount by Location", side_lvl: "Headcount by Level", all_boxes: "All Boxes",
-    th_id: "ID", th_name: "Name", th_level: "Level", th_loc: "Location", th_perf: "Perf Avg", th_pot: "Pot Score", th_box: "9-Box", th_status: "Apr 2027 Status", th_target: "Target Level",
-    search_placeholder: "Search name / ID...", empty_pool: "No candidates currently in this cohort.",
-    action_title: "Role-Based Action Plan", script_title: "1-on-1 Dialogue Playbook",
-    tag_ctx: "Context & Contribution", tag_risk: "Deficiency & Risk Context",
-    mgr_label: "Direct Manager:", hr_label: "HRBP:", self_label: "Employee (Self):",
-    dialogue_mgr_label: "Direct Manager Opener:", dialogue_hr_label: "HRBP Closing Script:",
-    star_mgr_action: "Assign key strategic project ownership; set up bi-weekly 1:1 career sponsorship cadence.",
-    star_hr_action: "Initiate external compensation benchmarking; structure tailored retention packages.",
-    star_self_action: "Draft an IDP; lead knowledge transfer sessions to scale organizational leverage.",
-    star_mgr_script: "“Your delivery over the past four quarters stands out as an organizational benchmark. We have officially mapped you to the April 2027 promotion track.”",
-    star_hr_script: "“Leadership strongly recognizes your strategic contribution. We are proactively reviewing retention packages.”",
-    pip_mgr_action: "Establish 2–4 week binary performance metrics; conduct documented weekly reviews.",
-    pip_hr_action: "Audit counseling records and transfer-feasibility assessments; manage statutory notice.",
-    pip_self_action: "Sign PIP acknowledgment; maintain daily output logs and submit for manager review.",
-    pip_mgr_script: "“We have reviewed your performance metrics, and results fall significantly short of required standards. Today we are initiating a 2–4 week PIP.”",
-    pip_hr_script: "“The company provides fair opportunity to improve; however, failure to meet targets will initiate formal statutory separation.”"
+    side_loc: "Headcount by Location"
   }
 };
 
@@ -1260,16 +1202,6 @@ const trBoxDefs = {
   7: { zh: "Box 7 · 資深專家 (Solid Pro)", en: "Box 7 · Solid Pro", poolZh: "專家深耕 (不轉管理)", poolEn: "Maintain & Deepen" },
   8: { zh: "Box 8 · 穩定貢獻 (Effective)", en: "Box 8 · Effective", poolZh: "標準維持者", poolEn: "Maintain" },
   9: { zh: "Box 9 · 風險淘汰 (Underperformer)", en: "Box 9 · Underperformer", poolZh: "啟動 2-4 週 PIP", poolEn: "Action / PIP Pool" }
-};
-
-const trComplianceGuidelines = {
-  TW: { title: "TW — Labor Standards Act, Article 11-5", text: "Mandatory 2–4 week objective PIP with bi-weekly check-ins. Reassignment-feasibility assessment is required." },
-  SG: { title: "SG — Tripartite Advisory Guidelines", text: "2–4 week PIP requires clear weekly progress logs. Serve statutory notice if targets remain unmet." },
-  MY: { title: "MY — Industrial Relations Act 1967", text: "Issue at least two formal written warning letters detailing consequences, and maintain a mentorship log." },
-  US: { title: "US — At-Will Doctrine", text: "A written PIP with binary metrics is primary documentation defending against employment claims." },
-  EU: { title: "EU — Stringent Dismissal Protection", text: "A 2–4 week turnaround is legally insufficient in most EU jurisdictions. Recommend mutual separation." },
-  UAE: { title: "UAE — Federal Decree-Law No. 33 of 2021", text: "Minimum 30-day statutory notice applies before any termination step." },
-  IN: { title: "IN — Industrial Disputes & S&E Acts", text: "Requires written counseling records and a fair opportunity to improve." }
 };
 
 function parseCSV(text) {
@@ -1344,7 +1276,6 @@ function renderTrMatrix(team, t){
   const a = computeTrAgg(team.employees);
   const c = a.counts, p = a.pct;
   const maxLoc = Math.max(...a.byLoc.map(x=>x[1]), 1);
-  const maxLvl = Math.max(...a.byLevel.map(x=>x[1]), 1);
 
   const getTip = (num) => {
     const matched = team.employees.filter(e => e.boxNum === num);
@@ -1405,16 +1336,7 @@ function buildTrPane(team, idx, t){
 }
 
 async function initTalentReviewTabForDept(deptKey){
-  const deptDirectory = {
-    'FT': { label: 'Fiat Dept', gid: '1952213325' },
-    'SEC': { label: 'Security Dept', gid: '1349594726' },
-    'BD': { label: 'Sales & Ops Dept', gid: '1804429324' },
-    'FIN': { label: 'Finance Dept', gid: '2080233148' },
-    'LEGAL': { label: 'Legal Dept', gid: '1224573719' }
-  };
-  const targetCfg = deptDirectory[deptKey];
-  document.getElementById('tr_current_auth_label').innerText = `🔓 Unlocked: ${targetCfg.label}`;
-
+  const targetCfg = { label: 'Sales & Ops Dept', gid: '1804429324' };
   trLoadedTeamsData = [];
   try {
     const res = await fetch(BASE_CSV_URL + targetCfg.gid);
@@ -1429,8 +1351,10 @@ async function initTalentReviewTabForDept(deptKey){
   const tabbar = document.getElementById('tr_tabbar');
   const panes = document.getElementById('tr_panes');
   const t = trI18n[currentLang];
-  tabbar.innerHTML = trLoadedTeamsData.map(d => `<button class="tr-tabbtn active">${d.label}</button>`).join('');
-  panes.innerHTML = trLoadedTeamsData.map((d, i) => buildTrPane(d, i, t)).join('');
+  if(tabbar && panes) {
+    tabbar.innerHTML = trLoadedTeamsData.map(d => `<button class="tr-tabbtn active">${d.label}</button>`).join('');
+    panes.innerHTML = trLoadedTeamsData.map((d, i) => buildTrPane(d, i, t)).join('');
+  }
 }
 
 function setLanguage(lang) {
@@ -1455,7 +1379,7 @@ function setLanguage(lang) {
 
   renderCompTab();
   renderLadderTab();
-  if(unlockedDeptKey) initTalentReviewTabForDept(unlockedDeptKey);
+  initTalentReviewTabForDept('BD');
 }
 
 window.onload = () => {

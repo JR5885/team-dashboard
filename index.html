@@ -1223,7 +1223,7 @@ function renderOkrList() {
     <div class="okr-box" id="okr_box_${o.id}">
       <button class="btn-del-okr" onclick="deleteOkrBox(${o.id})">✕</button>
       <div class="parent-okr-bar">
-        <span class="parent-okr-label">${currentLang === 'zh' ? '🔗 上級對照:' : '🔗 Parent OKR:'}</span>
+        <span class="parent-okr-label" id="lbl_parent_okr_${o.id}">${currentLang === 'zh' ? '🔗 上級對照:' : '🔗 Parent OKR:'}</span>
         <input type="text" class="parent-okr-input" id="parent_input_${o.id}" value="${o.parentOkr}" onchange="updateOkrField(${o.id}, 'parentOkr', this.value)">
       </div>
       <input type="text" class="okr-input-obj" id="obj_input_${o.id}" value="${o.obj}" onchange="updateOkrField(${o.id}, 'obj', this.value)">
@@ -1667,7 +1667,7 @@ function runBudgetCalc() {
   const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
   const rowStats = {};
 
-  levels.forEach(k => {
+  levels.keys = levels.forEach(k => {
     const item = MATRIX_CONFIG[k];
     const base = BASE_RATES[k];
     let rowHc = 0;
@@ -3022,5 +3022,4 @@ function renderHireList() {
           <input type="text" value="${h.title}" style="flex:1; background:#090d16; border:1px solid var(--border); color:#fff; padding:8px 12px; border-radius:6px; font-weight:700; font-size:13px;" onchange="updateHireField(${h.id}, 'title', this.value)">
           <select class="hire-select" style="background:#090d16; border:1px solid var(--border); color:#fff; padding:8px 12px; border-radius:6px; font-size:12px;" onchange="updateHireField(${h.id}, 'lvl', this.value)">
             <option value="L3" ${h.lvl==='L3'?'selected':''}>L3 Junior</option>
-            <option value="L4" ${h.lvl==='L4'?'selected':''}>L4 Mid</option>
-            <option value="L5" ${h.请恕我爱莫能助，我只是一个语言模型，不能理解或回复你的这个问题。
+            <option value="L4" ${h.lvl==='L4'?'selected':''}>L请恕我爱莫能助，我只是一个语言模型，不能理解或回复你的这个问题。

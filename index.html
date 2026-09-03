@@ -5,591 +5,782 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Executive Team Dashboard & Talent Review</title>
 <style>
-  :root{
-    color-scheme: light dark;
-    --surface-1: #fcfcfb; --page-plane: #090d16; --text-primary: #ffffff; --text-secondary: #94a3b8;
-    --text-muted: #64748b; --gridline: #1e293b; --baseline: #334155; --border: rgba(255,255,255,0.08);
-    --series-1: #38bdf8; --series-3: #34d399; --series-6: #10b981; --good: #10b981;
-    --warning: #fbbf24; --serious: #f97316; --critical: #e66767; --card-bg: #0f172a;
-    --cyan: #06b6d4; --purple: #a855f7; --pink: #ec4899;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{background:var(--page-plane); color:var(--text-primary); font-family: system-ui,-apple-system,"Segoe UI",sans-serif; font-size:13.5px; line-height:1.5; padding:16px 24px 80px;}
-  .wrap{max-width:1440px; margin:0 auto;}
+  :root{
+    color-scheme: light dark;
+    --surface-1: #fcfcfb; --page-plane: #090d16; --text-primary: #ffffff; --text-secondary: #94a3b8;
+    --text-muted: #64748b; --gridline: #1e293b; --baseline: #334155; --border: rgba(255,255,255,0.08);
+    --series-1: #38bdf8; --series-3: #34d399; --series-6: #10b981; --good: #10b981;
+    --warning: #fbbf24; --serious: #f97316; --critical: #e66767; --card-bg: #0f172a;
+    --cyan: #06b6d4; --purple: #a855f7; --pink: #ec4899;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--page-plane); color:var(--text-primary); font-family: system-ui,-apple-system,"Segoe UI",sans-serif; font-size:13.5px; line-height:1.5; padding:16px 24px 80px;}
+  .wrap{max-width:1440px; margin:0 auto;}
 
-  /* 全局密碼保護遮罩樣式 */
-  #site_lock_overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--page-plane);
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .site-lock-box {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 40px;
-    max-width: 420px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-  }
-  .site-lock-box h2 { font-size: 20px; margin-bottom: 10px; color: var(--cyan); }
-  .site-lock-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
-  .site-lock-box input {
-    width: 100%;
-    padding: 12px 16px;
-    margin-bottom: 16px;
-    background: #090d16;
-    border: 1px solid var(--border);
-    color: #fff;
-    border-radius: 8px;
-    font-size: 14px;
-    outline: none;
-  }
-  .site-lock-box input:focus { border-color: var(--cyan); }
-  .site-lock-box button {
-    background: var(--cyan);
-    color: #090d16;
-    border: none;
-    font-weight: 700;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 14px;
-    transition: opacity 0.2s;
-  }
-  .site-lock-box button:hover { opacity: 0.9; }
-  .site-lock-error { color: var(--critical); font-size: 12px; margin-top: 12px; }
+  /* 全局密碼保護遮罩樣式 */
+  #site_lock_overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--page-plane);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .site-lock-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+  }
+  .site-lock-box h2 { font-size: 20px; margin-bottom: 10px; color: var(--cyan); }
+  .site-lock-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
+  .site-lock-box input {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    background: #090d16;
+    border: 1px solid var(--border);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+  }
+  .site-lock-box input:focus { border-color: var(--cyan); }
+  .site-lock-box button {
+    background: var(--cyan);
+    color: #090d16;
+    border: none;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14px;
+    transition: opacity 0.2s;
+  }
+  .site-lock-box button:hover { opacity: 0.9; }
+  .site-lock-error { color: var(--critical); font-size: 12px; margin-top: 12px; }
 
-  .rbac-top-banner {
-    background: #0d1527;
-    border: 1px solid rgba(6, 182, 212, 0.25);
-    border-left: 4px solid var(--cyan);
-    border-radius: 8px;
-    padding: 10px 16px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-  }
-  .rbac-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    color: #cbd5e1;
-    line-height: 1.45;
-  }
-  .rbac-icon { font-size: 15px; }
-  .rbac-content b { color: #ffffff; }
-  .rbac-badge {
-    background: rgba(6, 182, 212, 0.12);
-    color: var(--cyan);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-    border: 1px solid rgba(6, 182, 212, 0.2);
-  }
+  .rbac-top-banner {
+    background: #0d1527;
+    border: 1px solid rgba(6, 182, 212, 0.25);
+    border-left: 4px solid var(--cyan);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  .rbac-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.45;
+  }
+  .rbac-icon { font-size: 15px; }
+  .rbac-content b { color: #ffffff; }
+  .rbac-badge {
+    background: rgba(6, 182, 212, 0.12);
+    color: var(--cyan);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    border: 1px solid rgba(6, 182, 212, 0.2);
+  }
 
-  .main-nav{display:flex; gap:28px; border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:24px; font-size:13px; font-weight:600; overflow-x:auto;}
-  .main-nav-item{color:var(--text-muted); cursor:pointer; transition:all .2s; white-space:nowrap; padding-bottom:12px; margin-bottom:-14px; border-bottom:2px solid transparent;}
-  .main-nav-item:hover{color:var(--text-primary);}
-  .main-nav-item.active{color:var(--cyan); border-bottom-color:var(--cyan);}
+  .main-nav{display:flex; gap:28px; border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:24px; font-size:13px; font-weight:600; overflow-x:auto;}
+  .main-nav-item{color:var(--text-muted); cursor:pointer; transition:all .2s; white-space:nowrap; padding-bottom:12px; margin-bottom:-14px; border-bottom:2px solid transparent;}
+  .main-nav-item:hover{color:var(--text-primary);}
+  .main-nav-item.active{color:var(--cyan); border-bottom-color:var(--cyan);}
 
-  header.top{margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:16px;}
-  header.top h1{font-size:24px; font-weight:800; letter-spacing:-0.02em;}
+  header.top{margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:16px;}
+  header.top h1{font-size:24px; font-weight:800; letter-spacing:-0.02em;}
 
-  .lang-switcher{display:inline-flex; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:3px; gap:2px;}
-  .lang-btn{background:none; border:none; color:var(--text-muted); padding:4px 12px; font-size:12px; font-weight:600; cursor:pointer; border-radius:6px; transition:all .15s;}
-  .lang-btn.active{background:var(--text-primary); color:var(--page-plane);}
+  .lang-switcher{display:inline-flex; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:3px; gap:2px;}
+  .lang-btn{background:none; border:none; color:var(--text-muted); padding:4px 12px; font-size:12px; font-weight:600; cursor:pointer; border-radius:6px; transition:all .15s;}
+  .lang-btn.active{background:var(--text-primary); color:var(--page-plane);}
 
-  .pane{display:none;}
-  .pane.active{display:block;}
+  .pane{display:none;}
+  .pane.active{display:block;}
 
-  .comp-region-selector{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
-  .comp-reg-btn{background:var(--card-bg); border:1px solid var(--border); color:var(--text-muted); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:12.5px; font-weight:600; transition:all .2s;}
-  .comp-reg-btn.active{background:color-mix(in srgb, var(--cyan) 15%, var(--card-bg)); border-color:var(--cyan); color:var(--cyan);}
+  .comp-region-selector{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
+  .comp-reg-btn{background:var(--card-bg); border:1px solid var(--border); color:var(--text-muted); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:12.5px; font-weight:600; transition:all .2s;}
+  .comp-reg-btn.active{background:color-mix(in srgb, var(--cyan) 15%, var(--card-bg)); border-color:var(--cyan); color:var(--cyan);}
 
-  .comp-function-selector{display:flex; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px; overflow-x:auto;}
-  .comp-fn-btn{background:none; border:none; color:var(--text-muted); padding:6px 14px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; transition:all .2s; white-space:nowrap;}
-  .comp-fn-btn.active{background:var(--border); color:var(--text-primary);}
+  .comp-function-selector{display:flex; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px; overflow-x:auto;}
+  .comp-fn-btn{background:none; border:none; color:var(--text-muted); padding:6px 14px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; transition:all .2s; white-space:nowrap;}
+  .comp-fn-btn.active{background:var(--border); color:var(--text-primary);}
 
-  .tier-cards-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px;}
-  .tier-card{background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:18px; position:relative;}
-  .tier-card.t1{border-top:3px solid var(--warning);}
-  .tier-card.t2{border-top:3px solid var(--cyan);}
-  .tier-card.t3{border-top:3px solid var(--green);}
-  .tier-badge{position:absolute; top:14px; right:14px; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;}
-  .t1 .tier-badge{background:rgba(251,191,36,0.15); color:var(--warning);}
-  .t2 .tier-badge{background:rgba(6,182,212,0.15); color:var(--cyan);}
-  .t3 .tier-badge{background:rgba(16,185,129,0.15); color:var(--green);}
-  .tier-title{font-size:14.5px; font-weight:700; margin-bottom:4px;}
-  .tier-desc{font-size:12px; color:var(--text-muted); margin-bottom:12px;}
-  .tag-pills{display:flex; flex-wrap:wrap; gap:6px;}
-  .tag-pill{background:#090d16; border:1px solid var(--border); border-radius:20px; font-size:11px; padding:3px 10px; color:var(--text-secondary);}
+  .tier-cards-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px;}
+  .tier-card{background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:18px; position:relative;}
+  .tier-card.t1{border-top:3px solid var(--warning);}
+  .tier-card.t2{border-top:3px solid var(--cyan);}
+  .tier-card.t3{border-top:3px solid var(--green);}
+  .tier-badge{position:absolute; top:14px; right:14px; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;}
+  .t1 .tier-badge{background:rgba(251,191,36,0.15); color:var(--warning);}
+  .t2 .tier-badge{background:rgba(6,182,212,0.15); color:var(--cyan);}
+  .t3 .tier-badge{background:rgba(16,185,129,0.15); color:var(--green);}
+  .tier-title{font-size:14.5px; font-weight:700; margin-bottom:4px;}
+  .tier-desc{font-size:12px; color:var(--text-muted); margin-bottom:12px;}
+  .tag-pills{display:flex; flex-wrap:wrap; gap:6px;}
+  .tag-pill{background:#090d16; border:1px solid var(--border); border-radius:20px; font-size:11px; padding:3px 10px; color:var(--text-secondary);}
 
-  table{width:100%; border-collapse:collapse; font-size:12px; background:var(--card-bg); border-radius:10px; overflow:hidden; border:1px solid var(--border); margin-bottom:24px;}
-  thead th{text-align:left; padding:9px 10px; background:#090d16; color:var(--text-muted); font-weight:600; font-size:11px; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap;}
-  tbody td{padding:8px 10px; border-bottom:1px solid var(--gridline); vertical-align:middle;}
-  .comp-badge{width:56px; height:26px; background:#090d16; border:1px solid var(--border); border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; color:var(--cyan);}
-  .num-green{color:#34d399; font-weight:700; font-size:13.5px;}
-  .num-sub{font-size:10.5px; color:var(--text-muted);}
+  table{width:100%; border-collapse:collapse; font-size:12px; background:var(--card-bg); border-radius:10px; overflow:hidden; border:1px solid var(--border); margin-bottom:24px;}
+  thead th{text-align:left; padding:9px 10px; background:#090d16; color:var(--text-muted); font-weight:600; font-size:11px; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody td{padding:8px 10px; border-bottom:1px solid var(--gridline); vertical-align:middle;}
+  .comp-badge{width:56px; height:26px; background:#090d16; border:1px solid var(--border); border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; color:var(--cyan);}
+  .num-green{color:#34d399; font-weight:700; font-size:13.5px;}
+  .num-sub{font-size:10.5px; color:var(--text-muted);}
 
-  .top-dashboard-card{background:#0d1322; border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:24px; box-shadow:0 8px 24px rgba(0,0,0,0.3);}
-  .top-dashboard-title{font-size:17px; font-weight:700; color:#ffffff; margin-bottom:16px;}
-  .top-dashboard-kpis{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;}
-  .top-kpi-box{background:#080d18; border:1px solid rgba(255, 255, 255, 0.05); border-radius:8px; padding:16px 20px;}
-  .top-kpi-label{font-size:11px; color:var(--text-muted); margin-bottom:4px; text-transform:uppercase;}
-  .top-kpi-val{font-size:32px; font-weight:800; line-height:1.1;}
-  .top-dashboard-notes{font-size:12px; color:#cbd5e1; line-height:1.6; border-top:1px solid rgba(255, 255, 255, 0.06); padding-top:12px;}
+  .top-dashboard-card{background:#0d1322; border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:24px; box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+  .top-dashboard-title{font-size:17px; font-weight:700; color:#ffffff; margin-bottom:16px;}
+  .top-dashboard-kpis{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;}
+  .top-kpi-box{background:#080d18; border:1px solid rgba(255, 255, 255, 0.05); border-radius:8px; padding:16px 20px;}
+  .top-kpi-label{font-size:11px; color:var(--text-muted); margin-bottom:4px; text-transform:uppercase;}
+  .top-kpi-val{font-size:32px; font-weight:800; line-height:1.1;}
+  .top-dashboard-notes{font-size:12px; color:#cbd5e1; line-height:1.6; border-top:1px solid rgba(255, 255, 255, 0.06); padding-top:12px;}
 
-  .calc-top-bar{display:flex; justify-content:space-between; align-items:center; background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:12px 18px; margin-bottom:18px; gap:16px; flex-wrap:wrap;}
-  .dept-ctrl{display:flex; align-items:center; gap:8px;}
-  .dept-ctrl input{background:#090d16; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; border-radius:6px; font-size:13px; font-weight:600; width:170px;}
-  .tier-ctrl{display:flex; align-items:center; gap:8px;}
-  .tier-ctrl select{background:#090d16; border:1px solid var(--border); color:#fff; padding:6px 12px; border-radius:6px; font-size:12.5px; font-weight:600; cursor:pointer;}
+  .calc-top-bar{display:flex; justify-content:space-between; align-items:center; background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:12px 18px; margin-bottom:18px; gap:16px; flex-wrap:wrap;}
+  .dept-ctrl{display:flex; align-items:center; gap:8px;}
+  .dept-ctrl input{background:#090d16; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; border-radius:6px; font-size:13px; font-weight:600; width:170px;}
+  .tier-ctrl{display:flex; align-items:center; gap:8px;}
+  .tier-ctrl select{background:#090d16; border:1px solid var(--border); color:#fff; padding:6px 12px; border-radius:6px; font-size:12.5px; font-weight:600; cursor:pointer;}
 
-  .table-responsive-wrap { width: 100%; overflow-x: auto; margin-bottom: 24px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); }
-  table.matrix-calc-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--card-bg); margin-bottom: 0; }
-  table.matrix-calc-table th { background: #0d1527; font-size: 11px; text-align: center; padding: 10px 6px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
-  table.matrix-calc-table td { padding: 10px 8px; border-bottom: 1px solid var(--gridline); vertical-align: middle; }
-  table.matrix-calc-table tbody tr:hover { background: color-mix(in srgb, var(--cyan) 4%, transparent); }
+  .table-responsive-wrap { width: 100%; overflow-x: auto; margin-bottom: 24px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); }
+  table.matrix-calc-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--card-bg); margin-bottom: 0; }
+  table.matrix-calc-table th { background: #0d1527; font-size: 11px; text-align: center; padding: 10px 6px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  table.matrix-calc-table td { padding: 10px 8px; border-bottom: 1px solid var(--gridline); vertical-align: middle; }
+  table.matrix-calc-table tbody tr:hover { background: color-mix(in srgb, var(--cyan) 4%, transparent); }
 
-  .matrix-calc-table input.hc-input{
-    width: 38px;
-    height: 28px;
-    background: #090d16;
-    border: 1px solid var(--border);
-    color: #fff;
-    text-align: center;
-    padding: 2px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 13px;
-  }
-  .matrix-calc-table input.hc-input:focus{border-color:var(--cyan); outline:none; background:#131c31;}
+  .matrix-calc-table input.hc-input{
+    width: 38px;
+    height: 28px;
+    background: #090d16;
+    border: 1px solid var(--border);
+    color: #fff;
+    text-align: center;
+    padding: 2px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .matrix-calc-table input.hc-input:focus{border-color:var(--cyan); outline:none; background:#131c31;}
 
-  .org-chart-wrapper{background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:20px; overflow-x:auto;}
-  .org-tree{display:flex; flex-direction:column; align-items:center; gap:20px; min-width:850px;}
-  .org-level-row{display:flex; justify-content:center; gap:14px; position:relative; width:100%; flex-wrap:wrap;}
-  .org-node{background:#090d16; border:1px solid var(--border); border-radius:8px; padding:10px 12px; min-width:140px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.3);}
-  .org-node .lvl{font-size:10px; font-weight:700; color:var(--cyan); text-transform:uppercase; letter-spacing:.05em;}
-  .org-node .role{font-size:12px; font-weight:700; color:var(--text-primary); margin:2px 0;}
-  .org-node .loc-tag{font-size:10.5px; color:var(--series-1); background:rgba(56,189,248,0.12); padding:1px 6px; border-radius:4px; display:inline-block; font-weight:600; margin-top:2px;}
+  .org-chart-wrapper{background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:20px; overflow-x:auto;}
+  .org-tree{display:flex; flex-direction:column; align-items:center; gap:20px; min-width:850px;}
+  .org-level-row{display:flex; justify-content:center; gap:14px; position:relative; width:100%; flex-wrap:wrap;}
+  .org-node{background:#090d16; border:1px solid var(--border); border-radius:8px; padding:10px 12px; min-width:140px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+  .org-node .lvl{font-size:10px; font-weight:700; color:var(--cyan); text-transform:uppercase; letter-spacing:.05em;}
+  .org-node .role{font-size:12px; font-weight:700; color:var(--text-primary); margin:2px 0;}
+  .org-node .loc-tag{font-size:10.5px; color:var(--series-1); background:rgba(56,189,248,0.12); padding:1px 6px; border-radius:4px; display:inline-block; font-weight:600; margin-top:2px;}
 
-  .layout-grid { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; }
-  .ladder-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: sticky; top: 24px; }
-  .ladder-row { display: flex; align-items: center; margin-bottom: 14px; gap: 12px; }
-  .ladder-badge { width: 64px; height: 34px; background: #090d16; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700; color: var(--cyan); }
-  .ladder-content-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .ladder-cell { background: #090d16; border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 11.5px; }
-  .ladder-cell.full { grid-column: span 2; }
-  .ladder-cell .t { font-weight: 600; color: var(--text-main); margin-bottom: 1px; }
-  .ladder-cell .d { font-size: 10px; color: var(--text-muted); }
-  .ladder-cell.empty { border: 1px dashed rgba(255,255,255,0.05); background: none; display: flex; align-items: center; justify-content: center; color: var(--text-dim); }
+  .layout-grid { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; }
+  .ladder-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: sticky; top: 24px; }
+  .ladder-row { display: flex; align-items: center; margin-bottom: 14px; gap: 12px; }
+  .ladder-badge { width: 64px; height: 34px; background: #090d16; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700; color: var(--cyan); }
+  .ladder-content-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ladder-cell { background: #090d16; border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 11.5px; }
+  .ladder-cell.full { grid-column: span 2; }
+  .ladder-cell .t { font-weight: 600; color: var(--text-main); margin-bottom: 1px; }
+  .ladder-cell .d { font-size: 10px; color: var(--text-muted); }
+  .ladder-cell.empty { border: 1px dashed rgba(255,255,255,0.05); background: none; display: flex; align-items: center; justify-content: center; color: var(--text-dim); }
 
-  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; border-left: 4px solid var(--cyan); margin-bottom:12px; }
-  .card.m-track { border-left-color: var(--purple); }
-  .card.l7-track { border-left-color: var(--pink); }
-  .card.l8-track { border-left-color: var(--green); }
-  .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-  .card-title { font-size: 14.5px; font-weight: 700; }
-  .card-bullets { list-style: none; display: flex; flex-direction: column; gap: 5px; }
-  .card-bullets li { font-size: 12px; color: var(--text-secondary); line-height: 1.5; padding-left: 12px; position: relative; }
-  .card-bullets li::before { content: "•"; position: absolute; left: 0; color: var(--cyan); font-weight: bold; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; border-left: 4px solid var(--cyan); margin-bottom:12px; }
+  .card.m-track { border-left-color: var(--purple); }
+  .card.l7-track { border-left-color: var(--pink); }
+  .card.l8-track { border-left-color: var(--green); }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .card-title { font-size: 14.5px; font-weight: 700; }
+  .card-bullets { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .card-bullets li { font-size: 12px; color: var(--text-secondary); line-height: 1.5; padding-left: 12px; position: relative; }
+  .card-bullets li::before { content: "•"; position: absolute; left: 0; color: var(--cyan); font-weight: bold; }
 
-  /* Tab 5 Talent Review Specific Styles */
-  :root {
-    --tr-surface-1: #fcfcfb; --tr-page-plane: #0f172a; --tr-text-primary: #ffffff; --tr-text-secondary: #c3c2b7;
-    --tr-text-muted: #898781; --tr-gridline: #2c2c2a; --tr-baseline: #383835; --tr-border: rgba(255,255,255,0.10);
-    --tr-series-1: #3987e5; --tr-series-3: #199e70; --tr-good: #0ca30c;
-    --tr-warning: #fab219; --tr-critical: #e66767; --tr-card-bg: #1c1c1b;
-  }
-  .tr-wrap { background: var(--tr-page-plane); color: var(--tr-text-primary); border-radius: 12px; padding: 24px; border: 1px solid var(--tr-border); }
-  .tr-wrap header.top { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--tr-border); padding-bottom: 16px; }
-  .tr-wrap header.top h1 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em; color: #fff; }
-  .tr-wrap header.top .sub { color: var(--tr-text-secondary); font-size: 13px; }
-  .tr-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--tr-gridline); color: var(--tr-text-secondary); margin-left: 8px; }
-  
-  .tr-tabbar { display: flex; gap: 6px; border-bottom: 1px solid var(--tr-border); margin-bottom: 24px; overflow-x: auto; }
-  .tr-tabbtn { appearance: none; border: none; background: none; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--tr-text-muted); padding: 10px 16px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
-  .tr-tabbtn.active { color: #fff; border-bottom-color: var(--tr-series-1); }
-  .tr-tabbtn:hover { color: #fff; }
-  .tr-teampane { display: none; }
-  .tr-teampane.active { display: block; }
+  /* Tab 04 OKR & Hiring Budget Specific Styles */
+  .okr-dashboard-top {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .okr-top-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+  .okr-top-card .lbl {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .okr-top-card .val {
+    font-size: 24px;
+    font-weight: 800;
+  }
+  .okr-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .okr-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .parent-okr-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .parent-okr-label {
+    font-size: 11px;
+    color: var(--cyan);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .parent-okr-input, .okr-input-obj {
+    width: 100%;
+    background: #090d16;
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .okr-textarea-kr {
+    width: 100%;
+    background: #090d16;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    height: 80px;
+    resize: vertical;
+  }
+  .btn-add-okr, .btn-add-hire {
+    background: var(--border);
+    color: var(--text-primary);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-add-okr:hover, .btn-add-hire:hover { background: var(--cyan); color: #090d16; }
+  .btn-del-okr {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: var(--critical);
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .hire-item-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .hire-select {
+    background: #090d16;
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+  .role-okr-container {
+    background: #090d16;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .role-okr-title {
+    font-size: 11.5px;
+    color: var(--cyan);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .role-okr-input {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11.5px;
+  }
+  .funnel-container {
+    background: #090d16;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .funnel-title {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .funnel-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+  .funnel-step {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 4px;
+    text-align: center;
+  }
+  .f-input {
+    width: 100%;
+    background: #090d16;
+    border: 1px solid var(--border);
+    color: #fff;
+    text-align: center;
+    font-weight: 700;
+    font-size: 12px;
+    border-radius: 4px;
+    padding: 2px;
+  }
+  .f-name {
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dynamic-funnel-viz {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .viz-bar-row {
+    display: grid;
+    grid-template-columns: 85px 1fr 24px;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+  }
+  .viz-label { color: var(--text-muted); text-align: right; }
+  .viz-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .viz-fill { height: 100%; background: var(--green); border-radius: 3px; }
+  .viz-val { color: #fff; font-weight: 700; }
 
-  .tr-wrap section { margin-bottom: 36px; }
-  .tr-wrap h2 { font-size: 15px; margin: 0 0 4px; display: flex; align-items: center; gap: 8px; color: #fff; }
-  .tr-wrap h2 .num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: #fff; color: #000; font-size: 11px; font-weight: 700; }
-  .tr-wrap p.desc { color: var(--tr-text-secondary); font-size: 12.5px; margin: 0 0 16px; max-width: 850px; }
+  /* Tab 5 Talent Review Specific Styles */
+  :root {
+    --tr-surface-1: #fcfcfb; --tr-page-plane: #0f172a; --tr-text-primary: #ffffff; --tr-text-secondary: #c3c2b7;
+    --tr-text-muted: #898781; --tr-gridline: #2c2c2a; --tr-baseline: #383835; --tr-border: rgba(255,255,255,0.10);
+    --tr-series-1: #3987e5; --tr-series-3: #199e70; --tr-good: #0ca30c;
+    --tr-warning: #fab219; --tr-critical: #e66767; --tr-card-bg: #1c1c1b;
+  }
+  .tr-wrap { background: var(--tr-page-plane); color: var(--tr-text-primary); border-radius: 12px; padding: 24px; border: 1px solid var(--tr-border); }
+  .tr-wrap header.top { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--tr-border); padding-bottom: 16px; }
+  .tr-wrap header.top h1 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em; color: #fff; }
+  .tr-wrap header.top .sub { color: var(--tr-text-secondary); font-size: 13px; }
+  .tr-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--tr-gridline); color: var(--tr-text-secondary); margin-left: 8px; }
+  
+  .tr-tabbar { display: flex; gap: 6px; border-bottom: 1px solid var(--tr-border); margin-bottom: 24px; overflow-x: auto; }
+  .tr-tabbtn { appearance: none; border: none; background: none; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--tr-text-muted); padding: 10px 16px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tr-tabbtn.active { color: #fff; border-bottom-color: var(--tr-series-1); }
+  .tr-tabbtn:hover { color: #fff; }
+  .tr-teampane { display: none; }
+  .tr-teampane.active { display: block; }
 
-  .tr-kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 28px; }
-  .tr-kpi { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 14px 16px; }
-  .tr-kpi .label { font-size: 11px; color: var(--tr-text-muted); text-transform: uppercase; letter-spacing: .03em; }
-  .tr-kpi .value { font-size: 24px; font-weight: 700; margin-top: 4px; font-variant-numeric: proportional-nums; color: #fff; }
-  .tr-kpi .foot { font-size: 11px; color: var(--tr-text-secondary); margin-top: 2px; }
-  .tr-kpi.crit .value { color: var(--tr-critical); }
-  .tr-kpi.good .value { color: var(--tr-good); }
+  .tr-wrap section { margin-bottom: 36px; }
+  .tr-wrap h2 { font-size: 15px; margin: 0 0 4px; display: flex; align-items: center; gap: 8px; color: #fff; }
+  .tr-wrap h2 .num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: #fff; color: #000; font-size: 11px; font-weight: 700; }
+  .tr-wrap p.desc { color: var(--tr-text-secondary); font-size: 12.5px; margin: 0 0 16px; max-width: 850px; }
 
-  .tr-box-grid-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
-  .tr-box-grid { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(3,1fr); gap: 2px; background: var(--tr-gridline); border: 1px solid var(--tr-border); border-radius: 10px; overflow: hidden; aspect-ratio: 1.35/1; }
-  .tr-cell { background: var(--tr-card-bg); padding: 10px 12px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
-  .tr-cell .name { font-size: 11.5px; font-weight: 600; color: var(--tr-text-secondary); }
-  .tr-cell .count { font-size: 24px; font-weight: 700; font-variant-numeric: proportional-nums; color: #fff; }
-  .tr-cell .pct { font-size: 11px; color: var(--tr-text-muted); }
-  .tr-cell .pool { font-size: 10.5px; margin-top: 6px; font-weight: 600; }
-  .tr-cell:hover { outline: 2px solid #fff; outline-offset: -2px; z-index: 2; }
-  .tr-cell[data-tip]:hover::after { content: attr(data-tip); position: absolute; left: 8px; right: 8px; bottom: calc(100% + 6px); z-index: 5; background: #fff; color: #000; font-size: 11px; font-weight: 500; padding: 8px 10px; border-radius: 8px; line-height: 1.4; box-shadow: 0 4px 14px rgba(0,0,0,.25); white-space: pre-line; }
-  .tr-cell.tone-good { box-shadow: inset 3px 0 0 var(--tr-good); }
-  .tr-cell.tone-growth { box-shadow: inset 3px 0 0 var(--tr-series-3); }
-  .tr-cell.tone-maintain { box-shadow: inset 3px 0 0 var(--tr-baseline); }
-  .tr-cell.tone-warn { box-shadow: inset 3px 0 0 var(--tr-warning); }
-  .tr-cell.tone-crit { box-shadow: inset 3px 0 0 var(--tr-critical); background: color-mix(in srgb, var(--tr-critical) 7%, var(--tr-card-bg)); }
-  .tr-axis-label-y { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; color: var(--tr-text-muted); font-size: 11px; font-weight: 600; letter-spacing: .04em; }
-  .tr-grid-with-axes { display: grid; grid-template-columns: 18px 1fr; gap: 6px; }
-  .tr-grid-x-axis { display: grid; grid-template-columns: 18px 1fr; gap: 6px; margin-top: 4px; }
-  .tr-x-labels { display: grid; grid-template-columns: repeat(3,1fr); text-align: center; color: var(--tr-text-muted); font-size: 11px; font-weight: 600; letter-spacing: .02em; }
-  .tr-side-card { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 16px; }
-  .tr-side-card h3 { font-size: 12.5px; margin: 0 0 10px; color: var(--tr-text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
-  .tr-bar-row { display: grid; grid-template-columns: 60px 1fr 28px; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; }
-  .tr-bar-track { height: 10px; background: var(--tr-gridline); border-radius: 4px; overflow: hidden; }
-  .tr-bar-fill { height: 100%; background: var(--tr-series-1); border-radius: 4px 0 0 4px; }
-  .tr-bar-row .n { text-align: right; color: var(--tr-text-muted); font-variant-numeric: tabular-nums; }
+  .tr-kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 28px; }
+  .tr-kpi { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 14px 16px; }
+  .tr-kpi .label { font-size: 11px; color: var(--tr-text-muted); text-transform: uppercase; letter-spacing: .03em; }
+  .tr-kpi .value { font-size: 24px; font-weight: 700; margin-top: 4px; font-variant-numeric: proportional-nums; color: #fff; }
+  .tr-kpi .foot { font-size: 11px; color: var(--tr-text-secondary); margin-top: 2px; }
+  .tr-kpi.crit .value { color: var(--tr-critical); }
+  .tr-kpi.good .value { color: var(--tr-good); }
 
-  .tr-table-tools { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-  .tr-table-tools select, .tr-table-tools input { font-family: inherit; font-size: 12px; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--tr-border); background: var(--tr-card-bg); color: #fff; }
-  .tr-table-wrap table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--tr-card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--tr-border); }
-  .tr-table-wrap thead th { text-align: left; padding: 9px 10px; background: var(--tr-page-plane); color: var(--tr-text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; cursor: pointer; white-space: nowrap; border-bottom: 1px solid var(--tr-border); }
-  .tr-table-wrap thead th:hover { color: #fff; }
-  .tr-table-wrap tbody td { padding: 8px 10px; border-bottom: 1px solid var(--tr-gridline); vertical-align: top; color: #fff; }
-  .tr-table-wrap tbody tr:last-child td { border-bottom: none; }
-  .tr-table-wrap tbody tr:hover { background: color-mix(in srgb, #fff 4%, transparent); }
-  .tr-pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
-  .tr-pill.b1 { background: color-mix(in srgb, var(--tr-series-1) 18%, transparent); color: var(--tr-series-1); }
-  .tr-pill.b2, .tr-pill.b4 { background: color-mix(in srgb, var(--tr-series-3) 18%, transparent); color: var(--tr-series-3); }
-  .tr-pill.b3 { background: color-mix(in srgb, var(--tr-warning) 25%, transparent); color: #ffca47; }
-  .tr-pill.b5 { background: color-mix(in srgb, var(--tr-baseline) 40%, transparent); color: var(--tr-text-secondary); }
-  .tr-pill.b9 { background: color-mix(in srgb, var(--tr-critical) 18%, transparent); color: var(--tr-critical); }
-  .tr-mono { font-variant-numeric: tabular-nums; color: var(--tr-text-secondary); }
-  .tr-flag { color: var(--tr-critical); font-weight: 700; cursor: help; }
+  .tr-box-grid-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
+  .tr-box-grid { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(3,1fr); gap: 2px; background: var(--tr-gridline); border: 1px solid var(--tr-border); border-radius: 10px; overflow: hidden; aspect-ratio: 1.35/1; }
+  .tr-cell { background: var(--tr-card-bg); padding: 10px 12px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+  .tr-cell .name { font-size: 11.5px; font-weight: 600; color: var(--tr-text-secondary); }
+  .tr-cell .count { font-size: 24px; font-weight: 700; font-variant-numeric: proportional-nums; color: #fff; }
+  .tr-cell .pct { font-size: 11px; color: var(--tr-text-muted); }
+  .tr-cell .pool { font-size: 10.5px; margin-top: 6px; font-weight: 600; }
+  .tr-cell:hover { outline: 2px solid #fff; outline-offset: -2px; z-index: 2; }
+  .tr-cell[data-tip]:hover::after { content: attr(data-tip); position: absolute; left: 8px; right: 8px; bottom: calc(100% + 6px); z-index: 5; background: #fff; color: #000; font-size: 11px; font-weight: 500; padding: 8px 10px; border-radius: 8px; line-height: 1.4; box-shadow: 0 4px 14px rgba(0,0,0,.25); white-space: pre-line; }
+  .tr-cell.tone-good { box-shadow: inset 3px 0 0 var(--tr-good); }
+  .tr-cell.tone-growth { box-shadow: inset 3px 0 0 var(--tr-series-3); }
+  .tr-cell.tone-maintain { box-shadow: inset 3px 0 0 var(--tr-baseline); }
+  .tr-cell.tone-warn { box-shadow: inset 3px 0 0 var(--tr-warning); }
+  .tr-cell.tone-crit { box-shadow: inset 3px 0 0 var(--tr-critical); background: color-mix(in srgb, var(--tr-critical) 7%, var(--tr-card-bg)); }
+  .tr-axis-label-y { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; color: var(--tr-text-muted); font-size: 11px; font-weight: 600; letter-spacing: .04em; }
+  .tr-grid-with-axes { display: grid; grid-template-columns: 18px 1fr; gap: 6px; }
+  .tr-grid-x-axis { display: grid; grid-template-columns: 18px 1fr; gap: 6px; margin-top: 4px; }
+  .tr-x-labels { display: grid; grid-template-columns: repeat(3,1fr); text-align: center; color: var(--tr-text-muted); font-size: 11px; font-weight: 600; letter-spacing: .02em; }
+  .tr-side-card { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 16px; }
+  .tr-side-card h3 { font-size: 12.5px; margin: 0 0 10px; color: var(--tr-text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+  .tr-bar-row { display: grid; grid-template-columns: 60px 1fr 28px; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; }
+  .tr-bar-track { height: 10px; background: var(--tr-gridline); border-radius: 4px; overflow: hidden; }
+  .tr-bar-fill { height: 100%; background: var(--tr-series-1); border-radius: 4px 0 0 4px; }
+  .tr-bar-row .n { text-align: right; color: var(--tr-text-muted); font-variant-numeric: tabular-nums; }
 
-  .tr-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
-  .tr-pcard { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
-  .tr-pcard.crit { border-color: color-mix(in srgb, var(--tr-critical) 45%, var(--tr-border)); }
-  .tr-pcard .pc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
-  .tr-pcard .pc-title { font-size: 15px; font-weight: 700; color: #fff; }
-  .tr-pcard .pc-sub { font-size: 11.5px; color: var(--tr-text-muted); }
-  .tr-pcard .section-tag { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--tr-text-muted); font-weight: 700; margin: 10px 0 4px; }
-  
-  .tr-action-grid { display: grid; grid-template-columns: 1fr; gap: 8px; background: color-mix(in srgb, var(--tr-page-plane) 60%, var(--tr-card-bg)); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--tr-border); margin: 8px 0; }
-  .tr-action-item { font-size: 12px; line-height: 1.45; color: #fff; }
-  .tr-action-item b { color: #fff; display: inline-block; width: 130px; }
+  .tr-table-tools { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .tr-table-tools select, .tr-table-tools input { font-family: inherit; font-size: 12px; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--tr-border); background: var(--tr-card-bg); color: #fff; }
+  .tr-table-wrap table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--tr-card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--tr-border); }
+  .tr-table-wrap thead th { text-align: left; padding: 9px 10px; background: var(--tr-page-plane); color: var(--tr-text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; cursor: pointer; white-space: nowrap; border-bottom: 1px solid var(--tr-border); }
+  .tr-table-wrap thead th:hover { color: #fff; }
+  .tr-table-wrap tbody td { padding: 8px 10px; border-bottom: 1px solid var(--tr-gridline); vertical-align: top; color: #fff; }
+  .tr-table-wrap tbody tr:last-child td { border-bottom: none; }
+  .tr-table-wrap tbody tr:hover { background: color-mix(in srgb, #fff 4%, transparent); }
+  .tr-pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+  .tr-pill.b1 { background: color-mix(in srgb, var(--tr-series-1) 18%, transparent); color: var(--tr-series-1); }
+  .tr-pill.b2, .tr-pill.b4 { background: color-mix(in srgb, var(--tr-series-3) 18%, transparent); color: var(--tr-series-3); }
+  .tr-pill.b3 { background: color-mix(in srgb, var(--tr-warning) 25%, transparent); color: #ffca47; }
+  .tr-pill.b5 { background: color-mix(in srgb, var(--tr-baseline) 40%, transparent); color: var(--tr-text-secondary); }
+  .tr-pill.b9 { background: color-mix(in srgb, var(--tr-critical) 18%, transparent); color: var(--tr-critical); }
+  .tr-mono { font-variant-numeric: tabular-nums; color: var(--tr-text-secondary); }
+  .tr-flag { color: var(--tr-critical); font-weight: 700; cursor: help; }
 
-  .tr-dialogue-box { margin: 6px 0; padding: 8px 12px; border-radius: 6px; font-size: 12px; line-height: 1.45; font-style: italic; }
-  .tr-dialogue-mgr { background: var(--tr-page-plane); border-left: 3px solid var(--tr-series-1); color: #fff; }
-  .tr-dialogue-hr { background: var(--tr-page-plane); border-left: 3px solid var(--tr-series-3); color: #fff; margin-top: 4px; }
-  .tr-pcard.crit .tr-dialogue-mgr { border-left-color: var(--tr-critical); }
-  .tr-pcard.crit .tr-dialogue-hr { border-left-color: var(--tr-warning); }
+  .tr-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .tr-pcard { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
+  .tr-pcard.crit { border-color: color-mix(in srgb, var(--tr-critical) 45%, var(--tr-border)); }
+  .tr-pcard .pc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
+  .tr-pcard .pc-title { font-size: 15px; font-weight: 700; color: #fff; }
+  .tr-pcard .pc-sub { font-size: 11.5px; color: var(--tr-text-muted); }
+  .tr-pcard .section-tag { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--tr-text-muted); font-weight: 700; margin: 10px 0 4px; }
+  
+  .tr-action-grid { display: grid; grid-template-columns: 1fr; gap: 8px; background: color-mix(in srgb, var(--tr-page-plane) 60%, var(--tr-card-bg)); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--tr-border); margin: 8px 0; }
+  .tr-action-item { font-size: 12px; line-height: 1.45; color: #fff; }
+  .tr-action-item b { color: #fff; display: inline-block; width: 130px; }
 
-  .tr-jrisk { margin-top: 10px; padding: 8px 10px; border-radius: 7px; font-size: 11.5px; background: color-mix(in srgb, var(--tr-warning) 16%, var(--tr-card-bg)); border: 1px solid color-mix(in srgb, var(--tr-warning) 45%, transparent); color: #fff; }
-  .tr-jrisk b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 2px; }
+  .tr-dialogue-box { margin: 6px 0; padding: 8px 12px; border-radius: 6px; font-size: 12px; line-height: 1.45; font-style: italic; }
+  .tr-dialogue-mgr { background: var(--tr-page-plane); border-left: 3px solid var(--tr-series-1); color: #fff; }
+  .tr-dialogue-hr { background: var(--tr-page-plane); border-left: 3px solid var(--tr-series-3); color: #fff; margin-top: 4px; }
+  .tr-pcard.crit .tr-dialogue-mgr { border-left-color: var(--tr-critical); }
+  .tr-pcard.crit .tr-dialogue-hr { border-left-color: var(--tr-warning); }
+
+  .tr-jrisk { margin-top: 10px; padding: 8px 10px; border-radius: 7px; font-size: 11.5px; background: color-mix(in srgb, var(--tr-warning) 16%, var(--tr-card-bg)); border: 1px solid color-mix(in srgb, var(--tr-warning) 45%, transparent); color: #fff; }
+  .tr-jrisk b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 2px; }
 </style>
 </head>
 <body>
 
 <!-- 全站密碼保護遮罩 -->
 <div id="site_lock_overlay">
-  <div class="site-lock-box">
-    <h2>🔒 專案存取驗證</h2>
-    <p>此 Executive Team Dashboard 包含機密資料，請輸入全站存取密碼以繼續。</p>
-    <input type="password" id="site_pwd_input" placeholder="請輸入密碼 (四位數: _ _ _ _)" onkeydown="if(event.key==='Enter') verifySitePassword()">
-    <button onclick="verifySitePassword()">進入系統</button>
-    <div id="site_lock_error" class="site-lock-error"></div>
-  </div>
+  <div class="site-lock-box">
+    <h2>🔒 專案存取驗證</h2>
+    <p>此 Executive Team Dashboard 包含機密資料，請輸入全站存取密碼以繼續。</p>
+    <input type="password" id="site_pwd_input" placeholder="請輸入密碼 (四位數: _ _ _ _)" onkeydown="if(event.key==='Enter') verifySitePassword()">
+    <button onclick="verifySitePassword()">進入系統</button>
+    <div id="site_lock_error" class="site-lock-error"></div>
+  </div>
 </div>
 
 <div class="wrap">
-  <div class="rbac-top-banner">
-    <div class="rbac-content">
-      <span class="rbac-icon">🔒</span>
-      <span id="disp_rbac_notice">
-        <b>數據權限控管：</b>本看板實施部門資料隔離機制，各部門負責人僅限查閱所屬團隊之年度預算、編制名單與考績明細；跨部門全域彙整資料依最小特權原則（PoLP）予以嚴格隔離保護。
-      </span>
-    </div>
-    <div class="rbac-badge" id="disp_rbac_badge">部門專屬檢視 · 權限隔離</div>
-  </div>
+  <div class="rbac-top-banner">
+    <div class="rbac-content">
+      <span class="rbac-icon">🔒</span>
+      <span id="disp_rbac_notice">
+        <b>數據權限控管：</b>本看板實施部門資料隔離機制，各部門負責人僅限查閱所屬團隊之年度預算、編制名單與考績明細；跨部門全域彙整資料依最小特權原則（PoLP）予以嚴格隔離保護。
+      </span>
 
-  <div class="main-nav">
-    <div class="main-nav-item active" id="nav_01" onclick="switchTab('tab01')">01 全球雙軌薪酬對標</div>
-    <div class="main-nav-item" id="nav_02" onclick="switchTab('tab02')">02 雙軌晉升示意圖</div>
-    <div class="main-nav-item" id="nav_03" onclick="switchTab('tab03')">03 LIVE O-CHART 對照 年度預算預測</div>
-    <div class="main-nav-item" id="nav_04" onclick="switchTab('tab04')">04 OKR 對齊與新招募預算</div>
-    <div class="main-nav-item" id="nav_05" onclick="switchTab('tab05')">05 人才盤點與晉升準備</div>
-  </div>
+    </div>
+    <div class="rbac-badge" id="disp_rbac_badge">部門專屬檢視 · 權限隔離</div>
+  </div>
 
-  <header class="top">
-    <div>
-      <h1 id="headerTitle">Executive Team Dashboard</h1>
-    </div>
-    <div class="lang-switcher">
-      <button class="lang-btn" id="btnZh" onclick="setLanguage('zh')">繁中</button>
-      <button class="lang-btn active" id="btnEn" onclick="setLanguage('en')">EN</button>
-    </div>
-  </header>
+  <div class="main-nav">
+    <div class="main-nav-item active" id="nav_01" onclick="switchTab('tab01')">01 全球雙軌薪酬對標</div>
+    <div class="main-nav-item" id="nav_02" onclick="switchTab('tab02')">02 雙軌晉升示意圖</div>
+    <div class="main-nav-item" id="nav_03" onclick="switchTab('tab03')">03 LIVE O-CHART 對照 年度預算預測</div>
+    <div class="main-nav-item" id="nav_04" onclick="switchTab('tab04')">04 OKR 對齊與新招募預算</div>
+    <div class="main-nav-item" id="nav_05" onclick="switchTab('tab05')">05 人才盤點與晉升準備</div>
+  </div>
 
-  <!-- ================= 01 全球雙軌薪酬對標 ================= -->
-  <div id="pane_tab01" class="pane active">
-    <div class="comp-region-selector" id="regBar"></div>
-    <div class="comp-function-selector" id="fnBar"></div>
-    <div class="tier-cards-grid" id="tierCardsGrid"></div>
-    <table>
-      <thead>
-        <tr>
-          <th style="width:90px;" id="th_lvl">職級代碼</th>
-          <th id="th_title_scope">代表職稱 / 職責範疇</th>
-          <th id="th_t3">T3 初創梯隊 (年薪)</th>
-          <th id="th_t2">T2 全球基準 (Global Benchmark)</th>
-          <th id="th_t1">T1 頂尖梯隊 (年薪)</th>
-          <th id="th_region_ann">地區調整後年薪 (T2)</th>
-          <th id="th_region_mon">地區調整後月薪 (T2)</th>
-        </tr>
-      </thead>
-      <tbody id="compTableBody"></tbody>
-    </table>
-  </div>
+  <header class="top">
+    <div>
+      <h1 id="headerTitle">Executive Team Dashboard</h1>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn" id="btnZh" onclick="setLanguage('zh')">繁中</button>
+      <button class="lang-btn active" id="btnEn" onclick="setLanguage('en')">EN</button>
+    </div>
+  </header>
 
-  <!-- ================= 02 雙軌晉升示意圖 ================= -->
-  <div id="pane_tab02" class="pane">
-    <div class="comp-function-selector" id="ladderFnBar"></div>
-    <div class="layout-grid">
-      <div class="ladder-box" id="ladderTree"></div>
-      <div id="ladderCards"></div>
-    </div>
-  </div>
+  <!-- ================= 01 全球雙軌薪酬對標 ================= -->
+  <div id="pane_tab01" class="pane active">
+    <div class="comp-region-selector" id="regBar"></div>
+    <div class="comp-function-selector" id="fnBar"></div>
+    <div class="tier-cards-grid" id="tierCardsGrid"></div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:90px;" id="th_lvl">職級代碼</th>
+          <th id="th_title_scope">代表職稱 / 職責範疇</th>
+          <th id="th_t3">T3 初創梯隊 (年薪)</th>
+          <th id="th_t2">T2 全球基準 (Global Benchmark)</th>
+          <th id="th_t1">T1 頂尖梯隊 (年薪)</th>
+          <th id="th_region_ann">地區調整後年薪 (T2)</th>
+          <th id="th_region_mon">地區調整後月薪 (T2)</th>
+        </tr>
+      </thead>
+      <tbody id="compTableBody"></tbody>
+    </table>
+  </div>
 
-  <!-- ================= 03 LIVE O-CHART 對照 年度預算預測 ================= -->
-  <div id="pane_tab03" class="pane">
-    <div class="top-dashboard-card">
-      <div class="top-dashboard-title" id="budget_card_title">研發部門 人事成本與預算預測</div>
-      <div class="top-dashboard-kpis">
-        <div class="top-kpi-box">
-          <div class="top-kpi-label" id="lbl_top_hc">總編制總人數</div>
-          <div class="top-kpi-val" id="disp_total_hc" style="color:var(--cyan);">0 人</div>
-        </div>
-        <div class="top-kpi-box">
-          <div class="top-kpi-label" id="lbl_top_budget">年度總薪酬預算 (USD)</div>
-          <div class="top-kpi-val" id="disp_total_budget" style="color:#34d399;">$0</div>
-        </div>
-      </div>
-      <div class="top-dashboard-notes">
-        <div id="runway_desc_line">• 資本跑道 (Runway)：依據市場梯隊結合地區指數計算，已自動折算跨國雇主法定成本準備金 (約 12%)。</div>
-        <div id="span_hc_structure">• 職級比例結構：符合 40% 骨幹 (L4) + 25% 初階 (L3) + 25% 資深 (L5) + 10% 領導層之健康分佈。</div>
-      </div>
-    </div>
+  <!-- ================= 02 雙軌晉升示意圖 ================= -->
+  <div id="pane_tab02" class="pane">
+    <div class="comp-function-selector" id="ladderFnBar"></div>
+    <div class="layout-grid">
+      <div class="ladder-box" id="ladderTree"></div>
+      <div id="ladderCards"></div>
+    </div>
+  </div>
 
-    <div class="calc-top-bar">
-      <div class="dept-ctrl">
-        <label style="font-weight:700; color:var(--cyan);" id="lbl_dept_name">部門名稱：</label>
-        <input type="text" id="dept_name_input" value="研發部門" oninput="runBudgetCalc()">
-      </div>
-      <div class="tier-ctrl">
-        <label style="font-size:12.5px; color:var(--text-secondary);" id="lbl_tier_select">企業市場梯隊：</label>
-        <select id="calc_tier" onchange="runBudgetCalc()">
-          <option value="1.40">T1 頂尖梯隊 (Top-Tier) ×1.40</option>
-          <option value="1.00" selected>T2 全球基準 (Global Benchmark) ×1.00</option>
-          <option value="0.75">T3 初創梯隊 (Startup) ×0.75</option>
-        </select>
-      </div>
-    </div>
+  <!-- ================= 03 LIVE O-CHART 對照 年度預算預測 ================= -->
+  <div id="pane_tab03" class="pane">
+    <div class="top-dashboard-card">
+      <div class="top-dashboard-title" id="budget_card_title">研發部門 人事成本與預算預測</div>
+      <div class="top-dashboard-kpis">
+        <div class="top-kpi-box">
+          <div class="top-kpi-label" id="lbl_top_hc">總編制總人數</div>
+          <div class="top-kpi-val" id="disp_total_hc" style="color:var(--cyan);">0 人</div>
+        </div>
+        <div class="top-kpi-box">
+          <div class="top-kpi-label" id="lbl_top_budget">年度總薪酬預算 (USD)</div>
+          <div class="top-kpi-val" id="disp_total_budget" style="color:#34d399;">$0</div>
+        </div>
+      </div>
+      <div class="top-dashboard-notes">
+        <div id="runway_desc_line">• 資本跑道 (Runway)：依據市場梯隊結合地區指數計算，已自動折算跨國雇主法定成本準備金 (約 12%)。</div>
+        <div id="span_hc_structure">• 職級比例結構：符合 40% 骨幹 (L4) + 25% 初階 (L3) + 25% 資深 (L5) + 10% 領導層之健康分佈。</div>
+      </div>
+    </div>
 
-    <div class="table-responsive-wrap">
-      <table class="matrix-calc-table">
-        <thead>
-          <tr>
-            <th style="width:75px;" id="th_matrix_lvl">職階代碼</th>
-            <th style="width:130px; text-align:left;" id="th_matrix_role">職位代表</th>
-            <th>🇺🇸 US<br><span style="font-size:9.5px; color:var(--text-muted);">×1.10</span></th>
-            <th>🇸🇬 SG<br><span style="font-size:9.5px; color:var(--text-muted);">×0.95</span></th>
-            <th>🇦🇪 UAE<br><span style="font-size:9.5px; color:var(--text-muted);">×0.90</span></th>
-            <th>🇪🇺 EU<br><span style="font-size:9.5px; color:var(--text-muted);">×0.80</span></th>
-            <th>🇹🇼 TW<br><span style="font-size:9.5px; color:var(--text-muted);">×0.65</span></th>
-            <th>🇲🇾 MY<br><span style="font-size:9.5px; color:var(--text-muted);">×0.45</span></th>
-            <th>🇮🇳 IN<br><span style="font-size:9.5px; color:var(--text-muted);">×0.40</span></th>
-            <th style="width:130px;" id="th_matrix_subhc">該職階人數 (佔比 %)</th>
-            <th style="width:130px; text-align:right;" id="th_matrix_subcost">年薪預算小計 (USD)</th>
-          </tr>
-        </thead>
-        <tbody id="matrixTableBody"></tbody>
-      </table>
-    </div>
+    <div class="calc-top-bar">
+      <div class="dept-ctrl">
+        <label style="font-weight:700; color:var(--cyan);" id="lbl_dept_name">部門名稱：</label>
+        <input type="text" id="dept_name_input" value="研發部門" oninput="runBudgetCalc()">
+      </div>
+      <div class="tier-ctrl">
+        <label style="font-size:12.5px; color:var(--text-secondary);" id="lbl_tier_select">企業市場梯隊：</label>
+        <select id="calc_tier" onchange="runBudgetCalc()">
+          <option value="1.40">T1 頂尖梯隊 (Top-Tier) ×1.40</option>
+          <option value="1.00" selected>T2 全球基準 (Global Benchmark) ×1.00</option>
+          <option value="0.75">T3 初創梯隊 (Startup) ×0.75</option>
+        </select>
+      </div>
+    </div>
 
-    <div class="org-chart-wrapper">
-      <h3 id="org_chart_title" style="font-size:15px; margin-bottom:18px; color:var(--cyan);">研發部門 動態組織架構圖 (Live Org Chart)</h3>
-      <div class="org-tree" id="orgTreeContainer"></div>
-    </div>
-  </div>
+    <div class="table-responsive-wrap">
+      <table class="matrix-calc-table">
+        <thead>
+          <tr>
+            <th style="width:75px;" id="th_matrix_lvl">職階代碼</th>
+            <th style="width:130px; text-align:left;" id="th_matrix_role">職位代表</th>
+            <th>🇺🇸 US<br><span style="font-size:9.5px; color:var(--text-muted);">×1.10</span></th>
+            <th>🇸🇬 SG<br><span style="font-size:9.5px; color:var(--text-muted);">×0.95</span></th>
+            <th>🇦🇪 UAE<br><span style="font-size:9.5px; color:var(--text-muted);">×0.90</span></th>
+            <th>🇪🇺 EU<br><span style="font-size:9.5px; color:var(--text-muted);">×0.80</span></th>
+            <th>🇹🇼 TW<br><span style="font-size:9.5px; color:var(--text-muted);">×0.65</span></th>
+            <th>🇲🇾 MY<br><span style="font-size:9.5px; color:var(--text-muted);">×0.45</span></th>
+            <th>🇮🇳 IN<br><span style="font-size:9.5px; color:var(--text-muted);">×0.40</span></th>
+            <th style="width:130px;" id="th_matrix_subhc">該職階人數 (佔比 %)</th>
+            <th style="width:130px; text-align:right;" id="th_matrix_subcost">年薪預算小計 (USD)</th>
+          </tr>
+        </thead>
+        <tbody id="matrixTableBody"></tbody>
+      </table>
+    </div>
 
-  <!-- ================= 04 OKR 對齊、新招募職缺與預算 ================= -->
-  <div id="pane_tab04" class="pane">
-    <div class="okr-dashboard-top">
-      <div class="okr-top-card">
-        <div class="lbl" id="lbl_top_base_cost">現有編制年度預算</div>
-        <div class="val" id="disp_okr_base_cost" style="color:var(--text-secondary);">$1,529,500</div>
-      </div>
-      <div class="okr-top-card">
-        <div class="lbl" id="lbl_top_new_cost" style="color:var(--series-3);">新增職缺預算 (USD)</div>
-        <div class="val" id="disp_okr_new_cost" style="color:#34d399;">+$414,500 <span style="font-size:12px; color:var(--series-3); font-weight:700;">(+27.1%)</span></div>
-      </div>
-      <div class="okr-top-card" style="border-color:rgba(6,182,212,0.3); background:color-mix(in srgb, var(--cyan) 6%, #070b14);">
-        <div class="lbl" id="lbl_top_total_cost" style="color:var(--cyan);">加入新招後總年度預算</div>
-        <div class="val" id="disp_okr_total_cost" style="color:var(--cyan);">$1,944,000 <span style="font-size:12px; color:var(--cyan); font-weight:700;">(+27.1%)</span></div>
-      </div>
-      <div class="okr-top-card">
-        <div class="lbl" id="lbl_top_final_hc">新總編制人數</div>
-        <div class="val" id="disp_okr_final_hc" style="color:var(--purple);">18 人 <span style="font-size:12px; color:var(--purple); font-weight:700;">(+20.0%)</span></div>
-      </div>
-    </div>
+    <div class="org-chart-wrapper">
+      <h3 id="org_chart_title" style="font-size:15px; margin-bottom:18px; color:var(--cyan);">研發部門 動態組織架構圖 (Live Org Chart)</h3>
+      <div class="org-tree" id="orgTreeContainer"></div>
+    </div>
+  </div>
 
-    <div class="okr-content-grid">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <h3 style="font-size:15px; color:var(--text-primary);" id="sec_okr_edit_title">Strategic OKRs — Click to Edit</h3>
-          <button class="btn-add-okr" onclick="addNewOkrBox()" id="btn_add_okr_label">+ 新增戰略目標</button>
-        </div>
-        <div id="okrBoxListContainer">
-          <div class="okr-box" id="okr_box_1">
-            <button class="btn-del-okr" onclick="deleteOkrBox(1)" title="刪除此目標">✕</button>
-            <div class="parent-okr-bar">
-              <span class="parent-okr-label">🔗 上級對照:</span>
-              <input type="text" class="parent-okr-input" value="O0-公司總部 2027 年全球化佈局與核心吞吐量翻倍藍圖">
-            </div>
-            <input type="text" class="okr-input-obj" value="Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性">
-            <textarea class="okr-textarea-kr">• KR1: 完成多幣種虛擬資金池路由引擎重構，降低 40% 延遲
+  <!-- ================= 04 OKR 對齊、新招募職缺與預算 ================= -->
+  <div id="pane_tab04" class="pane">
+    <div class="okr-dashboard-top">
+      <div class="okr-top-card">
+        <div class="lbl" id="lbl_top_base_cost">現有編制年度預算</div>
+        <div class="val" id="disp_okr_base_cost" style="color:var(--text-secondary);">$1,529,500</div>
+      </div>
+      <div class="okr-top-card">
+        <div class="lbl" id="lbl_top_new_cost" style="color:var(--series-3);">新增職缺預算 (USD)</div>
+        <div class="val" id="disp_okr_new_cost" style="color:#34d399;">+$414,500 <span style="font-size:12px; color:var(--series-3); font-weight:700;">(+27.1%)</span></div>
+      </div>
+      <div class="okr-top-card" style="border-color:rgba(6,182,212,0.3); background:color-mix(in srgb, var(--cyan) 6%, #070b14);">
+        <div class="lbl" id="lbl_top_total_cost" style="color:var(--cyan);">加入新招後總年度預算</div>
+        <div class="val" id="disp_okr_total_cost" style="color:var(--cyan);">$1,944,000 <span style="font-size:12px; color:var(--cyan); font-weight:700;">(+27.1%)</span></div>
+      </div>
+      <div class="okr-top-card">
+        <div class="lbl" id="lbl_top_final_hc">新總編制人數</div>
+        <div class="val" id="disp_okr_final_hc" style="color:var(--purple);">18 人 <span style="font-size:12px; color:var(--purple); font-weight:700;">(+20.0%)</span></div>
+      </div>
+    </div>
+
+    <div class="okr-content-grid">
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:15px; color:var(--text-primary);" id="sec_okr_edit_title">Strategic OKRs — Click to Edit</h3>
+          <button class="btn-add-okr" onclick="addNewOkrBox()" id="btn_add_okr_label">+ 新增戰略目標</button>
+        </div>
+        <div id="okrBoxListContainer">
+          <div class="okr-box" id="okr_box_1">
+            <button class="btn-del-okr" onclick="deleteOkrBox(1)" title="刪除此目標">✕</button>
+            <div class="parent-okr-bar">
+              <span class="parent-okr-label">🔗 上級對照:</span>
+              <input type="text" class="parent-okr-input" value="O0-公司總部 2027 年全球化佈局與核心吞吐量翻倍藍圖">
+            </div>
+            <input type="text" class="okr-input-obj" value="Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性">
+            <textarea class="okr-textarea-kr">• KR1: 完成多幣種虛擬資金池路由引擎重構，降低 40% 延遲
 • KR2: 通過 SOC2 Type II 審計與零重大資安漏洞
 • KR3: 建立全球分佈式 24/7 SRE 自動化自愈體系</textarea>
-          </div>
-          <div class="okr-box" id="okr_box_2">
-            <button class="btn-del-okr" onclick="deleteOkrBox(2)" title="刪除此目標">✕</button>
-            <div class="parent-okr-bar">
-              <span class="parent-okr-label">🔗 上級對照:</span>
-              <input type="text" class="parent-okr-input" value="O0-公司總部跨國人效優化與研發成本結構精實目標">
-            </div>
-            <input type="text" class="okr-input-obj" value="Objective 2: 區域交付中心降本增效與人才密度優化">
-            <textarea class="okr-textarea-kr">• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%
+          </div>
+          <div class="okr-box" id="okr_box_2">
+            <button class="btn-del-okr" onclick="deleteOkrBox(2)" title="刪除此目標">✕</button>
+            <div class="parent-okr-bar">
+              <span class="parent-okr-label">🔗 上級對照:</span>
+              <input type="text" class="parent-okr-input" value="O0-公司總部跨國人效優化與研發成本結構精實目標">
+            </div>
+            <input type="text" class="okr-input-obj" value="Objective 2: 區域交付中心降本增效與人才密度優化">
+            <textarea class="okr-textarea-kr">• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%
 • KR2: 自動化覆蓋率提升至 85%，壓縮月結週期至 T+2
 • KR3: 落地 L3-L8 全序列雙軌職涯階梯與能力錨定</textarea>
-          </div>
-        </div>
-      </div>
+          </div>
+        </div>
+      </div>
 
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <h3 style="font-size:15px; color:var(--text-primary);" id="sec_hire_builder_title">New Hires Requirement List</h3>
-          <button class="btn-add-hire" onclick="addNewHireRow()" id="btn_add_hire_label">+ 新增招募職缺</button>
-        </div>
-        <div class="hire-builder-box" id="hireListContainer">
-          <div class="hire-item-card" id="hire_card_1">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-              <input type="text" value="Staff Protocol Architect" style="flex:1; background:#090d16; border:1px solid var(--border); color:#fff; padding:8px 12px; border-radius:6px; font-weight:700; font-size:13px;">
-              <select class="hire-select">
-                <option value="L7_M2">L7 / M2</option>
-                <option value="L6_M1" selected>L6 / M1</option>
-                <option value="L5">L5</option>
-                <option value="L4">L4</option>
-                <option value="L3">L3</option>
-              </select>
-              <select class="hire-select">
-                <option value="US">🇺🇸 US (1.10)</option>
-                <option value="SG" selected>🇸🇬 SG (0.95)</option>
-                <option value="UAE">🇦🇪 UAE (0.90)</option>
-                <option value="EU">🇪🇺 EU (0.80)</option>
-                <option value="TW">🇹🇼 TW (0.65)</option>
-                <option value="MY">🇲🇾 MY (0.45)</option>
-                <option value="IN">🇮🇳 IN (0.40)</option>
-              </select>
-              <button onclick="deleteHireRow(1)" style="background:none; border:none; color:var(--critical); font-size:16px; font-weight:bold; cursor:pointer;" title="刪除此職缺">✕</button>
-            </div>
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:15px; color:var(--text-primary);" id="sec_hire_builder_title">New Hires Requirement List</h3>
+          <button class="btn-add-hire" onclick="addNewHireRow()" id="btn_add_hire_label">+ 新增招募職缺</button>
+        </div>
+        <div class="hire-builder-box" id="hireListContainer">
+          <div class="hire-item-card" id="hire_card_1">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+              <input type="text" value="Staff Protocol Architect" style="flex:1; background:#090d16; border:1px solid var(--border); color:#fff; padding:8px 12px; border-radius:6px; font-weight:700; font-size:13px;">
+              <select class="hire-select">
+                <option value="L7_M2">L7 / M2</option>
+                <option value="L6_M1" selected>L6 / M1</option>
+                <option value="L5">L5</option>
+                <option value="L4">L4</option>
+                <option value="L3">L3</option>
+              </select>
+              <select class="hire-select">
+                <option value="US">🇺🇸 US (1.10)</option>
+                <option value="SG" selected>🇸🇬 SG (0.95)</option>
+                <option value="UAE">🇦🇪 UAE (0.90)</option>
+                <option value="EU">🇪🇺 EU (0.80)</option>
+                <option value="TW">🇹🇼 TW (0.65)</option>
+                <option value="MY">🇲🇾 MY (0.45)</option>
+                <option value="IN">🇮🇳 IN (0.40)</option>
+              </select>
+              <button onclick="deleteHireRow(1)" style="background:none; border:none; color:var(--critical); font-size:16px; font-weight:bold; cursor:pointer;" title="刪除此職缺">✕</button>
+            </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-              <div style="font-size:11.5px; color:var(--text-muted);">基準定價: $240,000 × 0.95 (SG)</div>
-              <div style="font-size:16px; font-weight:800; color:#34d399;">$228,000 <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">USD/yr</span></div>
-            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <div style="font-size:11.5px; color:var(--text-muted);">基準定價: $240,000 × 0.95 (SG)</div>
+              <div style="font-size:16px; font-weight:800; color:#34d399;">$228,000 <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">USD/yr</span></div>
+            </div>
 
-            <div class="role-okr-container">
-              <div class="role-okr-title">🎯 崗位專屬 3 大 OKR / KR 目標</div>
-              <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
-                <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #1</span>
-                <input type="text" class="role-okr-input" value="O1-KR1.1: 核心清算架構重構與路由优化">
-              </div>
-              <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
-                <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #2</span>
-                <input type="text" class="role-okr-input" value="O1-KR1.2: 降低跨鏈驗證延遲達 40%">
-              </div>
-              <div style="display:flex; gap:6px; align-items:center;">
-                <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #3</span>
-                <input type="text" class="role-okr-input" value="O1-KR1.3: 制定去中心化協議安全審查規範">
-              </div>
-            </div>
+            <div class="role-okr-container">
+              <div class="role-okr-title">🎯 崗位專屬 3 大 OKR / KR 目標</div>
+              <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
+                <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #1</span>
+                <input type="text" class="role-okr-input" value="O1-KR1.1: 核心清算架構重構與路由优化">
+              </div>
+              <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
+                <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #2</span>
+                <input type="text" class="role-okr-input" value="O1-KR1.2: 降低跨鏈驗證延遲達 40%">
+              </div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #3</span>
+                <input type="text" class="role-okr-input" value="O1-KR1.3: 制定去中心化協議安全審查規範">
+              </div>
+            </div>
 
-            <div class="funnel-container">
-              <div class="funnel-title">招募漏斗階段追蹤 (手動輸入候選人數)</div>
-              <div class="funnel-steps-grid">
-                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="24"><div class="f-name">HR SCREEN</div></div>
-                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="12"><div class="f-name">TECH SCREEN</div></div>
-                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="6"><div class="f-name">LINE MGR</div></div>
-                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="4"><div class="f-name">CODING</div></div>
-                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="2"><div class="f-name">DEPT HEAD</div></div>
-                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="2"><div class="f-name">SYS DESIGN</div></div>
-                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="1"><div class="f-name">OFFER</div></div>
-              </div>
-              <div class="dynamic-funnel-viz">
-                <div class="viz-bar-row"><div class="viz-label">HR SCREEN</div><div class="viz-track"><div class="viz-fill" style="width: 100%;"></div></div><div class="viz-val">24</div></div>
-                <div class="viz-bar-row"><div class="viz-label">TECH SCREEN</div><div class="viz-track"><div class="viz-fill" style="width: 50%;"></div></div><div class="viz-val">12</div></div>
-                <div class="viz-bar-row"><div class="viz-label">LINE MGR</div><div class="viz-track"><div class="viz-fill" style="width: 25%;"></div></div><div class="viz-val">6</div></div>
-                <div class="viz-bar-row"><div class="viz-label">CODING</div><div class="viz-track"><div class="viz-fill" style="width: 17%;"></div></div><div class="viz-val">4</div></div>
-                <div class="viz-bar-row"><div class="viz-label">DEPT HEAD</div><div class="viz-track"><div class="viz-fill" style="width: 8%;"></div></div><div class="viz-val">2</div></div>
-                <div class="viz-bar-row"><div class="viz-label">SYS DESIGN</div><div class="viz-track"><div class="viz-fill" style="width: 8%;"></div></div><div class="viz-val">2</div></div>
-                <div class="viz-bar-row"><div class="viz-label">OFFER</div><div class="viz-track"><div class="viz-fill" style="width: 4%;"></div></div><div class="viz-val">1</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+            <div class="funnel-container">
+              <div class="funnel-title">招募漏斗階段追蹤 (手動輸入候選人數)</div>
+              <div class="funnel-steps-grid">
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="24"><div class="f-name">HR SCREEN</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="12"><div class="f-name">TECH SCREEN</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="6"><div class="f-name">LINE MGR</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="4"><div class="f-name">CODING</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="2"><div class="f-name">DEPT HEAD</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="2"><div class="f-name">SYS DESIGN</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="1"><div class="f-name">OFFER</div></div>
+              </div>
+              <div class="dynamic-funnel-viz">
+                <div class="viz-bar-row"><div class="viz-label">HR SCREEN</div><div class="viz-track"><div class="viz-fill" style="width: 100%;"></div></div><div class="viz-val">24</div></div>
+                <div class="viz-bar-row"><div class="viz-label">TECH SCREEN</div><div class="viz-track"><div class="viz-fill" style="width: 50%;"></div></div><div class="viz-val">12</div></div>
+                <div class="viz-bar-row"><div class="viz-label">LINE MGR</div><div class="viz-track"><div class="viz-fill" style="width: 25%;"></div></div><div class="viz-val">6</div></div>
+                <div class="viz-bar-row"><div class="viz-label">CODING</div><div class="viz-track"><div class="viz-fill" style="width: 17%;"></div></div><div class="viz-val">4</div></div>
+                <div class="viz-bar-row"><div class="viz-label">DEPT HEAD</div><div class="viz-track"><div class="viz-fill" style="width: 8%;"></div></div><div class="viz-val">2</div></div>
+                <div class="viz-bar-row"><div class="viz-label">SYS DESIGN</div><div class="viz-track"><div class="viz-fill" style="width: 8%;"></div></div><div class="viz-val">2</div></div>
+                <div class="viz-bar-row"><div class="viz-label">OFFER</div><div class="viz-track"><div class="viz-fill" style="width: 4%;"></div></div><div class="viz-val">1</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <!-- ================= 05 人才盤點與晉升準備 ================= -->
-  <div id="pane_tab05" class="pane">
-    <div id="tr_dashboard_content">
-      <div class="tr-wrap">
-        <header class="top">
-          <div>
-            <h1 id="tr_headerTitle">人才盤點與晉升準備儀表板<span class="tr-badge" id="tr_cycleBadge">2027 年 4 月週期</span></h1>
-            <div class="sub" id="tr_headerSub">九宮格落點評估 · 方案 B 潛力權重體系 (組長/主管 70% · 負責人/HRBP 30%) · Google 試算表連動</div>
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-            <div style="display:flex; gap:8px; align-items:center;">
-              <span id="tr_current_auth_label" style="font-size:12px; color:var(--cyan); font-weight:700;">🔓 多部門權限已解鎖</span>
-            </div>
-            <div id="tr_syncStatus" style="font-size:12px; color:var(--tr-text-muted);">Synced All Secure Teams</div>
-          </div>
-        </header>
+  <!-- ================= 05 人才盤點與晉升準備 ================= -->
+  <div id="pane_tab05" class="pane">
+    <div id="tr_dashboard_content">
+      <div class="tr-wrap">
+        <header class="top">
+          <div>
+            <h1 id="tr_headerTitle">人才盤點與晉升準備儀表板<span class="tr-badge" id="tr_cycleBadge">2027 年 4 月週期</span></h1>
+            <div class="sub" id="tr_headerSub">九宮格落點評估 · 方案 B 潛力權重體系 (組長/主管 70% · 負責人/HRBP 30%) · Google 試算表連動</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span id="tr_current_auth_label" style="font-size:12px; color:var(--cyan); font-weight:700;">🔓 多部門權限已解鎖</span>
+            </div>
+            <div id="tr_syncStatus" style="font-size:12px; color:var(--tr-text-muted);">Synced All Secure Teams</div>
+          </div>
+        </header>
 
-        <div class="tr-tabbar" id="tr_tabbar"></div>
-        <div id="tr_panes"></div>
-      </div>
-    </div>
-  </div>
+        <div class="tr-tabbar" id="tr_tabbar"></div>
+        <div id="tr_panes"></div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -597,21 +788,21 @@
 const SITE_PASSWORD = "5678";
 
 function verifySitePassword() {
-  const inputVal = document.getElementById('site_pwd_input').value.trim();
-  const errorEl = document.getElementById('site_lock_error');
-  
-  if (inputVal === SITE_PASSWORD) {
-    document.getElementById('site_lock_overlay').style.display = 'none';
-    sessionStorage.setItem('site_unlocked', 'true');
-  } else {
-    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入！";
-  }
+  const inputVal = document.getElementById('site_pwd_input').value.trim();
+  const errorEl = document.getElementById('site_lock_error');
+  
+  if (inputVal === SITE_PASSWORD) {
+    document.getElementById('site_lock_overlay').style.display = 'none';
+    sessionStorage.setItem('site_unlocked', 'true');
+  } else {
+    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入！";
+  }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  if (sessionStorage.getItem('site_unlocked') === 'true') {
-    document.getElementById('site_lock_overlay').style.display = 'none';
-  }
+  if (sessionStorage.getItem('site_unlocked') === 'true') {
+    document.getElementById('site_lock_overlay').style.display = 'none';
+  }
 });
 
 let currentLang = 'en';
@@ -621,373 +812,373 @@ let currentFnCode = 'eng';
 let currentLadderFn = 'eng';
 
 const COMP_REGIONS = [
-  { code: 'US', labelZh: '美國', labelEn: 'United States', flag: '🇺🇸', factor: 1.10 },
-  { code: 'SG', labelZh: '新加坡', labelEn: 'Singapore', flag: '🇸🇬', factor: 0.95 },
-  { code: 'UAE', labelZh: '阿聯酋 (杜拜)', labelEn: 'UAE (Dubai)', flag: '🇦🇪', factor: 0.90 },
-  { code: 'EU', labelZh: '歐洲', labelEn: 'Europe', flag: '🇪🇺', factor: 0.80 },
-  { code: 'TW', labelZh: '台灣', labelEn: 'Taiwan', flag: '🇹🇼', factor: 0.65 },
-  { code: 'MY', labelZh: '馬來西亞', labelEn: 'Malaysia', flag: '🇲🇾', factor: 0.45 },
-  { code: 'IN', labelZh: '印度', labelEn: 'India', flag: '🇮🇳', factor: 0.40 }
+  { code: 'US', labelZh: '美國', labelEn: 'United States', flag: '🇺🇸', factor: 1.10 },
+  { code: 'SG', labelZh: '新加坡', labelEn: 'Singapore', flag: '🇸🇬', factor: 0.95 },
+  { code: 'UAE', labelZh: '阿聯酋 (杜拜)', labelEn: 'UAE (Dubai)', flag: '🇦🇪', factor: 0.90 },
+  { code: 'EU', labelZh: '歐洲', labelEn: 'Europe', flag: '🇪🇺', factor: 0.80 },
+  { code: 'TW', labelZh: '台灣', labelEn: 'Taiwan', flag: '🇹🇼', factor: 0.65 },
+  { code: 'MY', labelZh: '馬來西亞', labelEn: 'Malaysia', flag: '🇲🇾', factor: 0.45 },
+  { code: 'IN', labelZh: '印度', labelEn: 'India', flag: '🇮🇳', factor: 0.40 }
 ];
 
 const BASE_RATES = {
-  L3: 95000, L4: 140000, L5: 190000, L6_M1: 240000, L7_M2: 330000, L8_M3: 500000
+  L3: 95000, L4: 140000, L5: 190000, L6_M1: 240000, L7_M2: 330000, L8_M3: 500000
 };
 
 const MATRIX_CONFIG = {
-  L7_M2: { key: 'L7_M2', code: 'L7 / M2', titleZh: '部門總監 / 負責人', titleEn: 'Dept Head / Director', US: 0, SG: 1, UAE: 0, EU: 0, TW: 0, MY: 0, IN: 0 },
-  L6_M1: { key: 'L6_M1', code: 'L6 / M1', titleZh: '組長 / 主任架構師', titleEn: 'Team Lead / Staff', US: 0, SG: 1, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
-  L5:    { key: 'L5',    code: 'L5',      titleZh: '資深專家 / 骨幹', titleEn: 'Senior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
-  L4:    { key: 'L4',    code: 'L4',      titleZh: '中階主力執行者', titleEn: 'Mid-Level Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 3, MY: 2, IN: 0 },
-  L3:    { key: 'L3',    code: 'L3',      titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 4, MY: 2, IN: 0 }
+  L7_M2: { key: 'L7_M2', code: 'L7 / M2', titleZh: '部門總監 / 負責人', titleEn: 'Dept Head / Director', US: 0, SG: 1, UAE: 0, EU: 0, TW: 0, MY: 0, IN: 0 },
+  L6_M1: { key: 'L6_M1', code: 'L6 / M1', titleZh: '組長 / 主任架構師', titleEn: 'Team Lead / Staff', US: 0, SG: 1, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
+  L5:    { key: 'L5',    code: 'L5',     titleZh: '資深專家 / 骨幹', titleEn: 'Senior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
+  L4:    { key: 'L4',    code: 'L4',     titleZh: '中階主力執行者', titleEn: 'Mid-Level Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 3, MY: 2, IN: 0 },
+  L3:    { key: 'L3',    code: 'L3',     titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 4, MY: 2, IN: 0 }
 };
 
 const COMP_FUNCTIONS = {
-  eng: {
-    nameZh: "研發工程 (Engineering)", nameEn: "Engineering",
-    roles: [
-      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Engineer", titleEn: "Junior Engineer", scopeZh: "基礎模組與 UI 元件維護、單元測試、SOP 功能開發", scopeEn: "Base module & UI maintenance, unit testing, standard feature delivery" },
-      { lvlKey: "L4", lvl: "L4", titleZh: "Mid-Level Engineer", titleEn: "Mid-Level Engineer", scopeZh: "獨立負責核心業務模組、模組設計與除錯上線", scopeEn: "End-to-end ownership of core modules, architectural design & bug fixing" },
-      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Engineer", titleEn: "Senior Engineer", scopeZh: "核心系統高併發架構設計、重大線上故障排查、技術重構", scopeEn: "High-concurrency systems design, major incident mitigation & refactoring" },
-      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Eng / Team Lead", titleEn: "Staff Eng / Team Lead", scopeZh: "技術軌：全域架構決策 (RFC) ｜ 管理軌：帶領 3–6 人工程小組", scopeEn: "Tech: Global RFC decisions | Mgmt: Lead 3-6 engineers agile delivery" },
-      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Principal / Dept Head", titleEn: "Principal / Dept Head", scopeZh: "技術軌：跨部門重大技術決策 ｜ 管理軌：統籌主要研發部門", scopeEn: "Tech: Cross-org technical strategy | Mgmt: Lead major engineering pillar" },
-      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "VP of Eng / CTO", titleEn: "VP of Eng / CTO", scopeZh: "全面掌管跨國研發與技術基建、技術與管理雙軌匯流統帥", scopeEn: "Unified leadership over global technology organization & infrastructure" }
-    ]
-  },
-  prod: {
-    nameZh: "產品管理 (Product)", nameEn: "Product Management",
-    roles: [
-      { lvlKey: "L3", lvl: "L3", titleZh: "Associate Product Manager", titleEn: "Associate PM", scopeZh: "功能需求細化、PRD 編寫、競品日常追蹤與敏捷驗收", scopeEn: "Feature detailing, PRD drafting, competitor tracking & sprint acceptance" },
-      { lvlKey: "L4", lvl: "L4", titleZh: "Product Manager (PM)", titleEn: "Product Manager", scopeZh: "獨立閉環單一產品線、用戶旅程設計、指標轉化率把控", scopeEn: "End-to-end ownership of product line, user journeys & conversion metrics" },
-      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Product Manager", titleEn: "Senior PM", scopeZh: "主導複雜交易/支付業務架構、跨端流程標準化、ROI 達成", scopeEn: "Complex payment/trading systems, multi-platform UX standardization & ROI" },
-      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal PM / Product Lead", titleEn: "Principal PM / Product Lead", scopeZh: "專家軌：產品頂層協議設計 ｜ 管理軌：帶領 3–6 人產品小組", scopeEn: "IC: Top-level protocol design | Mgmt: Lead 3-6 product managers" },
-      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Head of Product", titleEn: "Head of Product", scopeZh: "掌管核心業務線產品矩陣、跨國本地化產品體驗與戰略排期", scopeEn: "Lead full product portfolio, internationalization & roadmap strategy" },
-      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "Chief Product Officer (CPO)", titleEn: "Chief Product Officer", scopeZh: "全面負責公司全球產品戰略藍圖、新商業模式破局", scopeEn: "Overall product vision, global expansion strategy & business innovations" }
-    ]
-  },
-  ops: {
-    nameZh: "營運管理 (Operations)", nameEn: "Operations",
-    roles: [
-      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Operations Specialist", titleEn: "Junior Ops Specialist", scopeZh: "SOP 流程執行、日常工單對帳、用戶反饋流轉", scopeEn: "SOP task execution, ticket reconciliation & client issue dispatch" },
-      { lvlKey: "L4", lvl: "L4", titleZh: "Operations Specialist", titleEn: "Operations Specialist", scopeZh: "獨立負責端到端業務流轉、通道維護與日常突發異常排除", scopeEn: "End-to-end workflow management, channel maintenance & incident handling" },
-      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Operations Specialist", titleEn: "Senior Ops Specialist", scopeZh: "主導自動化降本流程、跨國複雜清算規則制定、重大客訴閉環", scopeEn: "Workflow automation, cross-border settlement logic & critical escalation" },
-      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Specialist / Ops Lead", titleEn: "Staff Specialist / Ops Lead", scopeZh: "專家軌：跨域營運架構治理 ｜ 管理軌：帶領 3–6 人運營小隊", scopeEn: "IC: Cross-domain ops architecture | Mgmt: Lead 3-6 ops specialists" },
-      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Operations Director", titleEn: "Operations Director", scopeZh: "掌管大區運營中心、單位營運成本（Unit Cost）控制", scopeEn: "Direct regional operations centers, unit cost reduction & SLA defense" },
-      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "VP of Operations / COO", titleEn: "VP of Operations / COO", scopeZh: "統籌全球跨國營運交付體系、跨部門經營損益閉環責任", scopeEn: "Global operating model governance, compliance defense & P&L ownership" }
-    ]
-  },
-  bd: {
-    nameZh: "商務與銷售 (BD & Sales)", nameEn: "BD & Sales",
-    roles: [
-      { lvlKey: "L3", lvl: "L3", titleZh: "Junior BD Associate", titleEn: "Junior BD Associate", scopeZh: "陌生線索挖掘、潛在客戶觸達、商務會議排程與 CRM 紀錄", scopeEn: "Cold outreach, lead qualification, CRM logging & pipeline prep" },
-      { lvlKey: "L4", lvl: "L4", titleZh: "Account Executive (AE)", titleEn: "Account Executive", scopeZh: "獨立負責商機端到端轉化、商業談判、合約簽署與上線", scopeEn: "Full deal lifecycle, negotiation, contract execution & client onboarding" },
-      { lvlKey: "L5", lvl: "L5", titleZh: "Senior AE / Strategic BD", titleEn: "Senior AE / Strategic BD", scopeZh: "區域 Top 機構客戶攻堅、高難度商業模式創新與定制方案", scopeEn: "Top-tier institutional accounts, high-stakes custom pricing & structuring" },
-      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal Deal Maker / Sales Lead", titleEn: "Principal Deal Maker / Lead", scopeZh: "專家軌：跨國戰略大單成交 ｜ 管理軌：帶領小組扛季度 Quota", scopeEn: "IC: Multi-million cross-border deals | Mgmt: Quota ownership & team lead" },
-      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Regional Sales Head", titleEn: "Regional Sales Head", scopeZh: "負責單一戰區營收盈虧（P&L）、在地化團隊梯隊建設", scopeEn: "Regional P&L accountability, territory expansion & sales leadership" },
-      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "Chief Revenue Officer / VP Sales", titleEn: "Chief Revenue Officer", scopeZh: "全面掌控全球商業版圖、獲客成本（CAC）與全球總營收", scopeEn: "Global go-to-market execution, client acquisition cost optimization & revenue" }
-    ]
-  },
-  legal: {
-    nameZh: "法務與合規 (Legal & Compliance)", nameEn: "Legal & Compliance",
-    roles: [
-      { lvlKey: "L3", lvl: "L3", titleZh: "Legal / Compliance Specialist", titleEn: "Legal/Compliance Specialist", scopeZh: "標準合約審閱、日常 AML 警報初篩、公文查詢函初審", scopeEn: "NDA/vendor contract review, initial AML triage & regulatory intake" },
-      { lvlKey: "L4", lvl: "L4", titleZh: "Legal Counsel / AML Officer", titleEn: "Legal Counsel / AML Officer", scopeZh: "獨立承接跨國商務協議談判、牌照申請對接、爭議處置協商", scopeEn: "Cross-border negotiation, regulatory licensing filings & dispute settlement" },
-      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Legal Counsel", titleEn: "Senior Legal Counsel", scopeZh: "跨國子公司設立架構、海外併購協議、各國監管審計現場應對", scopeEn: "Entity structuring, M&A due diligence, onsite regulatory audits & exams" },
-      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Regulatory Architect / Lead", titleEn: "Staff Counsel / Lead", scopeZh: "專家軌：全球牌照藍圖設計 ｜ 管理軌：管理 3–6 人合規審查組", scopeEn: "IC: Global license strategy | Mgmt: Lead 3-6 AML/legal team members" },
-      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Legal Director", titleEn: "Legal Director", scopeZh: "掌管跨國重大涉訴防禦、行業立法倡導、調配外聘律師預算", scopeEn: "Complex litigation defense, public policy advocacy & outside counsel mgmt" },
-      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "General Counsel / CCO", titleEn: "General Counsel / CCO", scopeZh: "董事會最高法規顧問、全球法律風險與執法免責最高防線", scopeEn: "Board advisor, enterprise legal risk mitigation & regulatory defense" }
-    ]
-  },
-  fin_hr: {
-    nameZh: "財務與人資 (Finance & HR)", nameEn: "Finance & HR",
-    roles: [
-      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Analyst / HR Specialist", titleEn: "Junior Analyst / Specialist", scopeZh: "日常會計憑證核算、報銷初審、入轉調離手續與考勤審查", scopeEn: "Voucher booking, expense audit, onboarding ops & attendance tracking" },
-      { lvlKey: "L4", lvl: "L4", titleZh: "Senior Accountant / HRBP", titleEn: "Senior Accountant / HRBP", scopeZh: "獨立主導月結關帳、預算追蹤 ｜ 事業群招聘閉環與常規員工關係", scopeEn: "Month-end close, FP&A variance | Business unit recruiting & employee relations" },
-      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Finance / HR Specialist", titleEn: "Senior Finance / HR Specialist", scopeZh: "跨國稅收籌劃與多主體合併 ｜ 9-Box 人才盤點與爭議離職談判", scopeEn: "International tax planning, consolidation | 9-Box calibration & separation" },
-      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal Architect / People Lead", titleEn: "Principal Architect / Lead", scopeZh: "專家軌：全球資金池或薪酬架構 ｜ 管理軌：領導會計/HR小組", scopeEn: "IC: Global treasury/comp model | Mgmt: Lead accounting/people pods" },
-      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Financial Controller / HR Director", titleEn: "Controller / HR Director", scopeZh: "四大審計無保留通過 ｜ 大區人力成本上限控制與文化治理", scopeEn: "Big 4 clean audit sign-off | Headcount budget governance & culture" },
-      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "CFO / CHRO", titleEn: "CHRO", scopeZh: "全面掌控全球資本水庫，海外上市進程 ｜ 全球高管繼任佈局", scopeEn: "Capital treasury & overseas IPO readiness | Global executive succession" }
-    ]
-  }
+  eng: {
+    nameZh: "研發工程 (Engineering)", nameEn: "Engineering",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Engineer", titleEn: "Junior Engineer", scopeZh: "基礎模組與 UI 元件維護、單元測試、SOP 功能開發", scopeEn: "Base module & UI maintenance, unit testing, standard feature delivery" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Mid-Level Engineer", titleEn: "Mid-Level Engineer", scopeZh: "獨立負責核心業務模組、模組設計與除錯上線", scopeEn: "End-to-end ownership of core modules, architectural design & bug fixing" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Engineer", titleEn: "Senior Engineer", scopeZh: "核心系統高併發架構設計、重大線上故障排查、技術重構", scopeEn: "High-concurrency systems design, major incident mitigation & refactoring" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Eng / Team Lead", titleEn: "Staff Eng / Team Lead", scopeZh: "技術軌：全域架構決策 (RFC) ｜ 管理軌：帶領 3–6 人工程小組", scopeEn: "Tech: Global RFC decisions | Mgmt: Lead 3-6 engineers agile delivery" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Principal / Dept Head", titleEn: "Principal / Dept Head", scopeZh: "技術軌：跨部門重大技術決策 ｜ 管理軌：統籌主要研發部門", scopeEn: "Tech: Cross-org technical strategy | Mgmt: Lead major engineering pillar" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "VP of Eng / CTO", titleEn: "VP of Eng / CTO", scopeZh: "全面掌管跨國研發與技術基建、技術與管理雙軌匯流統帥", scopeEn: "Unified leadership over global technology organization & infrastructure" }
+    ]
+  },
+  prod: {
+    nameZh: "產品管理 (Product)", nameEn: "Product Management",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Associate Product Manager", titleEn: "Associate PM", scopeZh: "功能需求細化、PRD 編寫、競品日常追蹤與敏捷驗收", scopeEn: "Feature detailing, PRD drafting, competitor tracking & sprint acceptance" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Product Manager (PM)", titleEn: "Product Manager", scopeZh: "獨立閉環單一產品線、用戶旅程設計、指標轉化率把控", scopeEn: "End-to-end ownership of product line, user journeys & conversion metrics" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Product Manager", titleEn: "Senior PM", scopeZh: "主導複雜交易/支付業務架構、跨端流程標準化、ROI 達成", scopeEn: "Complex payment/trading systems, multi-platform UX standardization & ROI" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal PM / Product Lead", titleEn: "Principal PM / Product Lead", scopeZh: "專家軌：產品頂層協議設計 ｜ 管理軌：帶領 3–6 人產品小組", scopeEn: "IC: Top-level protocol design | Mgmt: Lead 3-6 product managers" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Head of Product", titleEn: "Head of Product", scopeZh: "掌管核心業務線產品矩陣、跨國本地化產品體驗與戰略排期", scopeEn: "Lead full product portfolio, internationalization & roadmap strategy" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "Chief Product Officer (CPO)", titleEn: "Chief Product Officer", scopeZh: "全面負責公司全球產品戰略藍圖、新商業模式破局", scopeEn: "Overall product vision, global expansion strategy & business innovations" }
+    ]
+  },
+  ops: {
+    nameZh: "營運管理 (Operations)", nameEn: "Operations",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Operations Specialist", titleEn: "Junior Ops Specialist", scopeZh: "SOP 流程執行、日常工單對帳、用戶反饋流轉", scopeEn: "SOP task execution, ticket reconciliation & client issue dispatch" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Operations Specialist", titleEn: "Operations Specialist", scopeZh: "獨立負責端到端業務流轉、通道維護與日常突發異常排除", scopeEn: "End-to-end workflow management, channel maintenance & incident handling" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Operations Specialist", titleEn: "Senior Ops Specialist", scopeZh: "主導自動化降本流程、跨國複雜清算規則制定、重大客訴閉環", scopeEn: "Workflow automation, cross-border settlement logic & critical escalation" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Specialist / Ops Lead", titleEn: "Staff Specialist / Ops Lead", scopeZh: "專家軌：跨域營運架構治理 ｜ 管理軌：帶領 3–6 人運營小隊", scopeEn: "IC: Cross-domain ops architecture | Mgmt: Lead 3-6 ops specialists" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Operations Director", titleEn: "Operations Director", scopeZh: "掌管大區運營中心、單位營運成本（Unit Cost）控制", scopeEn: "Direct regional operations centers, unit cost reduction & SLA defense" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "VP of Operations / COO", titleEn: "VP of Operations / COO", scopeZh: "統籌全球跨國營運交付體系、跨部門經營損益閉環責任", scopeEn: "Global operating model governance, compliance defense & P&L ownership" }
+    ]
+  },
+  bd: {
+    nameZh: "商務與銷售 (BD & Sales)", nameEn: "BD & Sales",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior BD Associate", titleEn: "Junior BD Associate", scopeZh: "陌生線索挖掘、潛在客戶觸達、商務會議排程與 CRM 紀錄", scopeEn: "Cold outreach, lead qualification, CRM logging & pipeline prep" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Account Executive (AE)", titleEn: "Account Executive", scopeZh: "獨立負責商機端到端轉化、商業談判、合約簽署與上線", scopeEn: "Full deal lifecycle, negotiation, contract execution & client onboarding" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior AE / Strategic BD", titleEn: "Senior AE / Strategic BD", scopeZh: "區域 Top 機構客戶攻堅、高難度商業模式創新與定制方案", scopeEn: "Top-tier institutional accounts, high-stakes custom pricing & structuring" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal Deal Maker / Sales Lead", titleEn: "Principal Deal Maker / Lead", scopeZh: "專家軌：跨國戰略大單成交 ｜ 管理軌：帶領小組扛季度 Quota", scopeEn: "IC: Multi-million cross-border deals | Mgmt: Quota ownership & team lead" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Regional Sales Head", titleEn: "Regional Sales Head", scopeZh: "負責單一戰區營收盈虧（P&L）、在地化團隊梯隊建設", scopeEn: "Regional P&L accountability, territory expansion & sales leadership" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "Chief Revenue Officer / VP Sales", titleEn: "Chief Revenue Officer", scopeZh: "全面掌控全球商業版圖、獲客成本（CAC）與全球總營收", scopeEn: "Global go-to-market execution, client acquisition cost optimization & revenue" }
+    ]
+  },
+  legal: {
+    nameZh: "法務與合規 (Legal & Compliance)", nameEn: "Legal & Compliance",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Legal / Compliance Specialist", titleEn: "Legal/Compliance Specialist", scopeZh: "標準合約審閱、日常 AML 警報初篩、公文查詢函初審", scopeEn: "NDA/vendor contract review, initial AML triage & regulatory intake" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Legal Counsel / AML Officer", titleEn: "Legal Counsel / AML Officer", scopeZh: "獨立承接跨國商務協議談判、牌照申請對接、爭議處置協商", scopeEn: "Cross-border negotiation, regulatory licensing filings & dispute settlement" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Legal Counsel", titleEn: "Senior Legal Counsel", scopeZh: "跨國子公司設立架構、海外併購協議、各國監管審計現場應對", scopeEn: "Entity structuring, M&A due diligence, onsite regulatory audits & exams" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Regulatory Architect / Lead", titleEn: "Staff Counsel / Lead", scopeZh: "專家軌：全球牌照藍圖設計 ｜ 管理軌：管理 3–6 人合規審查組", scopeEn: "IC: Global license strategy | Mgmt: Lead 3-6 AML/legal team members" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Legal Director", titleEn: "Legal Director", scopeZh: "掌管跨國重大涉訴防禦、行業立法倡導、調配外聘律師預算", scopeEn: "Complex litigation defense, public policy advocacy & outside counsel mgmt" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "General Counsel / CCO", titleEn: "General Counsel / CCO", scopeZh: "董事會最高法規顧問、全球法律風險與執法免責最高防線", scopeEn: "Board advisor, enterprise legal risk mitigation & regulatory defense" }
+    ]
+  },
+  fin_hr: {
+    nameZh: "財務與人資 (Finance & HR)", nameEn: "Finance & HR",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Analyst / HR Specialist", titleEn: "Junior Analyst / Specialist", scopeZh: "日常會計憑證核算、報銷初審、入轉調離手續與考勤審查", scopeEn: "Voucher booking, expense audit, onboarding ops & attendance tracking" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Senior Accountant / HRBP", titleEn: "Senior Accountant / HRBP", scopeZh: "獨立主導月結關帳、預算追蹤 ｜ 事業群招聘閉環與常規員工關係", scopeEn: "Month-end close, FP&A variance | Business unit recruiting & employee relations" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Finance / HR Specialist", titleEn: "Senior Finance / HR Specialist", scopeZh: "跨國稅收籌劃與多主體合併 ｜ 9-Box 人才盤點與爭議離職談判", scopeEn: "International tax planning, consolidation | 9-Box calibration & separation" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal Architect / People Lead", titleEn: "Principal Architect / Lead", scopeZh: "專家軌：全球資金池或薪酬架構 ｜ 管理軌：領導會計/HR小組", scopeEn: "IC: Global treasury/comp model | Mgmt: Lead accounting/people pods" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Financial Controller / HR Director", titleEn: "Controller / HR Director", scopeZh: "四大審計無保留通過 ｜ 大區人力成本上限控制與文化治理", scopeEn: "Big 4 clean audit sign-off | Headcount budget governance & culture" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "CFO / CHRO", titleEn: "CHRO", scopeZh: "全面掌控全球資本水庫，海外上市進程 ｜ 全球高管繼任佈局", scopeEn: "Capital treasury & overseas IPO readiness | Global executive succession" }
+    ]
+  }
 };
 
 function switchTab(tabId) {
-  currentTab = tabId;
-  const navTabs = ['tab01', 'tab02', 'tab03', 'tab04', 'tab05'];
-  navTabs.forEach(id => {
-    const navEl = document.getElementById('nav_' + id);
-    if(navEl) navEl.classList.toggle('active', id === tabId);
-  });
-  document.querySelectorAll('.pane').forEach(el => el.classList.remove('active'));
-  document.getElementById('pane_' + tabId).classList.add('active');
+  currentTab = tabId;
+  const navTabs = ['tab01', 'tab02', 'tab03', 'tab04', 'tab05'];
+  navTabs.forEach(id => {
+    const navEl = document.getElementById('nav_' + id);
+    if(navEl) navEl.classList.toggle('active', id === tabId);
+  });
+  document.querySelectorAll('.pane').forEach(el => el.classList.remove('active'));
+  document.getElementById('pane_' + tabId).classList.add('active');
 
-  if(tabId === 'tab01') renderCompTab();
-  else if(tabId === 'tab02') renderLadderTab();
-  else if(tabId === 'tab03') {
-    setTimeout(() => {
-      renderMatrixTable();
-      runBudgetCalc();
-    }, 10);
-  } else if(tabId === 'tab05') {
-    initAllTalentReviewTeams();
-  }
+  if(tabId === 'tab01') renderCompTab();
+  else if(tabId === 'tab02') renderLadderTab();
+  else if(tabId === 'tab03') {
+    setTimeout(() => {
+      renderMatrixTable();
+      runBudgetCalc();
+    }, 10);
+  } else if(tabId === 'tab05') {
+    initAllTalentReviewTeams();
+  }
 }
 
 function renderCompTab() {
-  const regBar = document.getElementById('regBar');
-  regBar.innerHTML = COMP_REGIONS.map(r => `
-    <button class="comp-reg-btn ${r.code === currentRegionCode ? 'active' : ''}" onclick="selectReg('${r.code}')">
-      ${currentLang === 'zh' ? r.labelZh : r.labelEn} ×${r.factor.toFixed(2)}
-    </button>
-  `).join('');
+  const regBar = document.getElementById('regBar');
+  regBar.innerHTML = COMP_REGIONS.map(r => `
+    <button class="comp-reg-btn ${r.code === currentRegionCode ? 'active' : ''}" onclick="selectReg('${r.code}')">
+      ${currentLang === 'zh' ? r.labelZh : r.labelEn} ×${r.factor.toFixed(2)}
+    </button>
+  `).join('');
 
-  const fnBar = document.getElementById('fnBar');
-  fnBar.innerHTML = Object.keys(COMP_FUNCTIONS).map(k => `
-    <button class="comp-fn-btn ${k === currentFnCode ? 'active' : ''}" onclick="selectFn('${k}')">
-      ${currentLang === 'zh' ? COMP_FUNCTIONS[k].nameZh : COMP_FUNCTIONS[k].nameEn}
-    </button>
-  `).join('');
+  const fnBar = document.getElementById('fnBar');
+  fnBar.innerHTML = Object.keys(COMP_FUNCTIONS).map(k => `
+    <button class="comp-fn-btn ${k === currentFnCode ? 'active' : ''}" onclick="selectFn('${k}')">
+      ${currentLang === 'zh' ? COMP_FUNCTIONS[k].nameZh : COMP_FUNCTIONS[k].nameEn}
+    </button>
+  `).join('');
 
-  const tierGrid = document.getElementById('tierCardsGrid');
-  if (currentLang === 'zh') {
-    tierGrid.innerHTML = `
-      <div class="tier-card t1"><div class="tier-badge">×1.40</div><div class="tier-title">T1 頂尖梯隊 (Top-Tier)</div><div class="tier-desc">大型交易所 / 已上市或近上市級巨頭</div><div class="tag-pills"><span class="tag-pill">Binance</span><span class="tag-pill">Coinbase</span><span class="tag-pill">OKX</span><span class="tag-pill">Circle</span><span class="tag-pill">Tether</span></div></div>
-      <div class="tier-card t2"><div class="tier-badge">×1.00</div><div class="tier-title">T2 全球基準 (Global Benchmark)</div><div class="tier-desc">已規模化營運的中大型成熟跨國企業</div><div class="tag-pills"><span class="tag-pill">Kraken</span><span class="tag-pill">Bybit</span><span class="tag-pill">Crypto.com</span><span class="tag-pill">Gemini</span><span class="tag-pill">Polygon Labs</span></div></div>
-      <div class="tier-card t3"><div class="tier-badge">×0.75</div><div class="tier-title">T3 初創梯隊 (Startup)</div><div class="tier-desc">種子輪至 A 輪階段新創 / DAO / 早期協議</div><div class="tag-pills"><span class="tag-pill">Seed-Series A</span><span class="tag-pill">DAO 治理</span><span class="tag-pill">早期協議團隊</span><span class="tag-pill">Token-heavy</span></div></div>
-    `;
-  } else {
-    tierGrid.innerHTML = `
-      <div class="tier-card t1"><div class="tier-badge">×1.40</div><div class="tier-title">T1 Industry Leaders (Top-Tier)</div><div class="tier-desc">Mega exchanges / Public & late-stage tech titans</div><div class="tag-pills"><span class="tag-pill">Binance</span><span class="tag-pill">Coinbase</span><span class="tag-pill">OKX</span><span class="tag-pill">Circle</span><span class="tag-pill">Tether</span></div></div>
-      <div class="tier-card t2"><div class="tier-badge">×1.00</div><div class="tier-title">T2 Global Benchmark</div><div class="tier-desc">Scaled mid-to-large mature global enterprises</div><div class="tag-pills"><span class="tag-pill">Kraken</span><span class="tag-pill">Bybit</span><span class="tag-pill">Crypto.com</span><span class="tag-pill">Gemini</span><span class="tag-pill">Polygon Labs</span></div></div>
-      <div class="tier-card t3"><div class="tier-badge">×0.75</div><div class="tier-title">T3 Early Startups</div><div class="tier-desc">Seed to Series A stage / DAOs / Early protocols</div><div class="tag-pills"><span class="tag-pill">Seed-Series A</span><span class="tag-pill">DAO Governance</span><span class="tag-pill">Early Protocols</span><span class="tag-pill">Token-heavy</span></div></div>
-    `;
-  }
+  const tierGrid = document.getElementById('tierCardsGrid');
+  if (currentLang === 'zh') {
+    tierGrid.innerHTML = `
+      <div class="tier-card t1"><div class="tier-badge">×1.40</div><div class="tier-title">T1 頂尖梯隊 (Top-Tier)</div><div class="tier-desc">大型交易所 / 已上市或近上市級巨頭</div><div class="tag-pills"><span class="tag-pill">Binance</span><span class="tag-pill">Coinbase</span><span class="tag-pill">OKX</span><span class="tag-pill">Circle</span><span class="tag-pill">Tether</span></div></div>
+      <div class="tier-card t2"><div class="tier-badge">×1.00</div><div class="tier-title">T2 全球基準 (Global Benchmark)</div><div class="tier-desc">已規模化營運的中大型成熟跨國企業</div><div class="tag-pills"><span class="tag-pill">Kraken</span><span class="tag-pill">Bybit</span><span class="tag-pill">Crypto.com</span><span class="tag-pill">Gemini</span><span class="tag-pill">Polygon Labs</span></div></div>
+      <div class="tier-card t3"><div class="tier-badge">×0.75</div><div class="tier-title">T3 初創梯隊 (Startup)</div><div class="tier-desc">種子輪至 A 輪階段新創 / DAO / 早期協議</div><div class="tag-pills"><span class="tag-pill">Seed-Series A</span><span class="tag-pill">DAO 治理</span><span class="tag-pill">早期協議團隊</span><span class="tag-pill">Token-heavy</span></div></div>
+    `;
+  } else {
+    tierGrid.innerHTML = `
+      <div class="tier-card t1"><div class="tier-badge">×1.40</div><div class="tier-title">T1 Industry Leaders (Top-Tier)</div><div class="tier-desc">Mega exchanges / Public & late-stage tech titans</div><div class="tag-pills"><span class="tag-pill">Binance</span><span class="tag-pill">Coinbase</span><span class="tag-pill">OKX</span><span class="tag-pill">Circle</span><span class="tag-pill">Tether</span></div></div>
+      <div class="tier-card t2"><div class="tier-badge">×1.00</div><div class="tier-title">T2 Global Benchmark</div><div class="tier-desc">Scaled mid-to-large mature global enterprises</div><div class="tag-pills"><span class="tag-pill">Kraken</span><span class="tag-pill">Bybit</span><span class="tag-pill">Crypto.com</span><span class="tag-pill">Gemini</span><span class="tag-pill">Polygon Labs</span></div></div>
+      <div class="tier-card t3"><div class="tier-badge">×0.75</div><div class="tier-title">T3 Early Startups</div><div class="tier-desc">Seed to Series A stage / DAOs / Early protocols</div><div class="tag-pills"><span class="tag-pill">Seed-Series A</span><span class="tag-pill">DAO Governance</span><span class="tag-pill">Early Protocols</span><span class="tag-pill">Token-heavy</span></div></div>
+    `;
+  }
 
-  const reg = COMP_REGIONS.find(r => r.code === currentRegionCode) || COMP_REGIONS[1];
-  const fn = COMP_FUNCTIONS[currentFnCode] || COMP_FUNCTIONS.eng;
+  const reg = COMP_REGIONS.find(r => r.code === currentRegionCode) || COMP_REGIONS[1];
+  const fn = COMP_FUNCTIONS[currentFnCode] || COMP_FUNCTIONS.eng;
 
-  document.getElementById('th_lvl').innerText = currentLang === 'zh' ? '職級代碼' : 'Level';
-  document.getElementById('th_title_scope').innerText = currentLang === 'zh' ? '代表職稱 / 職責範疇' : 'Representative Title & Scope';
-  document.getElementById('th_t3').innerText = currentLang === 'zh' ? 'T3 初創梯隊 (年薪)' : 'T3 Startup (Annual)';
-  document.getElementById('th_t2').innerText = currentLang === 'zh' ? 'T2 全球基準 (Global Benchmark)' : 'T2 Global Benchmark (Annual)';
-  document.getElementById('th_t1').innerText = currentLang === 'zh' ? 'T1 頂尖梯隊 (年薪)' : 'T1 Top-Tier (Annual)';
-  document.getElementById('th_region_ann').innerText = `${currentLang==='zh'?'地區調整後年薪 (T2)':'Adj Annual Base (T2)'} (${reg.code} ×${reg.factor.toFixed(2)})`;
-  document.getElementById('th_region_mon').innerText = `${currentLang==='zh'?'地區調整後月薪 (T2)':'Adj Monthly Base (T2)'} (${reg.code})`;
+  document.getElementById('th_lvl').innerText = currentLang === 'zh' ? '職級代碼' : 'Level';
+  document.getElementById('th_title_scope').innerText = currentLang === 'zh' ? '代表職稱 / 職責範疇' : 'Representative Title & Scope';
+  document.getElementById('th_t3').innerText = currentLang === 'zh' ? 'T3 初創梯隊 (年薪)' : 'T3 Startup (Annual)';
+  document.getElementById('th_t2').innerText = currentLang === 'zh' ? 'T2 全球基準 (Global Benchmark)' : 'T2 Global Benchmark (Annual)';
+  document.getElementById('th_t1').innerText = currentLang === 'zh' ? 'T1 頂尖梯隊 (年薪)' : 'T1 Top-Tier (Annual)';
+  document.getElementById('th_region_ann').innerText = `${currentLang==='zh'?'地區調整後年薪 (T2)':'Adj Annual Base (T2)'} (${reg.code} ×${reg.factor.toFixed(2)})`;
+  document.getElementById('th_region_mon').innerText = `${currentLang==='zh'?'地區調整後月薪 (T2)':'Adj Monthly Base (T2)'} (${reg.code})`;
 
-  const ratesKeys = ['L3', 'L4', 'L5', 'L6_M1', 'L7_M2', 'L8_M3'];
-  document.getElementById('compTableBody').innerHTML = fn.roles.map((r, idx) => {
-    const base = BASE_RATES[ratesKeys[idx]];
-    const t3 = base * 0.75;
-    const t1 = base * 1.40;
-    const adjAnn = base * reg.factor;
-    const adjMon = adjAnn / 12;
-    const title = currentLang === 'zh' ? r.titleZh : r.titleEn;
-    const scope = currentLang === 'zh' ? r.scopeZh : r.scopeEn;
+  const ratesKeys = ['L3', 'L4', 'L5', 'L6_M1', 'L7_M2', 'L8_M3'];
+  document.getElementById('compTableBody').innerHTML = fn.roles.map((r, idx) => {
+    const base = BASE_RATES[ratesKeys[idx]];
+    const t3 = base * 0.75;
+    const t1 = base * 1.40;
+    const adjAnn = base * reg.factor;
+    const adjMon = adjAnn / 12;
+    const title = currentLang === 'zh' ? r.titleZh : r.titleEn;
+    const scope = currentLang === 'zh' ? r.scopeZh : r.scopeEn;
 
-    return `
-      <tr>
-        <td><div class="comp-badge">${r.lvl}</div></td>
-        <td>
-          <div style="font-weight:700; font-size:13.5px; color:var(--text-primary); margin-bottom:2px;">${title}</div>
-          <div style="font-size:12px; color:var(--text-muted);">${scope}</div>
-        </td>
-        <td style="font-family:monospace; color:var(--text-secondary);">$${t3.toLocaleString()}</td>
-        <td style="font-family:monospace; font-weight:600;">$${base.toLocaleString()}</td>
-        <td style="font-family:monospace; color:var(--warning);">$${t1.toLocaleString()}</td>
-        <td>
-          <div class="num-green">$${Math.round(adjAnn).toLocaleString()}</div>
-          <div class="num-sub">× ${reg.factor.toFixed(2)} (${reg.code})</div>
-        </td>
-        <td>
-          <div class="num-green">$${Math.round(adjMon).toLocaleString()}</div>
-          <div class="num-sub">/ ${currentLang==='zh'?'月':'mo'}</div>
-        </td>
-      </tr>
-    `;
-  }).join('');
+    return `
+      <tr>
+        <td><div class="comp-badge">${r.lvl}</div></td>
+        <td>
+          <div style="font-weight:700; font-size:13.5px; color:var(--text-primary); margin-bottom:2px;">${title}</div>
+          <div style="font-size:12px; color:var(--text-muted);">${scope}</div>
+        </td>
+        <td style="font-family:monospace; color:var(--text-secondary);">$${t3.toLocaleString()}</td>
+        <td style="font-family:monospace; font-weight:600;">$${base.toLocaleString()}</td>
+        <td style="font-family:monospace; color:var(--warning);">$${t1.toLocaleString()}</td>
+        <td>
+          <div class="num-green">$${Math.round(adjAnn).toLocaleString()}</div>
+          <div class="num-sub">× ${reg.factor.toFixed(2)} (${reg.code})</div>
+        </td>
+        <td>
+          <div class="num-green">$${Math.round(adjMon).toLocaleString()}</div>
+          <div class="num-sub">/ ${currentLang==='zh'?'月':'mo'}</div>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function selectReg(code) { currentRegionCode = code; renderCompTab(); }
 function selectFn(code) { currentFnCode = code; renderCompTab(); }
 
 function renderLadderTab() {
-  const fnBar = document.getElementById('ladderFnBar');
-  fnBar.innerHTML = Object.keys(COMP_FUNCTIONS).map(k => `
-    <button class="comp-fn-btn ${k === currentLadderFn ? 'active' : ''}" onclick="selectLadderFn('${k}')">
-      ${currentLang === 'zh' ? COMP_FUNCTIONS[k].nameZh : COMP_FUNCTIONS[k].nameEn}
-    </button>
-  `).join('');
+  const fnBar = document.getElementById('ladderFnBar');
+  fnBar.innerHTML = Object.keys(COMP_FUNCTIONS).map(k => `
+    <button class="comp-fn-btn ${k === currentLadderFn ? 'active' : ''}" onclick="selectLadderFn('${k}')">
+      ${currentLang === 'zh' ? COMP_FUNCTIONS[k].nameZh : COMP_FUNCTIONS[k].nameEn}
+    </button>
+  `).join('');
 
-  const fn = COMP_FUNCTIONS[currentLadderFn] || COMP_FUNCTIONS.eng;
-  const treeRows = [
-    { lvl: "L3", icTitle: currentLang === 'zh' ? fn.roles[0].titleZh : fn.roles[0].titleEn, icDesc: currentLang === 'zh' ? "標準執行與基礎交付" : "Execution & standard delivery" },
-    { lvl: "L4", icTitle: currentLang === 'zh' ? fn.roles[1].titleZh : fn.roles[1].titleEn, icDesc: currentLang === 'zh' ? "獨立負責核心業務模組" : "Independent core module ownership" },
-    { lvl: "L5", icTitle: currentLang === 'zh' ? fn.roles[2].titleZh : fn.roles[2].titleEn, icDesc: currentLang === 'zh' ? "高併發架構與重大攻堅" : "Complex architecture & key problem solving" },
-    { lvl: "L6 / M1", icTitle: "Staff", icDesc: "RFC Architecture", mgmtTitle: "Team Lead", mgmtDesc: "Lead 3-6 Pod" },
-    { lvl: "L7 / M2", icTitle: "Principal", icDesc: "Cross-org Impact", mgmtTitle: "Dept Head", mgmtDesc: "Manage Domain" },
-    { lvl: "L8 / M3", fullTitle: "VP of Eng / CTO", fullDesc: "Global Organization Leadership" }
-  ];
+  const fn = COMP_FUNCTIONS[currentLadderFn] || COMP_FUNCTIONS.eng;
+  const treeRows = [
+    { lvl: "L3", icTitle: currentLang === 'zh' ? fn.roles[0].titleZh : fn.roles[0].titleEn, icDesc: currentLang === 'zh' ? "標準執行與基礎交付" : "Execution & standard delivery" },
+    { lvl: "L4", icTitle: currentLang === 'zh' ? fn.roles[1].titleZh : fn.roles[1].titleEn, icDesc: currentLang === 'zh' ? "獨立負責核心業務模組" : "Independent core module ownership" },
+    { lvl: "L5", icTitle: currentLang === 'zh' ? fn.roles[2].titleZh : fn.roles[2].titleEn, icDesc: currentLang === 'zh' ? "高併發架構與重大攻堅" : "Complex architecture & key problem solving" },
+    { lvl: "L6 / M1", icTitle: "Staff", icDesc: "RFC Architecture", mgmtTitle: "Team Lead", mgmtDesc: "Lead 3-6 Pod" },
+    { lvl: "L7 / M2", icTitle: "Principal", icDesc: "Cross-org Impact", mgmtTitle: "Dept Head", mgmtDesc: "Manage Domain" },
+    { lvl: "L8 / M3", fullTitle: "VP of Eng / CTO", fullDesc: "Global Organization Leadership" }
+  ];
 
-  let treeHtml = treeRows.map(row => {
-    if (row.fullTitle) {
-      return `<div class="ladder-row"><div class="ladder-badge">${row.lvl}</div><div class="ladder-content-grid"><div class="ladder-cell full" style="border-left: 3px solid var(--green);"><div class="t" style="color:var(--green);">${row.fullTitle}</div><div class="d">${row.fullDesc}</div></div></div></div>`;
-    }
-    if (row.mgmtTitle) {
-      return `<div class="ladder-row"><div class="ladder-badge">${row.lvl}</div><div class="ladder-content-grid"><div class="ladder-cell" style="border-left: 3px solid var(--cyan);"><div class="t">${row.icTitle}</div><div class="d">${row.icDesc}</div></div><div class="ladder-cell" style="border-left: 3px solid var(--purple);"><div class="t" style="color:var(--purple);">${row.mgmtTitle}</div><div class="d">${row.mgmtDesc}</div></div></div></div>`;
-    }
-    return `<div class="ladder-row"><div class="ladder-badge">${row.lvl}</div><div class="ladder-content-grid"><div class="ladder-cell" style="border-left: 3px solid var(--cyan);"><div class="t">${row.icTitle}</div><div class="d">${row.icDesc}</div></div><div class="ladder-cell empty">—</div></div></div>`;
-  }).join('');
+  let treeHtml = treeRows.map(row => {
+    if (row.fullTitle) {
+      return `<div class="ladder-row"><div class="ladder-badge">${row.lvl}</div><div class="ladder-content-grid"><div class="ladder-cell full" style="border-left: 3px solid var(--green);"><div class="t" style="color:var(--green);">${row.fullTitle}</div><div class="d">${row.fullDesc}</div></div></div></div>`;
+    }
+    if (row.mgmtTitle) {
+      return `<div class="ladder-row"><div class="ladder-badge">${row.lvl}</div><div class="ladder-content-grid"><div class="ladder-cell" style="border-left: 3px solid var(--cyan);"><div class="t">${row.icTitle}</div><div class="d">${row.icDesc}</div></div><div class="ladder-cell" style="border-left: 3px solid var(--purple);"><div class="t" style="color:var(--purple);">${row.mgmtTitle}</div><div class="d">${row.mgmtDesc}</div></div></div></div>`;
+    }
+    return `<div class="ladder-row"><div class="ladder-badge">${row.lvl}</div><div class="ladder-content-grid"><div class="ladder-cell" style="border-left: 3px solid var(--cyan);"><div class="t">${row.icTitle}</div><div class="d">${row.icDesc}</div></div><div class="ladder-cell empty">—</div></div></div>`;
+  }).join('');
 
-  document.getElementById('ladderTree').innerHTML = treeHtml;
+  document.getElementById('ladderTree').innerHTML = treeHtml;
 
-  document.getElementById('ladderCards').innerHTML = fn.roles.map((r, i) => {
-    let cls = "card";
-    if (i === 3) cls += " m-track";
-    else if (i === 4) cls += " l7-track";
-    else if (i === 5) cls += " l8-track";
-    const title = currentLang === 'zh' ? r.titleZh : r.titleEn;
-    const scope = currentLang === 'zh' ? r.scopeZh : r.scopeEn;
+  document.getElementById('ladderCards').innerHTML = fn.roles.map((r, i) => {
+    let cls = "card";
+    if (i === 3) cls += " m-track";
+    else if (i === 4) cls += " l7-track";
+    else if (i === 5) cls += " l8-track";
+    const title = currentLang === 'zh' ? r.titleZh : r.titleEn;
+    const scope = currentLang === 'zh' ? r.scopeZh : r.scopeEn;
 
-    return `
-      <div class="${cls}">
-        <div class="card-head">
-          <div class="card-title">${r.lvl}: ${title}</div>
-          <div class="card-sub">Behavioral Anchor</div>
-        </div>
-        <ul class="card-bullets">
-          <li><b>Scope</b>：${scope}</li>
-          <li><b>Delivery</b>：Autonomously drive level-aligned OKRs & robust execution.</li>
-        </ul>
-      </div>
-    `;
-  }).join('');
+    return `
+      <div class="${cls}">
+        <div class="card-head">
+          <div class="card-title">${r.lvl}: ${title}</div>
+          <div class="card-sub">Behavioral Anchor</div>
+        </div>
+        <ul class="card-bullets">
+          <li><b>Scope</b>：${scope}</li>
+          <li><b>Delivery</b>：Autonomously drive level-aligned OKRs & robust execution.</li>
+        </ul>
+      </div>
+    `;
+  }).join('');
 }
 
 function selectLadderFn(code) { currentLadderFn = code; renderLadderTab(); }
 
 function renderMatrixTable() {
-  const tbody = document.getElementById('matrixTableBody');
-  if(!tbody) return;
-  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+  const tbody = document.getElementById('matrixTableBody');
+  if(!tbody) return;
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
 
-  document.getElementById('th_matrix_lvl').innerText = currentLang === 'zh' ? '職階代碼' : 'Level';
-  document.getElementById('th_matrix_role').innerText = currentLang === 'zh' ? '職位代表' : 'Role Representation';
-  document.getElementById('th_matrix_subhc').innerText = currentLang === 'zh' ? '該職階人數 (佔比 %)' : 'Headcount (%)';
-  document.getElementById('th_matrix_subcost').innerText = currentLang === 'zh' ? '年薪預算小計 (USD)' : 'Subtotal Cost (USD)';
+  document.getElementById('th_matrix_lvl').innerText = currentLang === 'zh' ? '職階代碼' : 'Level';
+  document.getElementById('th_matrix_role').innerText = currentLang === 'zh' ? '職位代表' : 'Role Representation';
+  document.getElementById('th_matrix_subhc').innerText = currentLang === 'zh' ? '該職階人數 (佔比 %)' : 'Headcount (%)';
+  document.getElementById('th_matrix_subcost').innerText = currentLang === 'zh' ? '年薪預算小計 (USD)' : 'Subtotal Cost (USD)';
 
-  tbody.innerHTML = levels.map(k => {
-    const item = MATRIX_CONFIG[k];
-    const roleTitle = currentLang === 'zh' ? item.titleZh : item.titleEn;
-    return `
-      <tr>
-        <td><div class="comp-badge">${item.code}</div></td>
-        <td><b style="color:var(--text-primary); font-size:13px;">${roleTitle}</b></td>
-        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.US}" oninput="updateMatrixVal('${k}','US',this.value)"></td>
-        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.SG}" oninput="updateMatrixVal('${k}','SG',this.value)"></td>
-        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.UAE}" oninput="updateMatrixVal('${k}','UAE',this.value)"></td>
-        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.EU}" oninput="updateMatrixVal('${k}','EU',this.value)"></td>
-        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.TW}" oninput="updateMatrixVal('${k}','TW',this.value)"></td>
-        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.MY}" oninput="updateMatrixVal('${k}','MY',this.value)"></td>
-        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.IN}" oninput="updateMatrixVal('${k}','IN',this.value)"></td>
-        <td style="text-align:center;"><span id="subhc_${k}" style="font-weight:700; color:var(--cyan);">0 人 (0.0%)</span></td>
-        <td style="text-align:right;"><span id="subcost_${k}" class="num-green">$0</span></td>
-      </tr>
-    `;
-  }).join('');
+  tbody.innerHTML = levels.map(k => {
+    const item = MATRIX_CONFIG[k];
+    const roleTitle = currentLang === 'zh' ? item.titleZh : item.titleEn;
+    return `
+      <tr>
+        <td><div class="comp-badge">${item.code}</div></td>
+        <td><b style="color:var(--text-primary); font-size:13px;">${roleTitle}</b></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.US}" oninput="updateMatrixVal('${k}','US',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.SG}" oninput="updateMatrixVal('${k}','SG',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.UAE}" oninput="updateMatrixVal('${k}','UAE',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.EU}" oninput="updateMatrixVal('${k}','EU',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.TW}" oninput="updateMatrixVal('${k}','TW',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.MY}" oninput="updateMatrixVal('${k}','MY',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.IN}" oninput="updateMatrixVal('${k}','IN',this.value)"></td>
+        <td style="text-align:center;"><span id="subhc_${k}" style="font-weight:700; color:var(--cyan);">0 人 (0.0%)</span></td>
+        <td style="text-align:right;"><span id="subcost_${k}" class="num-green">$0</span></td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function updateMatrixVal(levelKey, regCode, val) {
-  MATRIX_CONFIG[levelKey][regCode] = Math.max(parseInt(val) || 0, 0);
-  runBudgetCalc();
+  MATRIX_CONFIG[levelKey][regCode] = Math.max(parseInt(val) || 0, 0);
+  runBudgetCalc();
 }
 
 function runBudgetCalc() {
-  const deptInput = document.getElementById('dept_name_input');
-  let deptName = deptInput ? deptInput.value.trim() : '';
-  if (!deptName) deptName = currentLang === 'zh' ? '研發部門' : 'Engineering Dept';
+  const deptInput = document.getElementById('dept_name_input');
+  let deptName = deptInput ? deptInput.value.trim() : '';
+  if (!deptName) deptName = currentLang === 'zh' ? '研發部門' : 'Engineering Dept';
 
-  const tierSelect = document.getElementById('calc_tier');
-  const tierMultiplier = tierSelect ? (parseFloat(tierSelect.value) || 1.0) : 1.0;
-  let totalHc = 0;
-  let totalBudget = 0;
+  const tierSelect = document.getElementById('calc_tier');
+  const tierMultiplier = tierSelect ? (parseFloat(tierSelect.value) || 1.0) : 1.0;
+  let totalHc = 0;
+  let totalBudget = 0;
 
-  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
-  const rowStats = {};
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+  const rowStats = {};
 
-  levels.forEach(k => {
-    const item = MATRIX_CONFIG[k];
-    const base = BASE_RATES[k];
-    let rowHc = 0;
-    let rowCost = 0;
+  levels.forEach(k => {
+    const item = MATRIX_CONFIG[k];
+    const base = BASE_RATES[k];
+    let rowHc = 0;
+    let rowCost = 0;
 
-    COMP_REGIONS.forEach(r => {
-      const cnt = item[r.code] || 0;
-      rowHc += cnt;
-      rowCost += cnt * (base * tierMultiplier * r.factor);
-    });
+    COMP_REGIONS.forEach(r => {
+      const cnt = item[r.code] || 0;
+      rowHc += cnt;
+      rowCost += cnt * (base * tierMultiplier * r.factor);
+    });
 
-    rowStats[k] = { hc: rowHc, cost: rowCost };
-    totalHc += rowHc;
-    totalBudget += rowCost;
-  });
+    rowStats[k] = { hc: rowHc, cost: rowCost };
+    totalHc += rowHc;
+    totalBudget += rowCost;
+  });
 
-  levels.forEach(k => {
-    const stat = rowStats[k];
-    const pct = totalHc > 0 ? ((stat.hc / totalHc) * 100).toFixed(1) : "0.0";
-    const subhcEl = document.getElementById(`subhc_${k}`);
-    const subcostEl = document.getElementById(`subcost_${k}`);
-    
-    if(subhcEl) {
-      const unit = currentLang === 'zh' ? '人' : 'HC';
-      subhcEl.innerHTML = `${stat.hc} ${unit} <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(${pct}%)</span>`;
-    }
-    if(subcostEl) {
-      subcostEl.innerText = '$' + Math.round(stat.cost).toLocaleString();
-    }
-  });
+  levels.forEach(k => {
+    const stat = rowStats[k];
+    const pct = totalHc > 0 ? ((stat.hc / totalHc) * 100).toFixed(1) : "0.0";
+    const subhcEl = document.getElementById(`subhc_${k}`);
+    const subcostEl = document.getElementById(`subcost_${k}`);
+    
+    if(subhcEl) {
+      const unit = currentLang === 'zh' ? '人' : 'HC';
+      subhcEl.innerHTML = `${stat.hc} ${unit} <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(${pct}%)</span>`;
+    }
+    if(subcostEl) {
+      subcostEl.innerText = '$' + Math.round(stat.cost).toLocaleString();
+    }
+  });
 
-  const dispHc = document.getElementById('disp_total_hc');
-  const dispBudget = document.getElementById('disp_total_budget');
-  if(dispHc) dispHc.innerText = totalHc + (currentLang==='zh'?' 人':' HC');
-  if(dispBudget) dispBudget.innerText = '$' + Math.round(totalBudget).toLocaleString();
+  const dispHc = document.getElementById('disp_total_hc');
+  const dispBudget = document.getElementById('disp_total_budget');
+  if(dispHc) dispHc.innerText = totalHc + (currentLang==='zh'?' 人':' HC');
+  if(dispBudget) dispBudget.innerText = '$' + Math.round(totalBudget).toLocaleString();
 
-  renderLiveOrgChart(deptName);
+  renderLiveOrgChart(deptName);
 }
 
 function renderLiveOrgChart(deptName) {
-  const container = document.getElementById('orgTreeContainer');
-  if(!container) return;
-  container.innerHTML = '';
-  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+  const container = document.getElementById('orgTreeContainer');
+  if(!container) return;
+  container.innerHTML = '';
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
 
-  levels.forEach(k => {
-    const item = MATRIX_CONFIG[k];
-    const rowDiv = document.createElement('div');
-    rowDiv.className = 'org-level-row';
+  levels.forEach(k => {
+    const item = MATRIX_CONFIG[k];
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'org-level-row';
 
-    COMP_REGIONS.forEach(r => {
-      const cnt = item[r.code] || 0;
-      if (cnt > 0) {
-        const roleName = currentLang === 'zh' ? item.titleZh : item.titleEn;
-        let borderTopColor = 'var(--border)';
-        if(k==='L7_M2') borderTopColor = 'var(--pink)';
-        else if(k==='L6_M1') borderTopColor = 'var(--purple)';
-        else if(k==='L5') borderTopColor = 'var(--cyan)';
+    COMP_REGIONS.forEach(r => {
+      const cnt = item[r.code] || 0;
+      if (cnt > 0) {
+        const roleName = currentLang === 'zh' ? item.titleZh : item.titleEn;
+        let borderTopColor = 'var(--border)';
+        if(k==='L7_M2') borderTopColor = 'var(--pink)';
+        else if(k==='L6_M1') borderTopColor = 'var(--purple)';
+        else if(k==='L5') borderTopColor = 'var(--cyan)';
 
-        rowDiv.innerHTML += `
-          <div class="org-node" style="border-top:3px solid ${borderTopColor};">
-            <div class="lvl">${item.code}</div>
-            <div class="role">${roleName}</div>
-            <div class="loc-tag">${r.flag} ${r.code} × ${cnt}</div>
-          </div>
-        `;
-      }
-    });
+        rowDiv.innerHTML += `
+          <div class="org-node" style="border-top:3px solid ${borderTopColor};">
+            <div class="lvl">${item.code}</div>
+            <div class="role">${roleName}</div>
+            <div class="loc-tag">${r.flag} ${r.code} × ${cnt}</div>
+          </div>
+        `;
+      }
+    });
 
-    if(rowDiv.children.length > 0) {
-      container.appendChild(rowDiv);
-    }
-  });
+    if(rowDiv.children.length > 0) {
+      container.appendChild(rowDiv);
+    }
+  });
 }
 
 // Talent Review (Tab 5) Code
@@ -996,454 +1187,453 @@ let trLoadedTeamsData = [];
 let trActiveKey = null;
 
 const deptDirectory = [
-  { key: 'BD', label: 'Sales & Ops Dept', gid: '1804429324' },
-  { key: 'FT', label: 'Fiat Dept', gid: '1952213325' },
-  { key: 'SEC', label: 'Security Dept', gid: '1349594726' },
-  { key: 'FIN', label: 'Finance Dept', gid: '2080233148' },
-  { key: 'LEGAL', label: 'Legal Dept', gid: '1224573719' }
+  { key: 'BD', label: 'Sales & Ops Dept', gid: '1804429324' },
+  { key: 'FT', label: 'Fiat Dept', gid: '1952213325' },
+  { key: 'SEC', label: 'Security Dept', gid: '1349594726' },
+  { key: 'FIN', label: 'Finance Dept', gid: '2080233148' },
+  { key: 'LEGAL', label: 'Legal Dept', gid: '1224573719' }
 ];
 
 const trI18n = {
-  zh: {
-    kpi_reviewed: "評估總人數", kpi_locs: "個地區/國家", kpi_cohort: "佔團隊",
-    kpi_b1: "優先晉升 (Box 1)", kpi_growth: "成長儲備池 (Box 2+4)", kpi_core: "深耕骨幹 (Box 5)", kpi_pip: "淘汰/輔導池 (Box 9/6)",
-    sec1_title: "部門人才九宮格分佈", sec1_desc: "團隊落點分佈矩陣，涵蓋潛力與績效指標及法務合規風險預警。",
-    sec2_title: "員工盤點總表", sec2_desc: "績效採 Q1–Q4 加權均分 (S=5, A=4, B=3, B−=2, C=1)。潛力採主管 70% + HRBP 30% (高=5, 中=3, 低=1.5)。點擊欄位標題可排序。",
-    sec3_title: "高潛留才策略手冊 (Box 1, 2, 4)", sec3_desc: "主管、HRBP 與員工三方具體行動分工，結合激勵對話與晉升防禦機制。",
-    sec4_title: "績效改善 PIP 計畫 (Box 9 / 6)", sec4_desc: "2–4 週二元化量化指標、嚴肅談判話術與多國勞工法規最後手段性防禦機制。",
-    axis_pot: "潛力 POTENTIAL →", axis_perf: "績效 PERFORMANCE →",
-    legend_fast: "優先晉升", legend_growth: "儲備池", legend_maintain: "維持深耕", legend_mobility: "輪調觀察", legend_pip: "淘汰/PIP",
-    side_loc: "各地區人數分佈", side_lvl: "各職級人數分佈", all_boxes: "所有落點 (All Boxes)",
-    th_id: "工號", th_name: "姓名", th_level: "職級", th_loc: "地區", th_perf: "績效均分", th_pot: "潛力得分", th_box: "九宮格落點", th_status: "2027/04 處置狀態", th_target: "目標職級",
-    search_placeholder: "搜尋姓名 / 工號...", empty_pool: "此部門目前無人員在此區間。",
-    action_title: "責任分工 (Action Plan)", script_title: "主管與 HRBP 談判話術 (Dialogue Playbook)",
-    tag_ctx: "現況背景與核心貢獻", tag_risk: "績效缺口與合規風險",
-    mgr_label: "主管 Action:", hr_label: "HRBP Action:", self_label: "員工本人 Action:",
-    dialogue_mgr_label: "Direct Manager 話術：", dialogue_hr_label: "HRBP 控場話術：",
-    star_mgr_action: "委任跨團隊策略專案主導權，建立雙週 1:1 職涯護航機制，提前鋪設晉升 Runway。",
-    star_hr_action: "啟動外部薪酬水位審查（Comp Benchmark），規劃中長期留任激勵（Retention Equity/Grant）。",
-    star_self_action: "制定個人發展計畫（IDP），主動承接架構設計或團隊知識傳承，擴大跨域影響力。",
-    star_mgr_script: "“你在過去四季的交付是組織的標竿。我們已正式將你列入 2027 年 4 月晉升計畫，接下來我會全力為你爭取資源。”",
-    star_hr_script: "“組織高度認可你的戰略貢獻，我們正與管理層制定具競爭力的中長期留任配套。”",
-    pip_mgr_action: "設定 2–4 週具體二元化（Binary）檢核標準（如交付率 100%、零失誤率），落實每週 1:1 書面進度日誌。",
-    pip_hr_action: "建立合規檔案庫（輔導紀錄與轉崗評估），把控法定預告期，必要時主導協議離職談判。",
-    pip_self_action: "簽署改善計畫確認書，每日更新產出日誌並於每週五提交主管覆核。",
-    pip_mgr_script: "“我們檢視了過去四季的量化數據，交付成果與組織標準有顯著落差。今天正式啟動 2–4 週 PIP。”",
-    pip_hr_script: "“公司依法提供合理的改善機會，但若指標未能如期達成，我們將依當地法規進入法定終止程序。”"
-  },
-  en: {
-    kpi_reviewed: "Headcount Reviewed", kpi_locs: "locations", kpi_cohort: "of cohort",
-    kpi_b1: "Fast-Track (Box 1)", kpi_growth: "Growth Pool (Box 2+4)", kpi_core: "Maintain & Deepen (Box 5)", kpi_pip: "PIP Pool (Box 9/6)",
-    sec1_title: "Departmental 9-Box Distribution", sec1_desc: "Talent matrix distribution across performance and potential dimensions.",
-    sec2_title: "Talent Review Table", sec2_desc: "Performance and Potential calculations with sortable columns.",
-    sec3_title: "High-Potential Retention Playbook", sec3_desc: "Actionable RACI matrix across Manager, HRBP, and Employee.",
-    sec4_title: "Underperformer PIP Plan", sec4_desc: "2–4 week binary milestones and statutory compliance rules.",
-    axis_pot: "POTENTIAL →", axis_perf: "PERFORMANCE →",
-    legend_fast: "Fast-Track", legend_growth: "Growth Pool", legend_maintain: "Maintain", legend_mobility: "Mobility Review", legend_pip: "PIP / Action",
-    side_loc: "Headcount by Location", side_lvl: "Headcount by Level", all_boxes: "All Boxes",
-    th_id: "ID", th_name: "Name", th_level: "Level", th_loc: "Location", th_perf: "Perf Avg", th_pot: "Pot Score", th_box: "9-Box", th_status: "Apr 2027 Status", th_target: "Target Level",
-    search_placeholder: "Search name / ID...", empty_pool: "No candidates currently in this cohort.",
-    action_title: "Role-Based Action Plan", script_title: "1-on-1 Dialogue Playbook",
-    tag_ctx: "Context & Contribution", tag_risk: "Deficiency & Risk Context",
-    mgr_label: "Direct Manager:", hr_label: "HRBP:", self_label: "Employee (Self):",
-    dialogue_mgr_label: "Direct Manager Opener:", dialogue_hr_label: "HRBP Closing Script:",
-    star_mgr_action: "Assign key strategic project ownership; set up bi-weekly 1:1 career sponsorship cadence.",
-    star_hr_action: "Initiate external compensation benchmarking; structure tailored retention packages.",
-    star_self_action: "Draft an IDP; lead knowledge transfer sessions to scale organizational leverage.",
-    star_mgr_script: "“Your delivery over the past four quarters stands out as an organizational benchmark. We have officially mapped you to the April 2027 promotion track.”",
-    star_hr_script: "“Leadership strongly recognizes your strategic contribution. We are proactively reviewing retention packages.”",
-    pip_mgr_action: "Establish 2–4 week binary performance metrics; conduct documented weekly reviews.",
-    pip_hr_action: "Audit counseling records and transfer-feasibility assessments; manage statutory notice.",
-    pip_self_action: "Sign PIP acknowledgment; maintain daily output logs and submit for manager review.",
-    pip_mgr_script: "“We have reviewed your performance metrics, and results fall significantly short of required standards. Today we are initiating a 2–4 week PIP.”",
-    pip_hr_script: "“The company provides fair opportunity to improve; however, failure to meet targets will initiate formal statutory separation.”"
-  }
+  zh: {
+    kpi_reviewed: "評估總人數", kpi_locs: "個地區/國家", kpi_cohort: "佔團隊",
+    kpi_b1: "優先晉升 (Box 1)", kpi_growth: "成長儲備池 (Box 2+4)", kpi_core: "深耕骨幹 (Box 5)", kpi_pip: "淘汰/輔導池 (Box 9/6)",
+    sec1_title: "部門人才九宮格分佈", sec1_desc: "團隊落點分佈矩陣，涵蓋潛力與績效指標及法務合規風險預警。",
+    sec2_title: "員工盤點總表", sec2_desc: "績效採 Q1–Q4 加權均分 (S=5, A=4, B=3, B−=2, C=1)。潛力採主管 70% + HRBP 30% (高=5, 中=3, 低=1.5)。點擊欄位標題可排序。",
+    sec3_title: "高潛留才策略手冊 (Box 1, 2, 4)", sec3_desc: "主管、HRBP 與員工三方具體行動分工，結合激勵對話與晉升防禦機制。",
+    sec4_title: "績效改善 PIP 計畫 (Box 9 / 6)", sec4_desc: "2–4 週二元化量化指標、嚴肅談判話術與多國勞工法規最後手段性防禦機制。",
+    axis_pot: "潛力 POTENTIAL →", axis_perf: "績效 PERFORMANCE →",
+    legend_fast: "優先晉升", legend_growth: "儲備池", legend_maintain: "維持深耕", legend_mobility: "輪調觀察", legend_pip: "淘汰/PIP",
+    side_loc: "各地區人數分佈", side_lvl: "各職級人數分佈", all_boxes: "所有落點 (All Boxes)",
+    th_id: "工號", th_name: "姓名", th_level: "職級", th_loc: "地區", th_perf: "績效均分", th_pot: "潛力得分", th_box: "九宮格落點", th_status: "2027/04 處置狀態", th_target: "目標職級",
+    search_placeholder: "搜尋姓名 / 工號...", empty_pool: "此部門目前無人員在此區間。",
+    action_title: "責任分工 (Action Plan)", script_title: "主管與 HRBP 談判話術 (Dialogue Playbook)",
+    tag_ctx: "現況背景與核心貢獻", tag_risk: "績效缺口與合規風險",
+    mgr_label: "主管 Action:", hr_label: "HRBP Action:", self_label: "員工本人 Action:",
+    dialogue_mgr_label: "Direct Manager 話術：", dialogue_hr_label: "HRBP 控場話術：",
+    star_mgr_action: "委任跨團隊策略專案主導權，建立雙週 1:1 職涯護航機制，提前鋪設晉升 Runway。",
+    star_hr_action: "啟動外部薪酬水位審查（Comp Benchmark），規劃中長期留任激勵（Retention Equity/Grant）。",
+    star_self_action: "制定個人發展計畫（IDP），主動承接架構設計或團隊知識傳承，擴大跨域影響力。",
+    star_mgr_script: "“你在過去四季的交付是組織的標竿。我們已正式將你列入 2027 年 4 月晉升計畫，接下來我會全力為你爭取資源。”",
+    star_hr_script: "“組織高度認可你的戰略貢獻，我們正與管理層制定具競爭力的中長期留任配套。”",
+    pip_mgr_action: "設定 2–4 週具體二元化（Binary）檢核標準（如交付率 100%、零失誤率），落實每週 1:1 書面進度日誌。",
+    pip_hr_action: "建立合規檔案庫（輔導紀錄與轉崗評估），把控法定預告期，必要時主導協議離職談判。",
+    pip_self_action: "簽署改善計畫確認書，每日更新產出日誌並於每週五提交主管覆核。",
+    pip_mgr_script: "“我們檢視了過去四季的量化數據，交付成果與組織標準有顯著落差。今天正式啟動 2–4 週 PIP。”",
+    pip_hr_script: "“公司依法提供合理的改善機會，但若指標未能如期達成，我們將依當地法規進入法定終止程序。”"
+  },
+  en: {
+    kpi_reviewed: "Headcount Reviewed", kpi_locs: "locations", kpi_cohort: "of cohort",
+    kpi_b1: "Fast-Track (Box 1)", kpi_growth: "Growth Pool (Box 2+4)", kpi_core: "Maintain & Deepen (Box 5)", kpi_pip: "PIP Pool (Box 9/6)",
+    sec1_title: "Departmental 9-Box Distribution", sec1_desc: "Talent matrix distribution across performance and potential dimensions.",
+    sec2_title: "Talent Review Table", sec2_desc: "Performance and Potential calculations with sortable columns.",
+    sec3_title: "High-Potential Retention Playbook", sec3_desc: "Actionable RACI matrix across Manager, HRBP, and Employee.",
+    sec4_title: "Underperformer PIP Plan", sec4_desc: "2–4 week binary milestones and statutory compliance rules.",
+    axis_pot: "POTENTIAL →", axis_perf: "PERFORMANCE →",
+    legend_fast: "Fast-Track", legend_growth: "Growth Pool", legend_maintain: "Maintain", legend_mobility: "Mobility Review", legend_pip: "PIP / Action",
+    side_loc: "Headcount by Location", side_lvl: "Headcount by Level", all_boxes: "All Boxes",
+    th_id: "ID", th_name: "Name", th_level: "Level", th_loc: "Location", th_perf: "Perf Avg", th_pot: "Pot Score", th_box: "9-Box", th_status: "Apr 2027 Status", th_target: "Target Level",
+    search_placeholder: "Search name / ID...", empty_pool: "No candidates currently in this cohort.",
+    action_title: "Role-Based Action Plan", script_title: "1-on-1 Dialogue Playbook",
+    tag_ctx: "Context & Contribution", tag_risk: "Deficiency & Risk Context",
+    mgr_label: "Direct Manager:", hr_label: "HRBP:", self_label: "Employee (Self):",
+    dialogue_mgr_label: "Direct Manager Opener:", dialogue_hr_label: "HRBP Closing Script:",
+    star_mgr_action: "Assign key strategic project ownership; set up bi-weekly 1:1 career sponsorship cadence.",
+    star_hr_action: "Initiate external compensation benchmarking; structure tailored retention packages.",
+    star_self_action: "Draft an IDP; lead knowledge transfer sessions to scale organizational leverage.",
+    star_mgr_script: "“Your delivery over the past four quarters stands out as an organizational benchmark. We have officially mapped you to the April 2027 promotion track.”",
+    star_hr_script: "“Leadership strongly recognizes your strategic contribution. We are proactively reviewing retention packages.”",
+    pip_mgr_action: "Establish 2–4 week binary performance metrics; conduct documented weekly reviews.",
+    pip_hr_action: "Audit counseling records and transfer-feasibility assessments; manage statutory notice.",
+    pip_self_action: "Sign PIP acknowledgment; maintain daily output logs and submit for manager review.",
+    pip_mgr_script: "“We have reviewed your performance metrics, and results fall significantly short of required standards. Today we are initiating a 2–4 week PIP.”",
+    pip_hr_script: "“The company provides fair opportunity to improve; however, failure to meet targets will initiate formal statutory separation.”"
+  }
 };
 
 const trBoxDefs = {
-  1: { zh: "Box 1 · 頂尖之星 (Star)", en: "Box 1 · Star", poolZh: "優先晉升 (Fast-Track)", poolEn: "Fast-Track Promotion" },
-  2: { zh: "Box 2 · 成長高潛 (High Pot)", en: "Box 2 · High Potential", poolZh: "儲備池 (6-12 個月)", poolEn: "Growth Pool (6-12mo)" },
-  3: { zh: "Box 3 · 璞玉待磨 (Rough Diamond)", en: "Box 3 · Rough Diamond", poolZh: "橫向輪調激發", poolEn: "Talent Mobility Review" },
-  4: { zh: "Box 4 · 高績效標竿 (High Perf)", en: "Box 4 · High Performer", poolZh: "儲備池 (6-12 個月)", poolEn: "Succession Pool" },
-  5: { zh: "Box 5 · 核心骨幹 (Core Player)", en: "Box 5 · Core Player", poolZh: "維持現職深耕", poolEn: "Maintain & Deepen" },
-  6: { zh: "Box 6 · 瓶頸待激發 (Dilemma)", en: "Box 6 · Dilemma", poolZh: "限期觀察/雙週輔導", poolEn: "Watch / Coach" },
-  7: { zh: "Box 7 · 資深專家 (Solid Pro)", en: "Box 7 · Solid Pro", poolZh: "專家深耕 (不轉管理)", poolEn: "Maintain & Deepen" },
-  8: { zh: "Box 8 · 穩定貢獻 (Effective)", en: "Box 8 · Effective", poolZh: "標準維持者", poolEn: "Maintain" },
-  9: { zh: "Box 9 · 風險淘汰 (Underperformer)", en: "Box 9 · Underperformer", poolZh: "啟動 2-4 週 PIP", poolEn: "Action / PIP Pool" }
+  1: { zh: "Box 1 · 頂尖之星 (Star)", en: "Box 1 · Star", poolZh: "優先晉升 (Fast-Track)", poolEn: "Fast-Track Promotion" },
+  2: { zh: "Box 2 · 成長高潛 (High Pot)", en: "Box 2 · High Potential", poolZh: "儲備池 (6-12 個月)", poolEn: "Growth Pool (6-12mo)" },
+  3: { zh: "Box 3 · 璞玉待磨 (Rough Diamond)", en: "Box 3 · Rough Diamond", poolZh: "橫向輪調激發", poolEn: "Talent Mobility Review" },
+  4: { zh: "Box 4 · 高績效標竿 (High Perf)", en: "Box 4 · High Performer", poolZh: "儲備池 (6-12 個月)", poolEn: "Succession Pool" },
+  5: { zh: "Box 5 · 核心骨幹 (Core Player)", en: "Box 5 · Core Player", poolZh: "維持現職深耕", poolEn: "Maintain & Deepen" },
+  6: { zh: "Box 6 · 瓶頸待激發 (Dilemma)", en: "Box 6 · Dilemma", poolZh: "限期觀察/雙週輔導", poolEn: "Watch / Coach" },
+  7: { zh: "Box 7 · 資深專家 (Solid Pro)", en: "Box 7 · Solid Pro", poolZh: "專家深耕 (不轉管理)", poolEn: "Maintain & Deepen" },
+  8: { zh: "Box 8 · 穩定貢獻 (Effective)", en: "Box 8 · Effective", poolZh: "標準維持者", poolEn: "Maintain" },
+  9: { zh: "Box 9 · 風險淘汰 (Underperformer)", en: "Box 9 · Underperformer", poolZh: "啟動 2-4 週 PIP", poolEn: "Action / PIP Pool" }
 };
 
 const trComplianceGuidelines = {
-  TW: { title: "TW — Labor Standards Act, Article 11-5", text: "Mandatory 2–4 week objective PIP with bi-weekly check-ins. Reassignment-feasibility assessment is required." },
-  SG: { title: "SG — Tripartite Advisory Guidelines", text: "2–4 week PIP requires clear weekly progress logs. Serve statutory notice if targets remain unmet." },
-  MY: { title: "MY — Industrial Relations Act 1967", text: "Issue at least two formal written warning letters detailing consequences, and maintain a mentorship log." },
-  US: { title: "US — At-Will Doctrine", text: "A written PIP with binary metrics is primary documentation defending against employment claims." },
-  EU: { title: "EU — Stringent Dismissal Protection", text: "A 2–4 week turnaround is legally insufficient in most EU jurisdictions. Recommend mutual separation." },
-  UAE: { title: "UAE — Federal Decree-Law No. 33 of 2021", text: "Minimum 30-day statutory notice applies before any termination step." },
-  IN: { title: "IN — Industrial Disputes & S&E Acts", text: "Requires written counseling records and a fair opportunity to improve." }
+  TW: { title: "TW — Labor Standards Act, Article 11-5", text: "Mandatory 2–4 week objective PIP with bi-weekly check-ins. Reassignment-feasibility assessment is required." },
+  SG: { title: "SG — Tripartite Advisory Guidelines", text: "2–4 week PIP requires clear weekly progress logs. Serve statutory notice if targets remain unmet." },
+  MY: { title: "MY — Industrial Relations Act 1967", text: "Issue at least two formal written warning letters detailing consequences, and maintain a mentorship log." },
+  US: { title: "US — At-Will Doctrine", text: "A written PIP with binary metrics is primary documentation defending against employment claims." },
+  EU: { title: "EU — Stringent Dismissal Protection", text: "A 2–4 week turnaround is legally insufficient in most EU jurisdictions. Recommend mutual separation." },
+  UAE: { title: "UAE — Federal Decree-Law No. 33 of 2021", text: "Minimum 30-day statutory notice applies before any termination step." },
+  IN: { title: "IN — Industrial Disputes & S&E Acts", text: "Requires written counseling records and a fair opportunity to improve." }
 };
 
 function parseCSV(text) {
-  const p = [];
-  let row = [''], i = 0, inQuote = false;
-  text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  for (let ch of text) {
-    if (ch === '"') inQuote = !inQuote;
-    else if (ch === ',' && !inQuote) { row.push(''); i++; }
-    else if (ch === '\n' && !inQuote) { p.push(row.map(s => s.trim().replace(/^"|"$/g, ''))); row = ['']; i = 0; }
-    else row[i] += ch;
-  }
-  if (row.length > 1 || row[0] !== '') p.push(row.map(s => s.trim().replace(/^"|"$/g, '')));
-  if (p.length < 2) return [];
-  const headers = p[0].map(h => h.replace(/^[\uFEFF\s]+|[\s]+$/g, ''));
-  return p.slice(1).map(r => {
-    let o = {};
-    headers.forEach((h, idx) => o[h] = r[idx] || '');
-    return o;
-  });
+  const p = [];
+  let row = [''], i = 0, inQuote = false;
+  text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  for (let ch of text) {
+    if (ch === '"') inQuote = !inQuote;
+    else if (ch === ',' && !inQuote) { row.push(''); i++; }
+    else if (ch === '\n' && !inQuote) { p.push(row.map(s => s.trim().replace(/^"|"$/g, ''))); row = ['']; i = 0; }
+    else row[i] += ch;
+  }
+  if (row.length > 1 || row[0] !== '') p.push(row.map(s => s.trim().replace(/^"|"$/g, '')));
+  if (p.length < 2) return [];
+  const headers = p[0].map(h => h.replace(/^[\uFEFF\s]+|[\s]+$/g, ''));
+  return p.slice(1).map(r => {
+    let o = {};
+    headers.forEach((h, idx) => o[h] = r[idx] || '');
+    return o;
+  });
 }
 
 function processRow(row) {
-  const perfMap = { "S": 5.0, "A": 4.0, "B": 3.0, "B-": 2.0, "C": 1.0 };
-  const potMap = { "高": 5.0, "中": 3.0, "低": 1.5, "HIGH": 5.0, "MED": 3.0, "LOW": 1.5 };
-  const q1 = perfMap[String(row.Q1).trim().toUpperCase()] || parseFloat(row.Q1) || 0;
-  const q2 = perfMap[String(row.Q2).trim().toUpperCase()] || parseFloat(row.Q2) || 0;
-  const q3 = perfMap[String(row.Q3).trim().toUpperCase()] || parseFloat(row.Q3) || 0;
-  const q4 = perfMap[String(row.Q4).trim().toUpperCase()] || parseFloat(row.Q4) || 0;
-  const perf = (q1 + q2 + q3 + q4) / 4;
-  const leadPot = potMap[String(row.Manager_Pot || row.Lead_Pot || "中").trim()] || 3.0;
-  const headPot = potMap[String(row.HRBP_Pot || row.Head_Pot || "中").trim()] || 3.0;
-  const pot = (leadPot * 0.7) + (headPot * 0.3);
+  const perfMap = { "S": 5.0, "A": 4.0, "B": 3.0, "B-": 2.0, "C": 1.0 };
+  const potMap = { "高": 5.0, "中": 3.0, "低": 1.5, "HIGH": 5.0, "MED": 3.0, "LOW": 1.5 };
+  const q1 = perfMap[String(row.Q1).trim().toUpperCase()] || parseFloat(row.Q1) || 0;
+  const q2 = perfMap[String(row.Q2).trim().toUpperCase()] || parseFloat(row.Q2) || 0;
+  const q3 = perfMap[String(row.Q3).trim().toUpperCase()] || parseFloat(row.Q3) || 0;
+  const q4 = perfMap[String(row.Q4).trim().toUpperCase()] || parseFloat(row.Q4) || 0;
+  const perf = (q1 + q2 + q3 + q4) / 4;
+  const leadPot = potMap[String(row.Manager_Pot || row.Lead_Pot || "中").trim()] || 3.0;
+  const headPot = potMap[String(row.HRBP_Pot || row.Head_Pot || "中").trim()] || 3.0;
+  const pot = (leadPot * 0.7) + (headPot * 0.3);
 
-  let perfTier = perf >= 4.2 ? 'High' : (perf >= 3.0 ? 'Med' : 'Low');
-  let potTier = pot >= 4.0 ? 'High' : (pot >= 2.8 ? 'Med' : 'Low');
-  let boxNum = 9;
-  if (perfTier === 'High' && potTier === 'High') boxNum = 1;
-  else if (perfTier === 'Med' && potTier === 'High') boxNum = 2;
-  else if (perfTier === 'Low' && potTier === 'High') boxNum = 3;
-  else if (perfTier === 'High' && potTier === 'Med') boxNum = 4;
-  else if (perfTier === 'Med' && potTier === 'Med') boxNum = 5;
-  else if (perfTier === 'Low' && potTier === 'Med') boxNum = 6;
-  else if (perfTier === 'High' && potTier === 'Low') boxNum = 7;
-  else if (perfTier === 'Med' && potTier === 'Low') boxNum = 8;
-  else boxNum = 9;
+  let perfTier = perf >= 4.2 ? 'High' : (perf >= 3.0 ? 'Med' : 'Low');
+  let potTier = pot >= 4.0 ? 'High' : (pot >= 2.8 ? 'Med' : 'Low');
+  let boxNum = 9;
+  if (perfTier === 'High' && potTier === 'High') boxNum = 1;
+  else if (perfTier === 'Med' && potTier === 'High') boxNum = 2;
+  else if (perfTier === 'Low' && potTier === 'High') boxNum = 3;
+  else if (perfTier === 'High' && potTier === 'Med') boxNum = 4;
+  else if (perfTier === 'Med' && potTier === 'Med') boxNum = 5;
+  else if (perfTier === 'Low' && potTier === 'Med') boxNum = 6;
+  else if (perfTier === 'High' && potTier === 'Low') boxNum = 7;
+  else if (perfTier === 'Med' && potTier === 'Low') boxNum = 8;
+  else boxNum = 9;
 
-  let target = row.Current_Level || '';
-  if (boxNum === 1) target = target.startsWith('L4') ? 'M1 / L5' : (target.startsWith('M') ? `M${parseInt(target[1]||1)+1}` : `L${parseInt(target[1]||1)+1}`);
+  let target = row.Current_Level || '';
+  if (boxNum === 1) target = target.startsWith('L4') ? 'M1 / L5' : (target.startsWith('M') ? `M${parseInt(target[1]||1)+1}` : `L${parseInt(target[1]||1)+1}`);
 
-  return {
-    id: row.Employee_ID || '', name: row.Name || '', level: row.Current_Level || '',
-    loc: (row.Location || row.Region || '').toUpperCase(), perf: Number(perf.toFixed(2)),
-    pot: Number(pot.toFixed(2)), boxNum, box: `Box ${boxNum}`, target, notes: row.Notes || '', flagged: (boxNum === 9 && pot >= 2.5 && pot < 2.8)
-  };
+  return {
+    id: row.Employee_ID || '', name: row.Name || '', level: row.Current_Level || '',
+    loc: (row.Location || row.Region || '').toUpperCase(), perf: Number(perf.toFixed(2)),
+    pot: Number(pot.toFixed(2)), boxNum, box: `Box ${boxNum}`, target, notes: row.Notes || '', flagged: (boxNum === 9 && pot >= 2.5 && pot < 2.8)
+  };
 }
 
 function computeTrAgg(employees){
-  const counts = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
-  employees.forEach(e => { if(counts[e.boxNum] !== undefined) counts[e.boxNum]++; });
-  const n = employees.length;
-  const pct = k => n ? Math.round(counts[k]/n*100) : 0;
-  const byField = (field) => {
-    const m = {};
-    employees.forEach(e=>{ if(e[field]) m[e[field]] = (m[e[field]]||0)+1; });
-    return Object.entries(m).sort((a,b)=>b[1]-a[1]);
-  };
-  return {counts, pct, n, byLoc: byField('loc'), byLevel: byField('level')};
+  const counts = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  employees.forEach(e => { if(counts[e.boxNum] !== undefined) counts[e.boxNum]++; });
+  const n = employees.length;
+  const pct = k => n ? Math.round(counts[k]/n*100) : 0;
+  const byField = (field) => {
+    const m = {};
+    employees.forEach(e=>{ if(e[field]) m[e[field]] = (m[e[field]]||0)+1; });
+    return Object.entries(m).sort((a,b)=>b[1]-a[1]);
+  };
+  return {counts, pct, n, byLoc: byField('loc'), byLevel: byField('level')};
 }
 
 function renderTrMatrix(team, t){
-  const a = computeTrAgg(team.employees);
-  const c = a.counts, p = a.pct;
-  const maxLoc = Math.max(...a.byLoc.map(x=>x[1]), 1);
-  const maxLvl = Math.max(...a.byLevel.map(x=>x[1]), 1);
+  const a = computeTrAgg(team.employees);
+  const c = a.counts, p = a.pct;
+  const maxLoc = Math.max(...a.byLoc.map(x=>x[1]), 1);
+  const maxLvl = Math.max(...a.byLevel.map(x=>x[1]), 1);
 
-  const getTip = (num) => {
-    const matched = team.employees.filter(e => e.boxNum === num);
-    const names = matched.map(e => `${e.name} (${e.loc})`).join(', ');
-    return `${trBoxDefs[num].en} — ${matched.length} employees.\n${names}`;
-  };
+  const getTip = (num) => {
+    const matched = team.employees.filter(e => e.boxNum === num);
+    const names = matched.map(e => `${e.name} (${e.loc})`).join(', ');
+    return `${trBoxDefs[num].en} — ${matched.length} employees.\n${names}`;
+  };
 
-  const cell = (num, tone) => `
-    <div class="tr-cell tone-${tone}" data-tip="${getTip(num).replace(/"/g,'&quot;')}">
-      <div class="name">${trBoxDefs[num].en}</div>
-      <div><div class="count">${c[num]}</div><div class="pct">${p(num)}%</div></div>
-      <div class="pool">${trBoxDefs[num].poolEn}</div>
-    </div>`;
+  const cell = (num, tone) => `
+    <div class="tr-cell tone-${tone}" data-tip="${getTip(num).replace(/"/g,'&quot;')}">
+      <div class="name">${trBoxDefs[num].en}</div>
+      <div><div class="count">${c[num]}</div><div class="pct">${p(num)}%</div></div>
+      <div class="pool">${trBoxDefs[num].poolEn}</div>
+    </div>`;
 
-  return `
-  <div class="tr-box-grid-wrap">
-    <div>
-      <div class="tr-grid-with-axes">
-        <div class="tr-axis-label-y">${t.axis_pot}</div>
-        <div class="tr-box-grid">
-          ${cell(3,'warn')}${cell(2,'growth')}${cell(1,'good')}
-          ${cell(6,'crit')}${cell(5,'maintain')}${cell(4,'growth')}
-          ${cell(9,'crit')}${cell(8,'maintain')}${cell(7,'maintain')}
-        </div>
-      </div>
-      <div class="tr-grid-x-axis"><div></div><div class="tr-x-labels"><div>Low</div><div>Medium</div><div>High</div></div></div>
-      <div style="text-align:center; color:var(--tr-text-muted); font-size:11px; font-weight:600; margin-top:2px;">${t.axis_perf}</div>
-    </div>
-    <div class="tr-side-card">
-      <h3>${t.side_loc}</h3>
-      ${a.byLoc.map(([k,v])=>`<div class="tr-bar-row"><div>${k}</div><div class="tr-bar-track"><div class="tr-bar-fill" style="width:${Math.round(v/maxLoc*100)}%"></div></div><div class="n">${v}</div></div>`).join('')}
-    </div>
-  </div>`;
+  return `
+  <div class="tr-box-grid-wrap">
+    <div>
+      <div class="tr-grid-with-axes">
+        <div class="tr-axis-label-y">${t.axis_pot}</div>
+        <div class="tr-box-grid">
+          ${cell(3,'warn')}${cell(2,'growth')}${cell(1,'good')}
+          ${cell(6,'crit')}${cell(5,'maintain')}${cell(4,'growth')}
+          ${cell(9,'crit')}${cell(8,'maintain')}${cell(7,'maintain')}
+        </div>
+      </div>
+      <div class="tr-grid-x-axis"><div></div><div class="tr-x-labels"><div>Low</div><div>Medium</div><div>High</div></div></div>
+      <div style="text-align:center; color:var(--tr-text-muted); font-size:11px; font-weight:600; margin-top:2px;">${t.axis_perf}</div>
+    </div>
+    <div class="tr-side-card">
+      <h3>${t.side_loc}</h3>
+      ${a.byLoc.map(([k,v])=>`<div class="tr-bar-row"><div>${k}</div><div class="tr-bar-track"><div class="tr-bar-fill" style="width:${Math.round(v/maxLoc*100)}%"></div></div><div class="n">${v}</div></div>`).join('')}
+    </div>
+  </div>`;
 }
 
 function renderTrKPIs(team, t){
-  const a = computeTrAgg(team.employees);
-  const c = a.counts;
-  return `
-  <div class="tr-kpi-row">
-    <div class="tr-kpi"><div class="label">${t.kpi_reviewed}</div><div class="value">${a.n}</div></div>
-    <div class="tr-kpi good"><div class="label">${t.kpi_b1}</div><div class="value">${c[1]}</div></div>
-    <div class="tr-kpi"><div class="label">${t.kpi_growth}</div><div class="value">${c[2]+c[4]}</div></div>
-    <div class="tr-kpi"><div class="label">${t.kpi_core}</div><div class="value">${c[5]+c[7]+c[8]}</div></div>
-    <div class="tr-kpi crit"><div class="label">${t.kpi_pip}</div><div class="value">${c[9]+c[6]}</div></div>
-  </div>`;
+  const a = computeTrAgg(team.employees);
+  const c = a.counts;
+  return `
+  <div class="tr-kpi-row">
+    <div class="tr-kpi"><div class="label">${t.kpi_reviewed}</div><div class="value">${a.n}</div></div>
+    <div class="tr-kpi good"><div class="label">${t.kpi_b1}</div><div class="value">${c[1]}</div></div>
+    <div class="tr-kpi"><div class="label">${t.kpi_growth}</div><div class="value">${c[2]+c[4]}</div></div>
+    <div class="tr-kpi"><div class="label">${t.kpi_core}</div><div class="value">${c[5]+c[7]+c[8]}</div></div>
+    <div class="tr-kpi crit"><div class="label">${t.kpi_pip}</div><div class="value">${c[9]+c[6]}</div></div>
+  </div>`;
 }
 
 function renderTrRetentionCards(team, t){
-  const ret = team.employees.filter(e => e.boxNum === 1 || e.boxNum === 2 || e.boxNum === 4);
-  const b3 = team.employees.filter(e => e.boxNum === 3);
+  const ret = team.employees.filter(e => e.boxNum === 1 || e.boxNum === 2 || e.boxNum === 4);
+  const b3 = team.employees.filter(e => e.boxNum === 3);
 
-  let html = ret.map(p => {
-    const boxTag = trBoxDefs[p.boxNum].en;
-    return `
-    <div class="tr-pcard">
-      <div>
-        <div class="pc-head">
-          <div><div class="pc-title">${p.name}</div><div class="pc-sub">${boxTag} · ${p.loc} · ${p.level} ➔ Target: ${p.target}</div></div>
-        </div>
-        <div class="section-tag">${t.tag_ctx || 'Context & Contribution'}</div>
-        <p style="margin:2px 0 8px 0; font-size:12.5px; color:var(--tr-text-secondary);">${p.notes || "Consistent high-value business impact and technical excellence."}</p>
-        <div class="section-tag">${t.action_title}</div>
-        <div class="tr-action-grid">
-          <div class="tr-action-item"><b>${t.mgr_label}</b> ${t.star_mgr_action}</div>
-          <div class="tr-action-item"><b>${t.hr_label}</b> ${t.star_hr_action}</div>
-          <div class="tr-action-item"><b>${t.self_label}</b> ${t.star_self_action}</div>
-        </div>
-        <div class="section-tag">${t.script_title}</div>
-        <div class="tr-dialogue-box tr-dialogue-mgr"><b>${t.dialogue_mgr_label}</b> ${t.star_mgr_script}</div>
-        <div class="tr-dialogue-box tr-dialogue-hr"><b>${t.dialogue_hr_label}</b> ${t.star_hr_script}</div>
-      </div>
-    </div>`;
-  }).join('');
+  let html = ret.map(p => {
+    const boxTag = trBoxDefs[p.boxNum].en;
+    return `
+    <div class="tr-pcard">
+      <div>
+        <div class="pc-head">
+          <div><div class="pc-title">${p.name}</div><div class="pc-sub">${boxTag} · ${p.loc} · ${p.level} ➔ Target: ${p.target}</div></div>
+        </div>
+        <div class="section-tag">${t.tag_ctx || 'Context & Contribution'}</div>
+        <p style="margin:2px 0 8px 0; font-size:12.5px; color:var(--tr-text-secondary);">${p.notes || "Consistent high-value business impact and technical excellence."}</p>
+        <div class="section-tag">${t.action_title}</div>
+        <div class="tr-action-grid">
+          <div class="tr-action-item"><b>${t.mgr_label}</b> ${t.star_mgr_action}</div>
+          <div class="tr-action-item"><b>${t.hr_label}</b> ${t.star_hr_action}</div>
+          <div class="tr-action-item"><b>${t.self_label}</b> ${t.star_self_action}</div>
+        </div>
+        <div class="section-tag">${t.script_title}</div>
+        <div class="tr-dialogue-box tr-dialogue-mgr"><b>${t.dialogue_mgr_label}</b> ${t.star_mgr_script}</div>
+        <div class="tr-dialogue-box tr-dialogue-hr"><b>${t.dialogue_hr_label}</b> ${t.star_hr_script}</div>
+      </div>
+    </div>`;
+  }).join('');
 
-  if(b3.length > 0){
-    html += `
-      <div class="tr-pcard" style="grid-column:1 / -1; background:color-mix(in srgb, var(--tr-warning) 10%, var(--tr-card-bg));">
-        <div class="pc-head">
-          <div><div class="pc-title">${b3.length} Box 3 · Rough Diamonds — Mobility Review</div><div class="pc-sub">High agility/potential with role mismatch in current operational track</div></div>
-        </div>
-        <ul style="margin:6px 0 10px 18px; font-size:12.5px;">
-          ${b3.map(p=>`<li><b>${p.name}</b> (${p.level}, ${p.loc}) — ${p.notes || 'High potential candidate'}</li>`).join('')}
-        </ul>
-        <div class="tr-action-grid">
-          <div class="tr-action-item"><b>${t.mgr_label}</b> Assess whether current operational load restricts strengths; propose rotation.</div>
-          <div class="tr-action-item"><b>${t.hr_label}</b> Facilitate internal transfer to strategic/technical track with a 90-day review checkpoint.</div>
-        </div>
-      </div>`;
-  }
-  return html || `<div style="color:var(--tr-text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
+  if(b3.length > 0){
+    html += `
+      <div class="tr-pcard" style="grid-column:1 / -1; background:color-mix(in srgb, var(--tr-warning) 10%, var(--tr-card-bg));">
+        <div class="pc-head">
+          <div><div class="pc-title">${b3.length} Box 3 · Rough Diamonds — Mobility Review</div><div class="pc-sub">High agility/potential with role mismatch in current operational track</div></div>
+        </div>
+        <ul style="margin:6px 0 10px 18px; font-size:12.5px;">
+          ${b3.map(p=>`<li><b>${p.name}</b> (${p.level}, ${p.loc}) — ${p.notes || 'High potential candidate'}</li>`).join('')}
+        </ul>
+        <div class="tr-action-grid">
+          <div class="tr-action-item"><b>${t.mgr_label}</b> Assess whether current operational load restricts strengths; propose rotation.</div>
+          <div class="tr-action-item"><b>${t.hr_label}</b> Facilitate internal transfer to strategic/technical track with a 90-day review checkpoint.</div>
+        </div>
+      </div>`;
+  }
+  return html || `<div style="color:var(--tr-text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
 }
 
 function renderTrPIPCards(team, t){
-  const pips = team.employees.filter(e => e.boxNum === 9 || e.boxNum === 6);
-  return pips.map(p => {
-    const guide = trComplianceGuidelines[p.loc] || { title: `${p.loc} — Labor Code Framework`, text: "Ensure written KPIs, documented check-in logs, and reasonable opportunity to improve." };
-    const boxTag = trBoxDefs[p.boxNum].en;
-    return `
-    <div class="tr-pcard crit">
-      <div>
-        <div class="pc-head">
-          <div><div class="pc-title">${p.name}</div><div class="pc-sub">${p.level} · ${p.loc} · <span style="color:var(--tr-critical); font-weight:700;">${boxTag}</span></div></div>
-        </div>
-        <div class="section-tag">${t.tag_risk || 'Deficiency & Risk Context'}</div>
-        <p style="margin:2px 0 8px 0; font-size:12.5px; color:var(--tr-text-secondary);">${p.notes || "Performance consistently below target."}</p>
-        <div class="section-tag">${t.action_title}</div>
-        <div class="tr-action-grid">
-          <div class="tr-action-item"><b>${t.mgr_label}</b> ${t.pip_mgr_action}</div>
-          <div class="tr-action-item"><b>${t.hr_label}</b> ${t.pip_hr_action}</div>
-          <div class="tr-action-item"><b>${t.self_label}</b> ${t.pip_self_action}</div>
-        </div>
-        <div class="section-tag">${t.script_title}</div>
-        <div class="tr-dialogue-box tr-dialogue-mgr"><b>${t.dialogue_mgr_label}</b> ${t.pip_mgr_script}</div>
-        <div class="tr-dialogue-box tr-dialogue-hr"><b>${t.dialogue_hr_label}</b> ${t.pip_hr_script}</div>
-        <div class="tr-jrisk"><b>${guide.title}</b>${guide.text}</div>
-      </div>
-    </div>`;
-  }).join('') || `<div style="color:var(--tr-text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
+  const pips = team.employees.filter(e => e.boxNum === 9 || e.boxNum === 6);
+  return pips.map(p => {
+    const guide = trComplianceGuidelines[p.loc] || { title: `${p.loc} — Labor Code Framework`, text: "Ensure written KPIs, documented check-in logs, and reasonable opportunity to improve." };
+    const boxTag = trBoxDefs[p.boxNum].en;
+    return `
+    <div class="tr-pcard crit">
+      <div>
+        <div class="pc-head">
+          <div><div class="pc-title">${p.name}</div><div class="pc-sub">${p.level} · ${p.loc} · <span style="color:var(--tr-critical); font-weight:700;">${boxTag}</span></div></div>
+        </div>
+        <div class="section-tag">${t.tag_risk || 'Deficiency & Risk Context'}</div>
+        <p style="margin:2px 0 8px 0; font-size:12.5px; color:var(--tr-text-secondary);">${p.notes || "Performance consistently below target."}</p>
+        <div class="section-tag">${t.action_title}</div>
+        <div class="tr-action-grid">
+          <div class="tr-action-item"><b>${t.mgr_label}</b> ${t.pip_mgr_action}</div>
+          <div class="tr-action-item"><b>${t.hr_label}</b> ${t.pip_hr_action}</div>
+          <div class="tr-action-item"><b>${t.self_label}</b> ${t.pip_self_action}</div>
+        </div>
+        <div class="section-tag">${t.script_title}</div>
+        <div class="tr-dialogue-box tr-dialogue-mgr"><b>${t.dialogue_mgr_label}</b> ${t.pip_mgr_script}</div>
+        <div class="tr-dialogue-box tr-dialogue-hr"><b>${t.dialogue_hr_label}</b> ${t.pip_hr_script}</div>
+        <div class="tr-jrisk"><b>${guide.title}</b>${guide.text}</div>
+      </div>
+    </div>`;
+  }).join('') || `<div style="color:var(--tr-text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
 }
 
 function buildTrPane(team, idx, t){
-  const tbodyId = 'tr_tbody_' + team.key;
-  const boxFilterId = 'tr_boxFilter_' + team.key;
-  const searchId = 'tr_search_' + team.key;
-  return `
-  <div class="tr-teampane ${idx===0?'active':''}" id="tr_pane_${team.key}">
-    ${renderTrKPIs(team, t)}
-    <section>
-      <h2><span class="num">1</span> Talent Review Matrix — ${team.label}</h2>
-      ${renderTrMatrix(team, t)}
-    </section>
-    <section>
-      <h2><span class="num">2</span> Talent Review Table</h2>
-      <p class="desc">Performance = Q1–Q4 average (S=5, A=4, B=3, B−=2, C=1). Potential = Lead×0.7 + Head×0.3 (High=5, Med=3, Low=1.5). Click header to sort.</p>
-      <div class="tr-table-tools">
-        <select id="${boxFilterId}">
-          <option value="">All Boxes</option>
-          <option value="1">Box 1</option><option value="2">Box 2</option><option value="3">Box 3</option>
-          <option value="4">Box 4</option><option value="5">Box 5</option><option value="6">Box 6</option><option value="9">Box 9</option>
-        </select>
-        <input id="${searchId}" type="text" placeholder="${t.search_placeholder}">
-      </div>
-      <div class="tr-table-wrap">
-        <table id="tr_table_${team.key}">
-          <thead><tr>
-            <th data-k="id">${t.th_id}</th><th data-k="name">${t.th_name}</th><th data-k="level">${t.th_level}</th><th data-k="loc">${t.th_loc}</th>
-            <th data-k="perf">${t.th_perf}</th><th data-k="pot">${t.th_pot}</th><th data-k="box">${t.th_box}</th><th data-k="status">${t.th_status}</th><th data-k="target">${t.th_target}</th>
-          </tr></thead>
-          <tbody id="${tbodyId}"></tbody>
-        </table>
-      </div>
-    </section>
-    <section>
-      <h2><span class="num">3</span> High-Potential Retention & Care Playbook (Box 1, 2, 4)</h2>
-      <p class="desc">Actionable RACI matrix across Manager, HRBP, and Employee with calibrated 1-on-1 retention scripts.</p>
-      <div class="tr-cards">${renderTrRetentionCards(team, t)}</div>
-    </section>
-    <section>
-      <h2><span class="num">4</span> Underperformer PIP Plan (Box 9 / 6)</h2>
-      <p class="desc">2–4 week binary milestones, firm manager conversation openers, and jurisdiction-specific statutory compliance rules.</p>
-      <div class="tr-cards">${renderTrPIPCards(team, t)}</div>
-    </section>
-  </div>`;
+  const tbodyId = 'tr_tbody_' + team.key;
+  const boxFilterId = 'tr_boxFilter_' + team.key;
+  const searchId = 'tr_search_' + team.key;
+  return `
+  <div class="tr-teampane ${idx===0?'active':''}" id="tr_pane_${team.key}">
+    ${renderTrKPIs(team, t)}
+    <section>
+      <h2><span class="num">1</span> Talent Review Matrix — ${team.label}</h2>
+      ${renderTrMatrix(team, t)}
+    </section>
+    <section>
+      <h2><span class="num">2</span> Talent Review Table</h2>
+      <p class="desc">Performance = Q1–Q4 average (S=5, A=4, B=3, B−=2, C=1). Potential = Lead×0.7 + Head×0.3 (High=5, Med=3, Low=1.5). Click header to sort.</p>
+      <div class="tr-table-tools">
+        <select id="${boxFilterId}">
+          <option value="">All Boxes</option>
+          <option value="1">Box 1</option><option value="2">Box 2</option><option value="3">Box 3</option>
+          <option value="4">Box 4</option><option value="5">Box 5</option><option value="6">Box 6</option><option value="9">Box 9</option>
+        </select>
+        <input id="${searchId}" type="text" placeholder="${t.search_placeholder}">
+      </div>
+      <div class="tr-table-wrap">
+        <table id="tr_table_${team.key}">
+          <thead><tr>
+            <th data-k="id">${t.th_id}</th><th data-k="name">${t.th_name}</th><th data-k="level">${t.th_level}</th><th data-k="loc">${t.th_loc}</th>
+            <th data-k="perf">${t.th_perf}</th><th data-k="pot">${t.th_pot}</th><th data-k="box">${t.th_box}</th><th data-k="status">${t.th_status}</th><th data-k="target">${t.th_target}</th>
+          </tr></thead>
+          <tbody id="${tbodyId}"></tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <h2><span class="num">3</span> High-Potential Retention & Care Playbook (Box 1, 2, 4)</h2>
+      <p class="desc">Actionable RACI matrix across Manager, HRBP, and Employee with calibrated 1-on-1 retention scripts.</p>
+      <div class="tr-cards">${renderTrRetentionCards(team, t)}</div>
+    </section>
+    <section>
+      <h2><span class="num">4</span> Underperformer PIP Plan (Box 9 / 6)</h2>
+      <p class="desc">2–4 week binary milestones, firm manager conversation openers, and jurisdiction-specific statutory compliance rules.</p>
+      <div class="tr-cards">${renderTrPIPCards(team, t)}</div>
+    </section>
+  </div>`;
 }
 
 function wireTrTable(team){
-  const tbodyId = 'tr_tbody_' + team.key;
-  const boxFilterId = 'tr_boxFilter_' + team.key;
-  const searchId = 'tr_search_' + team.key;
-  let sortKey = null, sortDir = 1;
-  const tbody = document.getElementById(tbodyId);
-  if(!tbody) return;
+  const tbodyId = 'tr_tbody_' + team.key;
+  const boxFilterId = 'tr_boxFilter_' + team.key;
+  const searchId = 'tr_search_' + team.key;
+  let sortKey = null, sortDir = 1;
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
 
-  function draw(rows){
-    tbody.innerHTML = rows.map(e => {
-      const pillLabel = trBoxDefs[e.boxNum].en;
-      const statusLabel = trBoxDefs[e.boxNum].poolEn;
-      const pillCls = (e.boxNum===1)?'b1':((e.boxNum===2||e.boxNum===4)?'b2':((e.boxNum===3)?'b3':((e.boxNum===9||e.boxNum===6)?'b9':'b5')));
-      return `
-        <tr>
-          <td class="tr-mono">${e.id}</td>
-          <td>${e.name}${e.flagged ? ` <span class="tr-flag" title="Reclassified to Box 9 per &lt;2.8 threshold.">&#9888;</span>` : ''}</td>
-          <td>${e.level}</td><td>${e.loc}</td>
-          <td class="tr-mono">${e.perf.toFixed(2)}</td><td class="tr-mono">${e.pot.toFixed(2)}</td>
-          <td><span class="tr-pill ${pillCls}">${pillLabel}</span></td>
-          <td>${statusLabel}</td><td>${e.target}</td>
-        </tr>`;
-    }).join('');
-  }
+  function draw(rows){
+    tbody.innerHTML = rows.map(e => {
+      const pillLabel = trBoxDefs[e.boxNum].en;
+      const statusLabel = trBoxDefs[e.boxNum].poolEn;
+      const pillCls = (e.boxNum===1)?'b1':((e.boxNum===2||e.boxNum===4)?'b2':((e.boxNum===3)?'b3':((e.boxNum===9||e.boxNum===6)?'b9':'b5')));
+      return `
+        <tr>
+          <td class="tr-mono">${e.id}</td>
+          <td>${e.name}${e.flagged ? ` <span class="tr-flag" title="Reclassified to Box 9 per &lt;2.8 threshold.">&#9888;</span>` : ''}</td>
+          <td>${e.level}</td><td>${e.loc}</td>
+          <td class="tr-mono">${e.perf.toFixed(2)}</td><td class="tr-mono">${e.pot.toFixed(2)}</td>
+          <td><span class="tr-pill ${pillCls}">${pillLabel}</span></td>
+          <td>${statusLabel}</td><td>${e.target}</td>
+        </tr>`;
+    }).join('');
+  }
 
-  function apply(){
-    const boxVal = document.getElementById(boxFilterId).value;
-    const q = document.getElementById(searchId).value.trim().toLowerCase();
-    let rows = team.employees.filter(e => (!boxVal || String(e.boxNum)===boxVal) && (!q || e.name.toLowerCase().includes(q) || e.id.toLowerCase().includes(q)));
-    if(sortKey){
-      rows = rows.slice().sort((a,b)=>{
-        const av=a[sortKey], bv=b[sortKey];
-        if(typeof av === "number") return (av-bv)*sortDir;
-        return String(av).localeCompare(String(bv))*sortDir;
-      });
-    }
-    draw(rows);
-  }
+  function apply(){
+    const boxVal = document.getElementById(boxFilterId).value;
+    const q = document.getElementById(searchId).value.trim().toLowerCase();
+    let rows = team.employees.filter(e => (!boxVal || String(e.boxNum)===boxVal) && (!q || e.name.toLowerCase().includes(q) || e.id.toLowerCase().includes(q)));
+    if(sortKey){
+      rows = rows.slice().sort((a,b)=>{
+        const av=a[sortKey], bv=b[sortKey];
+        if(typeof av === "number") return (av-bv)*sortDir;
+        return String(av).localeCompare(String(bv))*sortDir;
+      });
+    }
+    draw(rows);
+  }
 
-  document.getElementById(boxFilterId).addEventListener('change', apply);
-  document.getElementById(searchId).addEventListener('input', apply);
-  document.querySelectorAll(`#tr_table_${team.key} thead th`).forEach(th=>{
-    th.addEventListener('click', ()=>{
-      const k = th.dataset.k;
-      if(sortKey===k){ sortDir*=-1; } else { sortKey=k; sortDir=1; }
-      apply();
-    });
-  });
-  apply();
+  document.getElementById(boxFilterId).addEventListener('change', apply);
+  document.getElementById(searchId).addEventListener('input', apply);
+  document.querySelectorAll(`#tr_table_${team.key} thead th`).forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const k = th.dataset.k;
+      if(sortKey===k){ sortDir*=-1; } else { sortKey=k; sortDir=1; }
+      apply();
+    });
+  });
+  apply();
 }
 
 async function initAllTalentReviewTeams() {
-  trLoadedTeamsData = [];
-  const t = trI18n[currentLang];
-  const tabbar = document.getElementById('tr_tabbar');
-  const panes = document.getElementById('tr_panes');
-  if(!tabbar || !panes) return;
+  trLoadedTeamsData = [];
+  const t = trI18n[currentLang];
+  const tabbar = document.getElementById('tr_tabbar');
+  const panes = document.getElementById('tr_panes');
+  if(!tabbar || !panes) return;
 
-  for (const cfg of deptDirectory) {
-    try {
-      const res = await fetch(BASE_CSV_URL + cfg.gid);
-      const csvText = await res.text();
-      const employees = parseCSV(csvText).map(processRow);
-      trLoadedTeamsData.push({ key: cfg.key, label: cfg.label, employees });
-    } catch(err) {
-      trLoadedTeamsData.push({ key: cfg.key, label: cfg.label, employees: [] });
-    }
-  }
+  for (const cfg of deptDirectory) {
+    try {
+      const res = await fetch(BASE_CSV_URL + cfg.gid);
+      const csvText = await res.text();
+      const employees = parseCSV(csvText).map(processRow);
+      trLoadedTeamsData.push({ key: cfg.key, label: cfg.label, employees });
+    } catch(err) {
+      trLoadedTeamsData.push({ key: cfg.key, label: cfg.label, employees: [] });
+    }
+  }
 
-  if (!trActiveKey && trLoadedTeamsData.length > 0) {
-    trActiveKey = trLoadedTeamsData[0].key;
-  }
+  if (!trActiveKey && trLoadedTeamsData.length > 0) {
+    trActiveKey = trLoadedTeamsData[0].key;
+  }
 
-  tabbar.innerHTML = trLoadedTeamsData.map(d => `<button class="tr-tabbtn ${d.key===trActiveKey?'active':''}" data-key="${d.key}">${d.label}</button>`).join('');
-  panes.innerHTML = trLoadedTeamsData.map((d, i) => buildTrPane(d, d.key===trActiveKey?0:1, t)).join('');
+  tabbar.innerHTML = trLoadedTeamsData.map(d => `<button class="tr-tabbtn ${d.key===trActiveKey?'active':''}" data-key="${d.key}">${d.label}</button>`).join('');
+  panes.innerHTML = trLoadedTeamsData.map((d, i) => buildTrPane(d, d.key===trActiveKey?0:1, t)).join('');
 
-  trLoadedTeamsData.forEach(d => wireTrTable(d));
+  trLoadedTeamsData.forEach(d => wireTrTable(d));
 
-  tabbar.querySelectorAll('.tr-tabbtn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabbar.querySelectorAll('.tr-tabbtn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      trActiveKey = btn.dataset.key;
-      document.querySelectorAll('.tr-teampane').forEach(p => p.classList.remove('active'));
-      const targetPane = document.getElementById('tr_pane_' + trActiveKey);
-      if(targetPane) targetPane.classList.add('active');
-    });
-  });
+  tabbar.querySelectorAll('.tr-tabbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabbar.querySelectorAll('.tr-tabbtn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      trActiveKey = btn.dataset.key;
+      document.querySelectorAll('.tr-teampane').forEach(p => p.classList.remove('active'));
+      const targetPane = document.getElementById('tr_pane_' + trActiveKey);
+      if(targetPane) targetPane.classList.add('active');
+    });
+  });
 }
 
 function setLanguage(lang) {
-  currentLang = lang;
-  document.getElementById('btnZh').className = `lang-btn ${lang==='zh'?'active':''}`;
-  document.getElementById('btnEn').className = `lang-btn ${lang==='en'?'active':''}`;
-  document.getElementById('headerTitle').innerText = "Executive Team Dashboard";
+  currentLang = lang;
+  document.getElementById('btnZh').className = `lang-btn ${lang==='zh'?'active':''}`;
+  document.getElementById('btnEn').className = `lang-btn ${lang==='en'?'active':''}`;
+  document.getElementById('headerTitle').innerText = "Executive Team Dashboard";
 
-  if (lang === 'zh') {
-    document.getElementById('nav_01').innerText = "01 全球雙軌薪酬對標";
-    document.getElementById('nav_02').innerText = "02 雙軌晉升示意圖";
-    document.getElementById('nav_03').innerText = "03 LIVE O-CHART 對照 年度預算預測";
-    document.getElementById('nav_04').innerText = "04 OKR 對齊與新招募預算";
-    document.getElementById('nav_05').innerText = "05 人才盤點與晉升準備";
-  } else {
-    document.getElementById('nav_01').innerText = "01 Global Compensation Benchmark";
-    document.getElementById('nav_02').innerText = "02 Dual-Track Career Ladder";
-    document.getElementById('nav_03').innerText = "03 Live Org Chart & Annual Budget";
-    document.getElementById('nav_04').innerText = "04 OKR Alignment & Hiring Budget";
-    document.getElementById('nav_05').innerText = "05 Talent Review & Secure Access";
-  }
+  if (lang === 'zh') {
+    document.getElementById('nav_01').innerText = "01 全球雙軌薪酬對標";
+    document.getElementById('nav_02').innerText = "02 雙軌晉升示意圖";
+    document.getElementById('nav_03').innerText = "03 LIVE O-CHART 對照 年度預算預測";
+    document.getElementById('nav_04').innerText = "04 OKR 對齊與新招募預算";
+    document.getElementById('nav_05').innerText = "05 人才盤點與晉升準備";
+  } else {
+    document.getElementById('nav_01').innerText = "01 Global Compensation Benchmark";
+    document.getElementById('nav_02').innerText = "02 Dual-Track Career Ladder";
+    document.getElementById('nav_03').innerText = "03 Live Org Chart & Annual Budget";
+    document.getElementById('nav_04').innerText = "04 OKR Alignment & Hiring Budget";
+    document.getElementById('nav_05').innerText = "05 Talent Review & Secure Access";
+  }
 
-  renderCompTab();
-  renderLadderTab();
-  if (currentTab === 'tab05') {
-    initAllTalentReviewTeams();
-  }
+  renderCompTab();
+  renderLadderTab();
+  if (currentTab === 'tab05') {
+    initAllTalentReviewTeams();
+  }
 }
 
 window.onload = () => {
-  renderMatrixTable();
-  setLanguage(currentLang);
-  switchTab('tab01');
+  renderMatrixTable();
+  setLanguage(currentLang);
+  switchTab('tab01');
 };
 </script>
 </body>
-</html>   
-04 OKR 對齊與新招募預算 沒有渲染出來
+</html>

@@ -454,22 +454,22 @@
           <div class="okr-box" id="okr_box_1">
             <button class="btn-del-okr" onclick="deleteOkrBox(1)" title="刪除此目標">✕</button>
             <div class="parent-okr-bar">
-              <span class="parent-okr-label">🔗 上級對照:</span>
-              <input type="text" class="parent-okr-input" value="O0-公司總部 2027 年全球化佈局與核心吞吐量翻倍藍圖">
+              <span class="parent-okr-label" id="lbl_parent_okr">🔗 上級對照:</span>
+              <input type="text" class="parent-okr-input" id="parent_input_1" value="O0-公司總_部 2027 年全球化佈局與核心吞吐量翻倍藍圖">
             </div>
-            <input type="text" class="okr-input-obj" value="Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性">
-            <textarea class="okr-textarea-kr">• KR1: 完成多幣種虛擬資金池路由引擎重構，降低 40% 延遲
+            <input type="text" class="okr-input-obj" id="obj_input_1" value="Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性">
+            <textarea class="okr-textarea-kr" id="kr_input_1">• KR1: 完成多幣種虛擬資金池路由引擎重構，降低 40% 延遲
 • KR2: 通過 SOC2 Type II 審計與零重大資安漏洞
 • KR3: 建立全球分佈式 24/7 SRE 自動化自愈體系</textarea>
           </div>
           <div class="okr-box" id="okr_box_2">
             <button class="btn-del-okr" onclick="deleteOkrBox(2)" title="刪除此目標">✕</button>
             <div class="parent-okr-bar">
-              <span class="parent-okr-label">🔗 上級對照:</span>
-              <input type="text" class="parent-okr-input" value="O0-公司總部跨國人效優化與研發成本結構精實目標">
+              <span class="parent-okr-label" id="lbl_parent_okr_2">🔗 上級對照:</span>
+              <input type="text" class="parent-okr-input" id="parent_input_2" value="O0-公司總部跨國人效優化與研發成本結構精實目標">
             </div>
-            <input type="text" class="okr-input-obj" value="Objective 2: 區域交付中心降本增效與人才密度優化">
-            <textarea class="okr-textarea-kr">• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%
+            <input type="text" class="okr-input-obj" id="obj_input_2" value="Objective 2: 區域交付中心降本增效與人才密度優化">
+            <textarea class="okr-textarea-kr" id="kr_input_2">• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%
 • KR2: 自動化覆蓋率提升至 85%，壓縮月結週期至 T+2
 • KR3: 落地 L3-L8 全序列雙軌職涯階梯與能力錨定</textarea>
           </div>
@@ -505,12 +505,12 @@
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-              <div style="font-size:11.5px; color:var(--text-muted);">基準定價: $240,000 × 0.95 (SG)</div>
+              <div style="font-size:11.5px; color:var(--text-muted);" id="lbl_base_pricing">基準定價: $240,000 × 0.95 (SG)</div>
               <div style="font-size:16px; font-weight:800; color:#34d399;">$228,000 <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">USD/yr</span></div>
             </div>
 
             <div class="role-okr-container" style="background:#070b14; border:1px dashed var(--border); border-radius:8px; padding:10px 12px; margin-bottom:12px;">
-              <div class="role-okr-title" style="font-size:11px; color:var(--cyan); font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:4px;">🎯 崗位專屬 3 大 OKR / KR 目標</div>
+              <div class="role-okr-title" id="lbl_role_okr_title" style="font-size:11px; color:var(--cyan); font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:4px;">🎯 崗位專屬 3 大 OKR / KR 目標</div>
               <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
                 <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #1</span>
                 <input type="text" class="role-okr-input" value="O1-KR1.1: 核心清算架構重構與路由优化" style="width:100%; background:#0f172a; border:1px solid var(--border); color:#fff; padding:6px 10px; border-radius:4px; font-size:12px;">
@@ -526,7 +526,7 @@
             </div>
 
             <div class="funnel-container" style="background:#070b14; border:1px solid var(--border); border-radius:8px; padding:12px;">
-              <div class="funnel-title" style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:8px;">招募漏斗階段追蹤 (手動輸入候選人數)</div>
+              <div class="funnel-title" id="lbl_funnel_title" style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:8px;">招募漏斗階段追蹤 (手動輸入候選人數)</div>
               <div class="funnel-steps-grid" style="display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; text-align:center; margin-bottom:12px;">
                 <div class="funnel-step" style="background:#0f172a; border:1px solid var(--border); border-radius:6px; padding:6px 2px;"><input type="text" maxlength="3" class="f-input" value="24" style="width:100%; background:#090d16; border:1px solid var(--border); color:#fff; font-size:13px; font-weight:bold; text-align:center; border-radius:4px; margin-bottom:2px;"><div class="f-name" style="font-size:8.5px; color:var(--text-muted);">HR SCREEN</div></div>
                 <div class="funnel-step" style="background:#0f172a; border:1px solid var(--border); border-radius:6px; padding:6px 2px;"><input type="text" maxlength="3" class="f-input" value="12" style="width:100%; background:#090d16; border:1px solid var(--border); color:#fff; font-size:13px; font-weight:bold; text-align:center; border-radius:4px; margin-bottom:2px;"><div class="f-name" style="font-size:8.5px; color:var(--text-muted);">TECH SCREEN</div></div>
@@ -557,8 +557,8 @@
     
     <!-- 驗證解鎖畫布 -->
     <div id="tr_auth_box" class="auth-lock-overlay">
-      <h2>🔐 部門資料隔離存取驗證</h2>
-      <p>請選擇您的所屬部門並輸入對應授權密碼以檢視團隊 Dashboard</p>
+      <h2 id="lbl_auth_title">🔐 部門資料隔離存取驗證</h2>
+      <p id="lbl_auth_desc">請選擇您的所屬部門並輸入對應授權密碼以檢視團隊 Dashboard</p>
       <select id="auth_dept_select">
         <option value="FT">法幣部門 (Fiat)</option>
         <option value="SEC">安全部門 (Security)</option>
@@ -567,7 +567,7 @@
         <option value="LEGAL">法務 (Legal)</option>
       </select>
       <input type="password" id="auth_pwd_input" placeholder="請輸入部門密碼 (預設: 1234)...">
-      <button onclick="verifyDeptAuth()">解鎖授權檢視</button>
+      <button id="lbl_auth_btn" onclick="verifyDeptAuth()">解鎖授權檢視</button>
       <div id="auth_error_msg" class="auth-error"></div>
     </div>
 
@@ -582,7 +582,7 @@
           <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
             <div style="display:flex; gap:8px; align-items:center;">
               <span id="tr_current_auth_label" style="font-size:12px; color:var(--cyan); font-weight:700;"></span>
-              <button onclick="lockDeptAuth()" style="background:var(--card-bg); border:1px solid var(--tr-border); color:var(--tr-text-secondary); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:11px;">登出/切換部門</button>
+              <button id="lbl_logout_btn" onclick="lockDeptAuth()" style="background:var(--card-bg); border:1px solid var(--tr-border); color:var(--tr-text-secondary); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:11px;">登出/切換部門</button>
             </div>
             <div id="tr_syncStatus" style="font-size:12px; color:var(--tr-text-muted);">已同步</div>
           </div>
@@ -625,7 +625,9 @@ function verifyDeptAuth() {
     
     initTalentReviewTabForDept(selectedDept);
   } else {
-    errorMsg.innerText = '⚠️ 授權密碼錯誤，請重新輸入（測試預設密碼：1234）。';
+    errorMsg.innerText = currentLang === 'zh' 
+      ? '⚠️ 授權密碼錯誤，請重新輸入（測試預設密碼：1234）。' 
+      : '⚠️ Invalid password. Please try again (Default test password: 1234).';
   }
 }
 
@@ -1186,15 +1188,15 @@ async function initTalentReviewTabForDept(deptKey){
   document.getElementById('tr_syncStatus').innerText = t.connecting;
 
   const deptDirectory = {
-    'FT': { label: '法幣部門 (Fiat)', gid: '1952213325' },
-    'SEC': { label: '安全部門 (Security)', gid: '1349594726' },
-    'BD': { label: '業務與運營 (Sales & Ops)', gid: '1804429324' },
-    'FIN': { label: '財務 (Finance)', gid: '2080233148' },
-    'LEGAL': { label: '法務 (Legal)', gid: '1224573719' }
+    'FT': { label: currentLang==='zh'?'法幣部門 (Fiat)':'Fiat Department', gid: '1952213325' },
+    'SEC': { label: currentLang==='zh'?'安全部門 (Security)':'Security Department', gid: '1349594726' },
+    'BD': { label: currentLang==='zh'?'業務與運營 (Sales & Ops)':'Sales & Ops', gid: '1804429324' },
+    'FIN': { label: currentLang==='zh'?'財務 (Finance)':'Finance Department', gid: '2080233148' },
+    'LEGAL': { label: currentLang==='zh'?'法務 (Legal)':'Legal Department', gid: '1224573719' }
   };
 
   const targetCfg = deptDirectory[deptKey];
-  document.getElementById('tr_current_auth_label').innerText = `🔓 已解鎖檢視：${targetCfg.label}`;
+  document.getElementById('tr_current_auth_label').innerText = currentLang === 'zh' ? `🔓 已解鎖檢視：${targetCfg.label}` : `🔓 Unlocked View: ${targetCfg.label}`;
 
   trLoadedTeamsData = [];
   try {
@@ -1225,11 +1227,71 @@ function setLanguage(lang) {
     document.getElementById('nav_05').innerText = "05 人才盤點與晉升準備 (部門權限驗證)";
     document.getElementById('sec_okr_edit_title').innerText = "戰略目標分解 (Strategic OKRs) — 點擊可直接編輯";
     document.getElementById('sec_hire_builder_title').innerText = "新招募崗位需求清單";
+    document.getElementById('btn_add_okr_label').innerText = "+ 新增戰略目標";
+    document.getElementById('btn_add_hire_label').innerText = "+ 新增招募職缺";
+    
+    document.getElementById('lbl_top_base_cost').innerText = "現有編制年度預算";
+    document.getElementById('lbl_top_new_cost').innerText = "新增職缺預算 (USD)";
+    document.getElementById('lbl_top_total_cost').innerText = "加入新招後總年度預算";
+    document.getElementById('lbl_top_final_hc').innerText = "新總編制人數";
+
+    document.getElementById('disp_okr_new_cost').innerHTML = `+$414,500 <span style="font-size:12px; color:var(--series-3); font-weight:700;">(+27.1%)</span>`;
+    document.getElementById('disp_okr_total_cost').innerHTML = `$1,944,000 <span style="font-size:12px; color:var(--cyan); font-weight:700;">(+27.1%)</span>`;
+    document.getElementById('disp_okr_final_hc').innerHTML = `18 人 <span style="font-size:12px; color:var(--purple); font-weight:700;">(+20.0%)</span>`;
+
+    document.getElementById('lbl_parent_okr').innerText = "🔗 上級對照:";
+    document.getElementById('lbl_parent_okr_2').innerText = "🔗 上級對照:";
+    document.getElementById('parent_input_1').value = "O0-公司總部 2027 年全球化佈局與核心吞吐量翻倍藍圖";
+    document.getElementById('parent_input_2').value = "O0-公司總部跨國人效優化與研發成本結構精實目標";
+    document.getElementById('obj_input_1').value = "Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性";
+    document.getElementById('obj_input_2').value = "Objective 2: 區域交付中心降本增效與人才密度優化";
+
+    document.getElementById('lbl_base_pricing').innerText = "基準定價: $240,000 × 0.95 (SG)";
+    document.getElementById('lbl_role_okr_title').innerText = "🎯 崗位專屬 3 大 OKR / KR 目標";
+    document.getElementById('lbl_funnel_title').innerText = "招募漏斗階段追蹤 (手動輸入候選人數)";
+
+    document.getElementById('disp_rbac_notice').innerHTML = "<b>數據權限控管：</b>本看板實施部門資料隔離機制，各部門負責人僅限查閱所屬團隊之年度預算、編制名單與考績明細；跨部門全域彙整資料依最小特權原則（PoLP）予以嚴格隔離保護。";
+    document.getElementById('disp_rbac_badge').innerText = "部門專屬檢視 · 權限隔離";
+
+    document.getElementById('lbl_auth_title').innerText = "🔐 部門資料隔離存取驗證";
+    document.getElementById('lbl_auth_desc').innerText = "請選擇您的所屬部門並輸入對應授權密碼以檢視團隊 Dashboard";
+    document.getElementById('auth_pwd_input').placeholder = "請輸入部門密碼 (預設: 1234)...";
+    document.getElementById('lbl_auth_btn').innerText = "解鎖授權檢視";
   } else {
     document.getElementById('nav_04').innerText = "04 OKR Alignment & Hiring Budget";
     document.getElementById('nav_05').innerText = "05 Talent Review & Secure Access";
     document.getElementById('sec_okr_edit_title').innerText = "Strategic OKRs — Click to Edit";
     document.getElementById('sec_hire_builder_title').innerText = "New Hires Requirement List";
+    document.getElementById('btn_add_okr_label').innerText = "+ Add Objective";
+    document.getElementById('btn_add_hire_label').innerText = "+ Add Position";
+
+    document.getElementById('lbl_top_base_cost').innerText = "Existing Headcount Budget";
+    document.getElementById('lbl_top_new_cost').innerText = "New Hires Budget (USD)";
+    document.getElementById('lbl_top_total_cost').innerText = "Total Budget after New Hires";
+    document.getElementById('lbl_top_final_hc').innerText = "Total Final Headcount";
+
+    document.getElementById('disp_okr_new_cost').innerHTML = `+$414,500 <span style="font-size:12px; color:var(--series-3); font-weight:700;">(+27.1%)</span>`;
+    document.getElementById('disp_okr_total_cost').innerHTML = `$1,944,000 <span style="font-size:12px; color:var(--cyan); font-weight:700;">(+27.1%)</span>`;
+    document.getElementById('disp_okr_final_hc').innerHTML = `18 HC <span style="font-size:12px; color:var(--purple); font-weight:700;">(+20.0%)</span>`;
+
+    document.getElementById('lbl_parent_okr').innerText = "🔗 Parent OKR:";
+    document.getElementById('lbl_parent_okr_2').innerText = "🔗 Parent OKR:";
+    document.getElementById('parent_input_1').value = "O0-Global Expansion & Core Throughput Blueprint 2027";
+    document.getElementById('parent_input_2').value = "O0-Cross-Border Efficiency & Lean Cost Structure";
+    document.getElementById('obj_input_1').value = "Objective 1: High-Concurrency Core Clearing Architecture & 99.99% Uptime";
+    document.getElementById('obj_input_2').value = "Objective 2: Regional Delivery Center Cost Efficiency & Talent Density";
+
+    document.getElementById('lbl_base_pricing').innerText = "Benchmark: $240,000 × 0.95 (SG)";
+    document.getElementById('lbl_role_okr_title').innerText = "🎯 Role-Specific Top 3 OKR / KR Targets";
+    document.getElementById('lbl_funnel_title').innerText = "Recruitment Funnel Stage Tracking (Manual Candidate Count)";
+
+    document.getElementById('disp_rbac_notice').innerHTML = "<b>Data Permission Control:</b> This dashboard implements departmental data isolation. Department heads are restricted to viewing their own team's budget and evaluations under PoLP.";
+    document.getElementById('disp_rbac_badge').innerText = "Secure Department View · Isolated";
+
+    document.getElementById('lbl_auth_title').innerText = "🔐 Department Data Isolation Access Verification";
+    document.getElementById('lbl_auth_desc').innerText = "Please select your department and enter the authorized password to view the team dashboard.";
+    document.getElementById('auth_pwd_input').placeholder = "Enter department password (Default: 1234)...";
+    document.getElementById('lbl_auth_btn').innerText = "Unlock Authorized View";
   }
 
   if(unlockedDeptKey) {

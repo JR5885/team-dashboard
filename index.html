@@ -208,218 +208,7 @@
   .card-bullets li { font-size: 12px; color: var(--text-secondary); line-height: 1.5; padding-left: 12px; position: relative; }
   .card-bullets li::before { content: "•"; position: absolute; left: 0; color: var(--cyan); font-weight: bold; }
 
-  .auth-lock-overlay {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 40px;
-    max-width: 500px;
-    margin: 60px auto;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  }
-  .auth-lock-overlay h2 { font-size: 18px; margin-bottom: 12px; color: var(--cyan); }
-  .auth-lock-overlay p { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
-  .auth-lock-overlay select, .auth-lock-overlay input {
-    width: 100%;
-    padding: 10px 14px;
-    margin-bottom: 14px;
-    background: #090d16;
-    border: 1px solid var(--border);
-    color: #fff;
-    border-radius: 6px;
-    font-size: 13.5px;
-  }
-  .auth-lock-overlay button {
-    background: var(--cyan);
-    color: #090d16;
-    border: none;
-    font-weight: 700;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 13.5px;
-  }
-  .auth-lock-overlay button:hover { opacity: 0.9; }
-  .auth-error { color: var(--critical); font-size: 12px; margin-top: 10px; }
-
-  .okr-dashboard-top{
-    background: #0d1527;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 24px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  }
-  .okr-top-card{background:#070b14; border:1px solid rgba(255,255,255,0.05); border-radius:8px; padding:14px 18px;}
-  .okr-top-card .lbl{font-size:11px; text-transform:uppercase; color:var(--text-muted); font-weight:600;}
-  .okr-top-card .val{font-size:24px; font-weight:800; margin-top:3px;}
-
-  .okr-content-grid{display:grid; grid-template-columns: 1.15fr 1fr; gap:24px; align-items:start;}
-  
-  .okr-box{background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:18px; margin-bottom:14px; position:relative;}
-  .okr-input-obj{width:calc(100% - 30px); background:#090d16; border:1px solid var(--border); color:var(--cyan); font-weight:700; font-size:13.5px; padding:8px 10px; border-radius:6px; margin-bottom:8px;}
-  .okr-textarea-kr{width:100%; background:#090d16; border:1px solid var(--border); color:var(--text-secondary); font-size:12px; padding:8px 10px; border-radius:6px; resize:vertical; min-height:65px; line-height:1.5;}
-  .btn-del-okr{position:absolute; top:16px; right:16px; background:none; border:none; color:var(--critical); cursor:pointer; font-weight:bold; font-size:14px;}
-
-  .hire-builder-box{background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:18px; margin-bottom:16px;}
-  .hire-item-card{background:#090d16; border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:16px; border-left:3px solid var(--series-3);}
-  .hire-select{background:#0f172a; border:1px solid var(--border); color:#fff; padding:6px 8px; border-radius:6px; font-size:12px;}
-  .btn-add-hire{background:color-mix(in srgb, var(--cyan) 15%, var(--card-bg)); border:1px solid var(--cyan); color:var(--cyan); font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer; font-size:12px;}
-  .btn-add-okr{background:color-mix(in srgb, var(--purple) 15%, var(--card-bg)); border:1px solid var(--purple); color:var(--purple); font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer; font-size:12px;}
-
-  .parent-okr-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #070b14;
-    border: 1px solid rgba(168,85,247,0.3);
-    border-radius: 6px;
-    padding: 6px 10px;
-    margin-bottom: 8px;
-  }
-  .parent-okr-label {
-    font-size: 10.5px;
-    font-weight: 700;
-    color: var(--purple);
-    white-space: nowrap;
-    text-transform: uppercase;
-  }
-  .parent-okr-input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 12px;
-    font-weight: 600;
-  }
-  .parent-okr-input:focus { outline: none; color: #fff; }
-
-  .role-okr-container {
-    background: #070b14;
-    border: 1px dashed var(--border);
-    border-radius: 6px;
-    padding: 8px 10px;
-    margin: 8px 0;
-  }
-  .role-okr-title {
-    font-size: 10.5px;
-    text-transform: uppercase;
-    color: var(--cyan);
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .role-okr-input {
-    width: 100%;
-    background: #0f172a;
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-    font-size: 11.5px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    margin-bottom: 4px;
-  }
-
-  .funnel-container {
-    background: #070b14;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-top: 10px;
-  }
-  .funnel-title {
-    font-size: 10.5px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    font-weight: 700;
-    margin-bottom: 8px;
-    letter-spacing: .03em;
-  }
-  .funnel-steps-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  .funnel-step {
-    background: #0f172a;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 5px;
-    padding: 4px 2px;
-  }
-  .funnel-step .f-input {
-    width: 100%;
-    background: #090d16;
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-    font-size: 12px;
-    font-weight: 800;
-    text-align: center;
-    padding: 2px 0;
-    border-radius: 4px;
-  }
-  .funnel-step .f-input:focus {
-    border-color: var(--cyan);
-    outline: none;
-    background: #131c31;
-  }
-  .funnel-step .f-name {
-    font-size: 8px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    margin-top: 2px;
-    line-height: 1.1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .dynamic-funnel-viz {
-    background: #0f172a;
-    border-radius: 6px;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .viz-bar-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 10px;
-  }
-  .viz-label {
-    width: 65px;
-    text-align: right;
-    color: var(--text-muted);
-    font-weight: 600;
-  }
-  .viz-track {
-    flex: 1;
-    height: 8px;
-    background: #090d16;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-  }
-  .viz-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--cyan), var(--series-3));
-    border-radius: 4px;
-    transition: width 0.3s ease;
-  }
-  .viz-val {
-    width: 25px;
-    text-align: left;
-    color: var(--text-primary);
-    font-weight: 700;
-  }
-
+  /* Tab 5 Talent Review Specific Styles */
   :root {
     --tr-surface-1: #fcfcfb; --tr-page-plane: #0f172a; --tr-text-primary: #ffffff; --tr-text-secondary: #c3c2b7;
     --tr-text-muted: #898781; --tr-gridline: #2c2c2a; --tr-baseline: #383835; --tr-border: rgba(255,255,255,0.10);
@@ -485,7 +274,7 @@
   <div class="site-lock-box">
     <h2>🔒 專案存取驗證</h2>
     <p>此 Executive Team Dashboard 包含機密資料，請輸入全站存取密碼以繼續。</p>
-    <input type="password" id="site_pwd_input" placeholder="請輸入密碼 (預設: 1234)..." onkeydown="if(event.key==='Enter') verifySitePassword()">
+    <input type="password" id="site_pwd_input" placeholder="請輸入密碼 (預設: 5678)..." onkeydown="if(event.key==='Enter') verifySitePassword()">
     <button onclick="verifySitePassword()">進入系統</button>
     <div id="site_lock_error" class="site-lock-error"></div>
   </div>
@@ -752,9 +541,9 @@
           </div>
           <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
             <div style="display:flex; gap:8px; align-items:center;">
-              <span id="tr_current_auth_label" style="font-size:12px; color:var(--cyan); font-weight:700;">🔓 已解鎖檢視</span>
+              <span id="tr_current_auth_label" style="font-size:12px; color:var(--cyan); font-weight:700;">🔓 多部門權限已解鎖</span>
             </div>
-            <div id="tr_syncStatus" style="font-size:12px; color:var(--tr-text-muted);">Synced Secure Team</div>
+            <div id="tr_syncStatus" style="font-size:12px; color:var(--tr-text-muted);">Synced All Secure Teams</div>
           </div>
         </header>
 
@@ -767,7 +556,7 @@
 </div>
 
 <script>
-// 在這裡設定全站解鎖密碼（你可以隨時修改成你想要的密碼）
+// 在這裡設定全站解鎖密碼（修改為 5678）
 const SITE_PASSWORD = "5678";
 
 function verifySitePassword() {
@@ -782,7 +571,6 @@ function verifySitePassword() {
   }
 }
 
-// 檢查是否已經解鎖過（重新整理頁面在同個 Session 不用重複輸入）
 window.addEventListener('DOMContentLoaded', () => {
   if (sessionStorage.getItem('site_unlocked') === 'true') {
     document.getElementById('site_lock_overlay').style.display = 'none';
@@ -909,7 +697,7 @@ function switchTab(tabId) {
       runBudgetCalc();
     }, 10);
   } else if(tabId === 'tab05') {
-    initTalentReviewTabForDept('BD');
+    initAllTalentReviewTeams();
   }
 }
 
@@ -1175,6 +963,14 @@ const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRGPWPZC10
 let trLoadedTeamsData = [];
 let trActiveKey = null;
 
+const deptDirectory = [
+  { key: 'BD', label: 'Sales & Ops Dept', gid: '1804429324' },
+  { key: 'FT', label: 'Fiat Dept', gid: '1952213325' },
+  { key: 'SEC', label: 'Security Dept', gid: '1349594726' },
+  { key: 'FIN', label: 'Finance Dept', gid: '2080233148' },
+  { key: 'LEGAL', label: 'Legal Dept', gid: '1224573719' }
+];
+
 const trI18n = {
   zh: {
     kpi_reviewed: "評估總人數", kpi_locs: "個地區/國家", kpi_cohort: "佔團隊",
@@ -1335,26 +1131,41 @@ function buildTrPane(team, idx, t){
   </div>`;
 }
 
-async function initTalentReviewTabForDept(deptKey){
-  const targetCfg = { label: 'Sales & Ops Dept', gid: '1804429324' };
+async function initAllTalentReviewTeams() {
   trLoadedTeamsData = [];
-  try {
-    const res = await fetch(BASE_CSV_URL + targetCfg.gid);
-    const csvText = await res.text();
-    const employees = parseCSV(csvText).map(processRow);
-    trLoadedTeamsData.push({ key: deptKey, label: targetCfg.label, employees });
-  } catch(err) {
-    trLoadedTeamsData.push({ key: deptKey, label: targetCfg.label, employees: [] });
-  }
-
-  trActiveKey = deptKey;
+  const t = trI18n[currentLang];
   const tabbar = document.getElementById('tr_tabbar');
   const panes = document.getElementById('tr_panes');
-  const t = trI18n[currentLang];
-  if(tabbar && panes) {
-    tabbar.innerHTML = trLoadedTeamsData.map(d => `<button class="tr-tabbtn active">${d.label}</button>`).join('');
-    panes.innerHTML = trLoadedTeamsData.map((d, i) => buildTrPane(d, i, t)).join('');
+  if(!tabbar || !panes) return;
+
+  for (const cfg of deptDirectory) {
+    try {
+      const res = await fetch(BASE_CSV_URL + cfg.gid);
+      const csvText = await res.text();
+      const employees = parseCSV(csvText).map(processRow);
+      trLoadedTeamsData.push({ key: cfg.key, label: cfg.label, employees });
+    } catch(err) {
+      trLoadedTeamsData.push({ key: cfg.key, label: cfg.label, employees: [] });
+    }
   }
+
+  if (!trActiveKey && trLoadedTeamsData.length > 0) {
+    trActiveKey = trLoadedTeamsData[0].key;
+  }
+
+  tabbar.innerHTML = trLoadedTeamsData.map(d => `<button class="tr-tabbtn ${d.key===trActiveKey?'active':''}" data-key="${d.key}">${d.label}</button>`).join('');
+  panes.innerHTML = trLoadedTeamsData.map((d, i) => buildTrPane(d, d.key===trActiveKey?0:1, t)).join('');
+
+  tabbar.querySelectorAll('.tr-tabbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabbar.querySelectorAll('.tr-tabbtn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      trActiveKey = btn.dataset.key;
+      document.querySelectorAll('.tr-teampane').forEach(p => p.classList.remove('active'));
+      const targetPane = document.getElementById('tr_pane_' + trActiveKey);
+      if(targetPane) targetPane.classList.add('active');
+    });
+  });
 }
 
 function setLanguage(lang) {
@@ -1379,7 +1190,9 @@ function setLanguage(lang) {
 
   renderCompTab();
   renderLadderTab();
-  initTalentReviewTabForDept('BD');
+  if (currentTab === 'tab05') {
+    initAllTalentReviewTeams();
+  }
 }
 
 window.onload = () => {

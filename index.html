@@ -494,7 +494,7 @@
   .tr-jrisk { margin-top: 10px; padding: 8px 10px; border-radius: 7px; font-size: 11.5px; background: color-mix(in srgb, var(--tr-warning) 16%, var(--tr-card-bg)); border: 1px solid color-mix(in srgb, var(--tr-warning) 45%, transparent); color: #fff; }
   .tr-jrisk b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 2px; }
 
-  /* Tab 06 Cross-Team OKR Specific Styles (Dark Theme Unified) */
+  /* Tab 06 Cross-Team OKR Specific Styles */
   .tab06-header {
     display: flex;
     justify-content: space-between;
@@ -604,7 +604,7 @@
     line-height: 1.6;
   }
 
-  /* 甘特圖 (Gantt Chart) 專屬樣式 */
+  /* 甘特圖 (Gantt Chart) 2-Week Sprint 專屬樣式 */
   .gantt-board-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -643,7 +643,7 @@
   .gantt-c-align { background-color: #244b6c; }
   .gantt-c-exec { background-color: #e5933a; }
 
-  /* 方案 B：動態進度手動調整控制面板 */
+  /* 2-Week Sprint 控制面板 */
   .gantt-control-panel {
     display: flex;
     gap: 16px;
@@ -695,7 +695,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    padding-bottom: 30px;
+    padding-bottom: 40px;
   }
   .gantt-y-label {
     height: 44px;
@@ -710,22 +710,17 @@
     flex-direction: column;
     justify-content: space-around;
     position: relative;
-    padding-bottom: 30px;
+    padding-bottom: 40px;
     border-left: 1px solid #334155;
   }
   .gantt-grid-overlay {
     position: absolute;
-    inset: 0 0 30px 0;
+    inset: 0 0 40px 0;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
     pointer-events: none;
   }
   .gantt-grid-col {
-    border-right: 1px solid rgba(255,255,255,0.06);
     height: 100%;
-  }
-  .gantt-grid-col:last-child {
-    border-right: 1px solid #334155;
   }
   .gantt-row {
     height: 44px;
@@ -742,7 +737,6 @@
   }
   .gantt-bar.align { background-color: #244b6c; }
   
-  /* 方案 B: Execution 具備底軌與進度填充 */
   .gantt-bar.exec-track {
     background-color: rgba(229, 147, 58, 0.22);
     border: 1px solid rgba(229, 147, 58, 0.4);
@@ -761,28 +755,20 @@
     left: 140px;
     right: 0;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
     border-top: 1px solid #334155;
     padding-top: 6px;
   }
   .gantt-x-tick {
     position: relative;
     font-size: 10.5px;
-    color: var(--text-muted);
-    font-weight: 700;
     font-family: monospace;
-  }
-  .gantt-x-tick.t-end {
-    position: absolute;
-    right: 0;
-    transform: translateX(50%);
   }
   .gantt-axis-subtitle {
     text-align: center;
     font-size: 11px;
     color: var(--text-muted);
     font-weight: 600;
-    margin-top: 8px;
+    margin-top: 12px;
     letter-spacing: 0.04em;
   }
 </style>
@@ -1087,37 +1073,46 @@
       </div>
     </div>
 
-    <!-- 06-1: 方案 B 甘特圖看板 (Gantt Chart - OKR Alignment Board 支援進度%動態同步) -->
+    <!-- 06-1: 2-Week Sprint 顆粒度甘特圖看板 (支援防呆與當前 Sprint 狀態動態同步) -->
     <div class="gantt-board-card">
-      <div class="gantt-title" id="gantt_title">OKR Alignment Board (Lightweight Dashboard)</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div class="gantt-title" id="gantt_title" style="margin-bottom:0;">OKR Alignment Board (2-Week Sprint Granularity)</div>
+        <span style="font-size:11px; background:rgba(6,182,212,0.12); color:var(--cyan); padding:2px 8px; border-radius:4px; border:1px solid rgba(6,182,212,0.25); font-weight:700;">
+          1 Quarter = 6 Sprints (1 Sprint = 2 Weeks)
+        </span>
+      </div>
+
       <div class="gantt-legend">
         <div class="gantt-legend-item">
           <div class="gantt-legend-color gantt-c-align"></div>
-          <span id="gantt_leg_align">Alignment / Kickoff</span>
+          <span id="gantt_leg_align">Alignment / Kickoff (Sprint 1)</span>
         </div>
         <div class="gantt-legend-item">
           <div class="gantt-legend-color gantt-c-exec"></div>
-          <span id="gantt_leg_exec">Execution & Dashboard Tracking</span>
+          <span id="gantt_leg_exec">Execution & Dashboard Tracking (Sprint 2–6)</span>
         </div>
       </div>
 
-      <!-- 方案 B：手動進度控制工具列 -->
+      <!-- 方案 B：手動進度控制面板 (防呆 0-100% + Sprint 狀態標籤) -->
       <div class="gantt-control-panel">
-        <span class="gantt-control-title" id="gantt_ctrl_title">⚡ 動態同步執行進度 (Pipeline Progress)：</span>
+        <span class="gantt-control-title" id="gantt_ctrl_title">⚡ 雙週 Sprint 進度動態同步：</span>
         <div class="gantt-ctrl-item">
           <span>Engineering:</span>
-          <input type="number" id="inp_gantt_eng" min="0" max="100" class="gantt-pct-input" value="70" oninput="updateGanttProgress('eng', this.value)">
+          <input type="number" id="inp_gantt_eng" min="0" max="100" class="gantt-pct-input" value="70" oninput="updateSprintProgress('eng', this.value)">
           <span>%</span>
+          <span id="badge_sprint_eng" style="font-size:10.5px; color:var(--cyan); font-weight:700; margin-left:4px;">(Sprint 4)</span>
         </div>
         <div class="gantt-ctrl-item">
           <span>Commercial:</span>
-          <input type="number" id="inp_gantt_comm" min="0" max="100" class="gantt-pct-input" value="85" oninput="updateGanttProgress('comm', this.value)">
+          <input type="number" id="inp_gantt_comm" min="0" max="100" class="gantt-pct-input" value="85" oninput="updateSprintProgress('comm', this.value)">
           <span>%</span>
+          <span id="badge_sprint_comm" style="font-size:10.5px; color:var(--cyan); font-weight:700; margin-left:4px;">(Sprint 5)</span>
         </div>
         <div class="gantt-ctrl-item">
           <span>Product Ops:</span>
-          <input type="number" id="inp_gantt_ops" min="0" max="100" class="gantt-pct-input" value="50" oninput="updateGanttProgress('ops', this.value)">
+          <input type="number" id="inp_gantt_ops" min="0" max="100" class="gantt-pct-input" value="50" oninput="updateSprintProgress('ops', this.value)">
           <span>%</span>
+          <span id="badge_sprint_ops" style="font-size:10.5px; color:var(--cyan); font-weight:700; margin-left:4px;">(Sprint 3)</span>
         </div>
       </div>
 
@@ -1129,53 +1124,72 @@
           <div class="gantt-y-label">Product Ops</div>
         </div>
 
-        <!-- 繪圖區塊 (背景網格與動態長條) -->
+        <!-- 繪圖區塊 (6 個雙週 Sprint 網格底層) -->
         <div class="gantt-plot-area">
-          <div class="gantt-grid-overlay">
-            <div class="gantt-grid-col"></div>
-            <div class="gantt-grid-col"></div>
-            <div class="gantt-grid-col"></div>
-            <div class="gantt-grid-col"></div>
-            <div class="gantt-grid-col"></div>
-            <div class="gantt-grid-col"></div>
+          <div class="gantt-grid-overlay" style="grid-template-columns: repeat(6, 1fr);">
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px solid #334155;"></div>
           </div>
 
-          <!-- Row 1: Engineering (Align: W0-W2 | Exec: W2-W12 + 動態進度條) -->
+          <!-- Row 1: Engineering (Sprint 1: W0–W2 對齊 | Sprint 2–6 執行) -->
           <div class="gantt-row">
-            <div class="gantt-bar align" style="left: 0%; width: 16.66%;" title="Engineering: Alignment / Kickoff (W0–W2)"></div>
-            <div class="gantt-bar exec-track" style="left: 16.66%; width: 83.33%;" title="Engineering Execution Track">
+            <div class="gantt-bar align" style="left: 0%; width: 16.66%;" title="Engineering: Alignment / Kickoff (Sprint 1 / W0–W2)"></div>
+            <div class="gantt-bar exec-track" style="left: 16.66%; width: 83.34%;" title="Engineering Execution Track (Sprint 2–6)">
               <div class="gantt-progress-fill" id="gantt_bar_eng" style="width: 70%;"></div>
             </div>
           </div>
 
-          <!-- Row 2: Commercial (Align: W0-W1 | Exec: W1-W12 + 動態進度條) -->
+          <!-- Row 2: Commercial (Sprint 1 前半週對齊 | 跨度至 Sprint 6) -->
           <div class="gantt-row">
             <div class="gantt-bar align" style="left: 0%; width: 8.33%;" title="Commercial: Alignment / Kickoff (W0–W1)"></div>
-            <div class="gantt-bar exec-track" style="left: 8.33%; width: 91.66%;" title="Commercial Execution Track">
+            <div class="gantt-bar exec-track" style="left: 8.33%; width: 91.67%;" title="Commercial Execution Track">
               <div class="gantt-progress-fill" id="gantt_bar_comm" style="width: 85%;"></div>
             </div>
           </div>
 
-          <!-- Row 3: Product Ops (Align: W0-W2 | Exec: W2-W11 + 動態進度條) -->
+          <!-- Row 3: Product Ops (Sprint 1: W0–W2 對齊 | 交付至 Sprint 5 結束) -->
           <div class="gantt-row">
-            <div class="gantt-bar align" style="left: 0%; width: 16.66%;" title="Product Ops: Alignment / Kickoff (W0–W2)"></div>
-            <div class="gantt-bar exec-track" style="left: 16.66%; width: 75%;" title="Product Ops Execution Track">
+            <div class="gantt-bar align" style="left: 0%; width: 16.66%;" title="Product Ops: Alignment / Kickoff (Sprint 1 / W0–W2)"></div>
+            <div class="gantt-bar exec-track" style="left: 16.66%; width: 66.67%;" title="Product Ops Execution Track (Sprint 2–5)">
               <div class="gantt-progress-fill" id="gantt_bar_ops" style="width: 50%;"></div>
             </div>
           </div>
         </div>
 
-        <!-- X 軸週數時間軸 -->
-        <div class="gantt-x-axis">
-          <div class="gantt-x-tick">W0</div>
-          <div class="gantt-x-tick">W2</div>
-          <div class="gantt-x-tick">W4</div>
-          <div class="gantt-x-tick">W6</div>
-          <div class="gantt-x-tick">W8</div>
-          <div class="gantt-x-tick">W10<span class="gantt-x-tick t-end">W12</span></div>
+        <!-- X 軸雙層刻度：上層 Sprint 編號，下層雙週區間 -->
+        <div class="gantt-x-axis" style="grid-template-columns: repeat(6, 1fr);">
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 1</span>
+            <span style="font-size:10px; color:var(--text-muted);">W0–W2</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 2</span>
+            <span style="font-size:10px; color:var(--text-muted);">W2–W4</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 3</span>
+            <span style="font-size:10px; color:var(--text-muted);">W4–W6</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 4</span>
+            <span style="font-size:10px; color:var(--text-muted);">W6–W8</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 5</span>
+            <span style="font-size:10px; color:var(--text-muted);">W8–W10</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start; position:relative;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 6</span>
+            <span style="font-size:10px; color:var(--text-muted);">W10–W12</span>
+            <span style="position:absolute; right:0; top:12px; font-size:10px; color:var(--text-muted); font-weight:700;">W12</span>
+          </div>
         </div>
       </div>
-      <div class="gantt-axis-subtitle" id="gantt_sub_timeline">Quarter Timeline (Weeks)</div>
+      <div class="gantt-axis-subtitle" id="gantt_sub_timeline">Quarter Timeline · 2-Week Agile Iteration Cadence</div>
     </div>
 
     <div class="tab06-sec-title" id="tab06_sec1_title">跨團隊 OKR 對齊矩陣 (Cross-Team OKR Matrix)</div>
@@ -2128,7 +2142,7 @@ async function initAllTalentReviewTeams() {
   });
 }
 
-// Tab 06 Storage & Logic (方案 B 進度同步控制)
+// Tab 06 Storage & Logic (2-Week Sprint Granularity)
 const STORAGE_KEY_MATRIX_TAB06 = 'app_tab06_matrix_data';
 const STORAGE_KEY_HEALTH_TAB06 = 'app_tab06_health_data';
 const STORAGE_KEY_GANTT_PROGRESS = 'app_tab06_gantt_progress';
@@ -2140,13 +2154,28 @@ let ganttProgress = {
   ops: 50
 };
 
-function updateGanttProgress(deptKey, rawVal) {
-  const val = Math.min(Math.max(parseInt(rawVal) || 0, 0), 100);
+function updateSprintProgress(deptKey, rawVal) {
+  let val = parseInt(rawVal, 10);
+  if (isNaN(val)) val = 0;
+  if (val > 100) val = 100;
+  if (val < 0) val = 0;
+
+  const inpEl = document.getElementById(`inp_gantt_${deptKey}`);
+  if (inpEl && inpEl.value != val) inpEl.value = val;
+
   ganttProgress[deptKey] = val;
   const barEl = document.getElementById(`gantt_bar_${deptKey}`);
   if (barEl) {
     barEl.style.width = val + '%';
   }
+
+  // 1 季度 = 6 Sprints (1 Sprint 約佔 16.66%)
+  const sprintIndex = Math.min(Math.floor(val / 16.66) + 1, 6);
+  const badgeEl = document.getElementById(`badge_sprint_${deptKey}`);
+  if (badgeEl) {
+    badgeEl.innerText = val >= 100 ? (currentLang === 'zh' ? '(已交付達成)' : '(Completed)') : `(Sprint ${sprintIndex})`;
+  }
+
   triggerAutoSaveTab06();
 }
 
@@ -2169,13 +2198,14 @@ function initTab06Storage() {
       if (parsed) {
         ganttProgress = Object.assign(ganttProgress, parsed);
         ['eng', 'comm', 'ops'].forEach(k => {
-          const inp = document.getElementById(`inp_gantt_${k}`);
-          const bar = document.getElementById(`gantt_bar_${k}`);
-          if (inp) inp.value = ganttProgress[k];
-          if (bar) bar.style.width = ganttProgress[k] + '%';
+          updateSprintProgress(k, ganttProgress[k]);
         });
       }
     } catch(e){}
+  } else {
+    ['eng', 'comm', 'ops'].forEach(k => {
+      updateSprintProgress(k, ganttProgress[k]);
+    });
   }
   bindTab06InputEvents();
 }
@@ -2244,11 +2274,11 @@ function setLanguage(lang) {
     document.getElementById('tab06_main_title').innerText = "跨團隊 OKR 對齊矩陣與團隊健康度評分模型";
     document.getElementById('tab06_sub_title').innerText = "產研前中後台雙向賦能 · HRBP 敏捷對齊 · 數據化健康評分監控";
     document.getElementById('btn_save_tab06_label').innerText = "💾 儲存並導出更新檔";
-    document.getElementById('gantt_title').innerText = "OKR 對齊看板 · 季度執行甘特圖 (OKR Alignment Board)";
-    document.getElementById('gantt_leg_align').innerText = "前期對齊 / 啟動階段 (Alignment / Kickoff)";
-    document.getElementById('gantt_leg_exec').innerText = "敏捷執行與進度追蹤 (Execution & Dashboard Tracking)";
-    document.getElementById('gantt_ctrl_title').innerText = "⚡ 動態同步執行進度 (Pipeline Progress)：";
-    document.getElementById('gantt_sub_timeline').innerText = "季度推進時程週數 (Quarter Timeline - Weeks)";
+    document.getElementById('gantt_title').innerText = "OKR 對齊看板 (雙週 Sprint 顆粒度)";
+    document.getElementById('gantt_leg_align').innerText = "前期對齊 (Sprint 1 / W0–W2)";
+    document.getElementById('gantt_leg_exec').innerText = "敏捷執行與追蹤 (Sprint 2–6)";
+    document.getElementById('gantt_ctrl_title').innerText = "⚡ 雙週 Sprint 進度動態同步：";
+    document.getElementById('gantt_sub_timeline').innerText = "季度推進時程 · 2-Week 敏捷迭代節奏 (Weeks)";
     document.getElementById('tab06_sec1_title').innerText = "跨團隊 OKR 對齊矩陣 (Cross-Team OKR Matrix)";
     document.getElementById('tab06_sec2_title').innerText = "團隊健康度評分模型與應對策略 (Health Scorecard)";
     document.getElementById('tab06_sec3_title').innerText = "健康等級劃分與 HRBP 應對策略";
@@ -2275,11 +2305,11 @@ function setLanguage(lang) {
     document.getElementById('tab06_main_title').innerText = "Cross-Team OKR Alignment Matrix & Health Scorecard";
     document.getElementById('tab06_sub_title').innerText = "Front-Mid-Back Office Co-alignment · HRBP Pod Enablement · Quantitative Health Monitoring";
     document.getElementById('btn_save_tab06_label').innerText = "💾 Save & Export HTML";
-    document.getElementById('gantt_title').innerText = "OKR Alignment Board (Lightweight Dashboard)";
-    document.getElementById('gantt_leg_align').innerText = "Alignment / Kickoff";
-    document.getElementById('gantt_leg_exec').innerText = "Execution & Dashboard Tracking";
+    document.getElementById('gantt_title').innerText = "OKR Alignment Board (2-Week Sprint Granularity)";
+    document.getElementById('gantt_leg_align').innerText = "Alignment / Kickoff (Sprint 1)";
+    document.getElementById('gantt_leg_exec').innerText = "Execution & Dashboard Tracking (Sprint 2–6)";
     document.getElementById('gantt_ctrl_title').innerText = "⚡ Synchronize Pipeline Progress:";
-    document.getElementById('gantt_sub_timeline').innerText = "Quarter Timeline (Weeks)";
+    document.getElementById('gantt_sub_timeline').innerText = "Quarter Timeline · 2-Week Agile Iteration Cadence";
     document.getElementById('tab06_sec1_title').innerText = "Cross-Team OKR Matrix";
     document.getElementById('tab06_sec2_title').innerText = "Team Health Scorecard & Metric Drivers";
     document.getElementById('tab06_sec3_title').innerText = "Health Thresholds & Action Playbook";
@@ -2295,6 +2325,11 @@ function setLanguage(lang) {
     document.getElementById('th_health_wtd_score').innerText = "Weighted Score";
     document.getElementById('td_health_total_label').innerText = "Aggregate Evaluation: Current Team Health Score";
   }
+
+  // 刷新動態 Sprint 狀態文字
+  ['eng', 'comm', 'ops'].forEach(k => {
+    updateSprintProgress(k, ganttProgress[k]);
+  });
 
   renderCompTab();
   renderLadderTab();

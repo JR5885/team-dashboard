@@ -1,965 +1,2404 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OKR Alignment Dashboard | 8 Business Lines & 4 Sprints</title>
-    <style>
-        :root {
-            --bg-primary: #0a0e17;
-            --bg-secondary: #111827;
-            --bg-card: #1f293d;
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --accent-cyan: #38bdf8;
-            --accent-blue: #2563eb;
-            --border-color: #374151;
-            --table-hover: #1e293b;
-            --badge-front: #065f46;
-            --badge-mid: #1e40af;
-            --badge-back: #4c1d95;
-            --badge-text: #e0e7ff;
-            --editable-focus-bg: #1e293b;
-            --editable-focus-outline: #38bdf8;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Team Dashboard & Talent Review</title>
+<style>
+  :root{
+    color-scheme: light dark;
+    --surface-1: #fcfcfb; --page-plane: #090d16; --text-primary: #ffffff; --text-secondary: #94a3b8;
+    --text-muted: #64748b; --gridline: #1e293b; --baseline: #334155; --border: rgba(255,255,255,0.08);
+    --series-1: #38bdf8; --series-3: #34d399; --series-6: #10b981; --good: #10b981;
+    --warning: #fbbf24; --serious: #f97316; --critical: #e66767; --card-bg: #0f172a;
+    --cyan: #06b6d4; --purple: #a855f7; --pink: #ec4899;
+    --badge-front: #065f46; --badge-mid: #1e40af; --badge-back: #4c1d95; --badge-text: #e0e7ff;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--page-plane); color:var(--text-primary); font-family: system-ui,-apple-system,"Segoe UI",sans-serif; font-size:13.5px; line-height:1.5; padding:16px 24px 80px;}
+  .wrap{max-width:1440px; margin:0 auto;}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  /* 全局密碼保護遮罩樣式 */
+  #site_lock_overlay {
+    position: fixed; inset: 0; background: var(--page-plane); z-index: 99999;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .site-lock-box {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+    padding: 40px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+  }
+  .site-lock-box h2 { font-size: 20px; margin-bottom: 10px; color: var(--cyan); }
+  .site-lock-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
+  .site-lock-box input {
+    width: 100%; padding: 12px 16px; margin-bottom: 16px; background: #090d16;
+    border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 14px; outline: none;
+  }
+  .site-lock-box input:focus { border-color: var(--cyan); }
+  .site-lock-box button {
+    background: var(--cyan); color: #090d16; border: none; font-weight: 700;
+    padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 14px; transition: opacity 0.2s;
+  }
+  .site-lock-box button:hover { opacity: 0.9; }
+  .site-lock-error { color: var(--critical); font-size: 12px; margin-top: 12px; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.5;
-            padding: 24px;
-        }
+  .rbac-top-banner {
+    background: #0d1527; border: 1px solid rgba(6, 182, 212, 0.25); border-left: 4px solid var(--cyan);
+    border-radius: 8px; padding: 10px 16px; margin-bottom: 20px; display: flex; justify-content: space-between;
+    align-items: center; gap: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  .rbac-content { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #cbd5e1; line-height: 1.45; }
+  .rbac-icon { font-size: 15px; }
+  .rbac-content b { color: #ffffff; }
+  .rbac-badge {
+    background: rgba(6, 182, 212, 0.12); color: var(--cyan); font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px; white-space: nowrap; border: 1px solid rgba(6, 182, 212, 0.2);
+  }
 
-        .container {
-            max-width: 1440px;
-            margin: 0 auto;
-        }
+  .main-nav{display:flex; gap:28px; border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:24px; font-size:13px; font-weight:600; overflow-x:auto;}
+  .main-nav-item{color:var(--text-muted); cursor:pointer; transition:all .2s; white-space:nowrap; padding-bottom:12px; margin-bottom:-14px; border-bottom:2px solid transparent;}
+  .main-nav-item:hover{color:var(--text-primary);}
+  .main-nav-item.active{color:var(--cyan); border-bottom-color:var(--cyan);}
 
-        header {
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 16px;
-        }
+  header.top{margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:16px;}
+  header.top h1{font-size:24px; font-weight:800; letter-spacing:-0.02em;}
 
-        .header-main {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
+  .lang-switcher{display:inline-flex; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:3px; gap:2px;}
+  .lang-btn{background:none; border:none; color:var(--text-muted); padding:4px 12px; font-size:12px; font-weight:600; cursor:pointer; border-radius:6px; transition:all .15s;}
+  .lang-btn.active{background:var(--text-primary); color:var(--page-plane);}
 
-        h1 {
-            font-size: 1.75rem;
-            color: var(--accent-cyan);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+  .pane{display:none;}
+  .pane.active{display:block;}
 
-        .sub-header {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-top: 6px;
-        }
+  .comp-region-selector{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
+  .comp-reg-btn{background:var(--card-bg); border:1px solid var(--border); color:var(--text-muted); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:12.5px; font-weight:600; transition:all .2s;}
+  .comp-reg-btn.active{background:color-mix(in srgb, var(--cyan) 15%, var(--card-bg)); border-color:var(--cyan); color:var(--cyan);}
 
-        .action-bar {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+  .comp-function-selector{display:flex; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px; overflow-x:auto;}
+  .comp-fn-btn{background:none; border:none; color:var(--text-muted); padding:6px 14px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; transition:all .2s; white-space:nowrap;}
+  .comp-fn-btn.active{background:var(--border); color:var(--text-primary);}
 
-        .action-btn {
-            background-color: var(--bg-card);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            padding: 8px 14px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+  .tier-cards-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px;}
+  .tier-card{background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:18px; position:relative;}
+  .tier-card.t1{border-top:3px solid var(--warning);}
+  .tier-card.t2{border-top:3px solid var(--cyan);}
+  .tier-card.t3{border-top:3px solid var(--green);}
+  .tier-badge{position:absolute; top:14px; right:14px; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;}
+  .t1 .tier-badge{background:rgba(251,191,36,0.15); color:var(--warning);}
+  .t2 .tier-badge{background:rgba(6,182,212,0.15); color:var(--cyan);}
+  .t3 .tier-badge{background:rgba(16,185,129,0.15); color:var(--green);}
+  .tier-title{font-size:14.5px; font-weight:700; margin-bottom:4px;}
+  .tier-desc{font-size:12px; color:var(--text-muted); margin-bottom:12px;}
+  .tag-pills{display:flex; flex-wrap:wrap; gap:6px;}
+  .tag-pill{background:#090d16; border:1px solid var(--border); border-radius:20px; font-size:11px; padding:3px 10px; color:var(--text-secondary);}
 
-        .action-btn:hover {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-        }
+  table{width:100%; border-collapse:collapse; font-size:12px; background:var(--card-bg); border-radius:10px; overflow:hidden; border:1px solid var(--border); margin-bottom:24px;}
+  thead th{text-align:left; padding:9px 10px; background:#090d16; color:var(--text-muted); font-weight:600; font-size:11px; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody td{padding:8px 10px; border-bottom:1px solid var(--gridline); vertical-align:middle;}
+  .comp-badge{width:56px; height:26px; background:#090d16; border:1px solid var(--border); border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; color:var(--cyan);}
+  .num-green{color:#34d399; font-weight:700; font-size:13.5px;}
+  .num-sub{font-size:10.5px; color:var(--text-muted);}
 
-        .save-btn {
-            background-color: var(--accent-blue);
-            color: #ffffff;
-            border-color: var(--accent-blue);
-        }
+  .top-dashboard-card{background:#0d1322; border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:24px; box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+  .top-dashboard-title{font-size:17px; font-weight:700; color:#ffffff; margin-bottom:16px;}
+  .top-dashboard-kpis{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;}
+  .top-kpi-box{background:#080d18; border:1px solid rgba(255, 255, 255, 0.05); border-radius:8px; padding:16px 20px;}
+  .top-kpi-label{font-size:11px; color:var(--text-muted); margin-bottom:4px; text-transform:uppercase;}
+  .top-kpi-val{font-size:32px; font-weight:800; line-height:1.1;}
+  .top-dashboard-notes{font-size:12px; color:#cbd5e1; line-height:1.6; border-top:1px solid rgba(255, 255, 255, 0.06); padding-top:12px;}
 
-        .save-btn:hover {
-            background-color: #1d4ed8;
-            color: #ffffff;
-        }
+  .calc-top-bar{display:flex; justify-content:space-between; align-items:center; background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:12px 18px; margin-bottom:18px; gap:16px; flex-wrap:wrap;}
+  .dept-ctrl{display:flex; align-items:center; gap:8px;}
+  .dept-ctrl input{background:#090d16; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; border-radius:6px; font-size:13px; font-weight:600; width:170px;}
+  .tier-ctrl{display:flex; align-items:center; gap:8px;}
+  .tier-ctrl select{background:#090d16; border:1px solid var(--border); color:#fff; padding:6px 12px; border-radius:6px; font-size:12.5px; font-weight:600; cursor:pointer;}
 
-        .save-hint {
-            font-size: 0.8rem;
-            color: #34d399;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
+  .table-responsive-wrap { width: 100%; overflow-x: auto; margin-bottom: 24px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); }
+  table.matrix-calc-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--card-bg); margin-bottom: 0; }
+  table.matrix-calc-table th { background: #0d1527; font-size: 11px; text-align: center; padding: 10px 6px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  table.matrix-calc-table td { padding: 10px 8px; border-bottom: 1px solid var(--gridline); vertical-align: middle; }
+  table.matrix-calc-table tbody tr:hover { background: color-mix(in srgb, var(--cyan) 4%, transparent); }
+  .matrix-calc-table input.hc-input{ width: 38px; height: 28px; background: #090d16; border: 1px solid var(--border); color: #fff; text-align: center; padding: 2px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+  .matrix-calc-table input.hc-input:focus{border-color:var(--cyan); outline:none; background:#131c31;}
 
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
+  .org-chart-wrapper{background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:20px; overflow-x:auto;}
+  .org-tree{display:flex; flex-direction:column; align-items:center; gap:20px; min-width:850px;}
+  .org-level-row{display:flex; justify-content:center; gap:14px; position:relative; width:100%; flex-wrap:wrap;}
+  .org-node{background:#090d16; border:1px solid var(--border); border-radius:8px; padding:10px 12px; min-width:140px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+  .org-node .lvl{font-size:10px; font-weight:700; color:var(--cyan); text-transform:uppercase; letter-spacing:.05em;}
+  .org-node .role{font-size:12px; font-weight:700; color:var(--text-primary); margin:2px 0;}
+  .org-node .loc-tag{font-size:10.5px; color:var(--series-1); background:rgba(56,189,248,0.12); padding:1px 6px; border-radius:4px; display:inline-block; font-weight:600; margin-top:2px;}
 
-        .tab-btn {
-            background-color: var(--bg-card);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-            padding: 10px 18px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+  .layout-grid { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; }
+  .ladder-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: sticky; top: 24px; }
+  .ladder-row { display: flex; align-items: center; margin-bottom: 14px; gap: 12px; }
+  .ladder-badge { width: 64px; height: 34px; background: #090d16; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700; color: var(--cyan); }
+  .ladder-content-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ladder-cell { background: #090d16; border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 11.5px; }
+  .ladder-cell.full { grid-column: span 2; }
+  .ladder-cell .t { font-weight: 600; color: var(--text-main); margin-bottom: 1px; }
+  .ladder-cell .d { font-size: 10px; color: var(--text-muted); }
+  .ladder-cell.empty { border: 1px dashed rgba(255,255,255,0.05); background: none; display: flex; align-items: center; justify-content: center; color: var(--text-dim); }
 
-        .tab-btn:hover {
-            color: var(--text-primary);
-            border-color: var(--accent-cyan);
-        }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; border-left: 4px solid var(--cyan); margin-bottom:12px; }
+  .card.m-track { border-left-color: var(--purple); }
+  .card.l7-track { border-left-color: var(--pink); }
+  .card.l8-track { border-left-color: var(--green); }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .card-title { font-size: 14.5px; font-weight: 700; }
+  .card-bullets { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .card-bullets li { font-size: 12px; color: var(--text-secondary); line-height: 1.5; padding-left: 12px; position: relative; }
+  .card-bullets li::before { content: "•"; position: absolute; left: 0; color: var(--cyan); font-weight: bold; }
 
-        .tab-btn.active {
-            background-color: var(--accent-blue);
-            color: #ffffff;
-            border-color: var(--accent-blue);
-        }
+  /* Tab 04 OKR & Hiring Budget Specific Styles */
+  .okr-dashboard-top { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .okr-top-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; }
+  .okr-top-card .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+  .okr-top-card .val { font-size: 24px; font-weight: 800; }
+  .okr-content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .okr-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; position: relative; }
+  .parent-okr-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .parent-okr-label { font-size: 11px; color: var(--cyan); font-weight: 700; white-space: nowrap; }
+  .parent-okr-input, .okr-input-obj { width: 100%; background: #090d16; border: 1px solid var(--border); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .okr-textarea-kr { width: 100%; background: #090d16; border: 1px solid var(--border); color: var(--text-secondary); padding: 8px 12px; border-radius: 6px; font-size: 12px; height: 80px; resize: vertical; }
+  .btn-add-okr, .btn-add-hire { background: var(--border); color: var(--text-primary); border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .btn-add-okr:hover, .btn-add-hire:hover { background: var(--cyan); color: #090d16; }
+  .btn-del-okr { position: absolute; top: 12px; right: 12px; background: none; border: none; color: var(--critical); font-size: 14px; cursor: pointer; }
+  .hire-item-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .hire-select { background: #090d16; border: 1px solid var(--border); color: #fff; padding: 8px; border-radius: 6px; font-size: 12px; }
+  .role-okr-container { background: #090d16; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+  .role-okr-title { font-size: 11.5px; color: var(--cyan); font-weight: 700; margin-bottom: 8px; }
+  .role-okr-input { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 11.5px; }
+  .funnel-container { background: #090d16; border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .funnel-title { font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; }
+  .funnel-steps-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
+  .funnel-step { background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px; text-align: center; }
+  .f-input { width: 100%; background: #090d16; border: 1px solid var(--border); color: #fff; text-align: center; font-weight: 700; font-size: 12px; border-radius: 4px; padding: 2px; }
+  .f-name { font-size: 9px; color: var(--text-muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dynamic-funnel-viz { display: flex; flex-direction: column; gap: 6px; }
+  .viz-bar-row { display: grid; grid-template-columns: 85px 1fr 24px; align-items: center; gap: 8px; font-size: 10.5px; }
+  .viz-label { color: var(--text-muted); text-align: right; }
+  .viz-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .viz-fill { height: 100%; background: var(--green); border-radius: 3px; }
+  .viz-val { color: #fff; font-weight: 700; }
 
-        .tab-content {
-            display: none;
-        }
+  /* Tab 5 Talent Review Specific Styles */
+  :root {
+    --tr-surface-1: #fcfcfb; --tr-page-plane: #0f172a; --tr-text-primary: #ffffff; --tr-text-secondary: #c3c2b7;
+    --tr-text-muted: #898781; --tr-gridline: #2c2c2a; --tr-baseline: #383835; --tr-border: rgba(255,255,255,0.10);
+    --tr-series-1: #3987e5; --tr-series-3: #199e70; --tr-good: #0ca30c;
+    --tr-warning: #fab219; --tr-critical: #e66767; --tr-card-bg: #1c1c1b;
+  }
+  .tr-wrap { background: var(--tr-page-plane); color: var(--tr-text-primary); border-radius: 12px; padding: 24px; border: 1px solid var(--tr-border); }
+  .tr-wrap header.top { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--tr-border); padding-bottom: 16px; }
+  .tr-wrap header.top h1 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em; color: #fff; }
+  .tr-wrap header.top .sub { color: var(--tr-text-secondary); font-size: 13px; }
+  .tr-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--tr-gridline); color: var(--tr-text-secondary); margin-left: 8px; }
+  .tr-tabbar { display: flex; gap: 6px; border-bottom: 1px solid var(--tr-border); margin-bottom: 24px; overflow-x: auto; }
+  .tr-tabbtn { appearance: none; border: none; background: none; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--tr-text-muted); padding: 10px 16px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tr-tabbtn.active { color: #fff; border-bottom-color: var(--tr-series-1); }
+  .tr-tabbtn:hover { color: #fff; }
+  .tr-teampane { display: none; }
+  .tr-teampane.active { display: block; }
+  .tr-wrap section { margin-bottom: 36px; }
+  .tr-wrap h2 { font-size: 15px; margin: 0 0 4px; display: flex; align-items: center; gap: 8px; color: #fff; }
+  .tr-wrap h2 .num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: #fff; color: #000; font-size: 11px; font-weight: 700; }
+  .tr-wrap p.desc { color: var(--tr-text-secondary); font-size: 12.5px; margin: 0 0 16px; max-width: 850px; }
+  .tr-kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 28px; }
+  .tr-kpi { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 14px 16px; }
+  .tr-kpi .label { font-size: 11px; color: var(--tr-text-muted); text-transform: uppercase; letter-spacing: .03em; }
+  .tr-kpi .value { font-size: 24px; font-weight: 700; margin-top: 4px; font-variant-numeric: proportional-nums; color: #fff; }
+  .tr-kpi.crit .value { color: var(--tr-critical); }
+  .tr-kpi.good .value { color: var(--tr-good); }
+  .tr-box-grid-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
+  .tr-box-grid { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(3,1fr); gap: 2px; background: var(--tr-gridline); border: 1px solid var(--tr-border); border-radius: 10px; overflow: hidden; aspect-ratio: 1.35/1; }
+  .tr-cell { background: var(--tr-card-bg); padding: 10px 12px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+  .tr-cell .name { font-size: 11.5px; font-weight: 600; color: var(--tr-text-secondary); }
+  .tr-cell .count { font-size: 24px; font-weight: 700; font-variant-numeric: proportional-nums; color: #fff; }
+  .tr-cell .pct { font-size: 11px; color: var(--tr-text-muted); }
+  .tr-cell .pool { font-size: 10.5px; margin-top: 6px; font-weight: 600; }
+  .tr-cell:hover { outline: 2px solid #fff; outline-offset: -2px; z-index: 2; }
+  .tr-cell[data-tip]:hover::after { content: attr(data-tip); position: absolute; left: 8px; right: 8px; bottom: calc(100% + 6px); z-index: 5; background: #fff; color: #000; font-size: 11px; font-weight: 500; padding: 8px 10px; border-radius: 8px; line-height: 1.4; box-shadow: 0 4px 14px rgba(0,0,0,.25); white-space: pre-line; }
+  .tr-cell.tone-good { box-shadow: inset 3px 0 0 var(--tr-good); }
+  .tr-cell.tone-growth { box-shadow: inset 3px 0 0 var(--tr-series-3); }
+  .tr-cell.tone-maintain { box-shadow: inset 3px 0 0 var(--tr-baseline); }
+  .tr-cell.tone-warn { box-shadow: inset 3px 0 0 var(--tr-warning); }
+  .tr-cell.tone-crit { box-shadow: inset 3px 0 0 var(--tr-critical); background: color-mix(in srgb, var(--tr-critical) 7%, var(--tr-card-bg)); }
+  .tr-axis-label-y { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; color: var(--tr-text-muted); font-size: 11px; font-weight: 600; letter-spacing: .04em; }
+  .tr-grid-with-axes { display: grid; grid-template-columns: 18px 1fr; gap: 6px; }
+  .tr-grid-x-axis { display: grid; grid-template-columns: 18px 1fr; gap: 6px; margin-top: 4px; }
+  .tr-x-labels { display: grid; grid-template-columns: repeat(3,1fr); text-align: center; color: var(--tr-text-muted); font-size: 11px; font-weight: 600; letter-spacing: .02em; }
+  .tr-side-card { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 16px; }
+  .tr-side-card h3 { font-size: 12.5px; margin: 0 0 10px; color: var(--tr-text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+  .tr-bar-row { display: grid; grid-template-columns: 60px 1fr 28px; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; }
+  .tr-bar-track { height: 10px; background: var(--tr-gridline); border-radius: 4px; overflow: hidden; }
+  .tr-bar-fill { height: 100%; background: var(--tr-series-1); border-radius: 4px 0 0 4px; }
+  .tr-bar-row .n { text-align: right; color: var(--tr-text-muted); font-variant-numeric: tabular-nums; }
+  .tr-table-tools { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .tr-table-tools select, .tr-table-tools input { font-family: inherit; font-size: 12px; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--tr-border); background: var(--tr-card-bg); color: #fff; }
+  .tr-table-wrap table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--tr-card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--tr-border); }
+  .tr-table-wrap thead th { text-align: left; padding: 9px 10px; background: var(--tr-page-plane); color: var(--tr-text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; cursor: pointer; white-space: nowrap; border-bottom: 1px solid var(--tr-border); }
+  .tr-table-wrap thead th:hover { color: #fff; }
+  .tr-table-wrap tbody td { padding: 8px 10px; border-bottom: 1px solid var(--gridline); vertical-align: top; color: #fff; }
+  .tr-table-wrap tbody tr:hover { background: color-mix(in srgb, #fff 4%, transparent); }
+  .tr-pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+  .tr-pill.b1 { background: color-mix(in srgb, var(--tr-series-1) 18%, transparent); color: var(--tr-series-1); }
+  .tr-pill.b2, .tr-pill.b4 { background: color-mix(in srgb, var(--tr-series-3) 18%, transparent); color: var(--tr-series-3); }
+  .tr-pill.b3 { background: color-mix(in srgb, var(--tr-warning) 25%, transparent); color: #ffca47; }
+  .tr-pill.b5 { background: color-mix(in srgb, var(--tr-baseline) 40%, transparent); color: var(--text-secondary); }
+  .tr-pill.b9 { background: color-mix(in srgb, var(--tr-critical) 18%, transparent); color: var(--tr-critical); }
+  .tr-mono { font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .tr-flag { color: var(--tr-critical); font-weight: 700; cursor: help; }
+  .tr-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .tr-pcard { background: var(--tr-card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
+  .tr-pcard.crit { border-color: color-mix(in srgb, var(--tr-critical) 45%, var(--tr-border)); }
+  .tr-pcard .pc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
+  .tr-pcard .pc-title { font-size: 15px; font-weight: 700; color: #fff; }
+  .tr-pcard .pc-sub { font-size: 11.5px; color: var(--tr-text-muted); }
+  .tr-pcard .section-tag { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--tr-text-muted); font-weight: 700; margin: 10px 0 4px; }
+  .tr-action-grid { display: grid; grid-template-columns: 1fr; gap: 8px; background: color-mix(in srgb, var(--tr-page-plane) 60%, var(--tr-card-bg)); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--tr-border); margin: 8px 0; }
+  .tr-action-item { font-size: 12px; line-height: 1.45; color: #fff; }
+  .tr-action-item b { color: #fff; display: inline-block; width: 130px; }
+  .tr-dialogue-box { margin: 6px 0; padding: 8px 12px; border-radius: 6px; font-size: 12px; line-height: 1.45; font-style: italic; }
+  .tr-dialogue-mgr { background: var(--tr-page-plane); border-left: 3px solid var(--tr-series-1); color: #fff; }
+  .tr-dialogue-hr { background: var(--tr-page-plane); border-left: 3px solid var(--tr-series-3); color: #fff; margin-top: 4px; }
+  .tr-pcard.crit .tr-dialogue-mgr { border-left-color: var(--tr-critical); }
+  .tr-pcard.crit .tr-dialogue-hr { border-left-color: var(--tr-warning); }
+  .tr-jrisk { margin-top: 10px; padding: 8px 10px; border-radius: 7px; font-size: 11.5px; background: color-mix(in srgb, var(--tr-warning) 16%, var(--tr-card-bg)); border: 1px solid color-mix(in srgb, var(--tr-warning) 45%, transparent); color: #fff; }
+  .tr-jrisk b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 2px; }
 
-        .tab-content.active {
-            display: block;
-        }
+  /* Tab 06 Cross-Team OKR & 2-Week Sprint Matrix Specific Styles */
+  .tab06-header {
+    display: flex; justify-content: space-between; align-items: center; background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px;
+  }
+  .btn-save-tab06 {
+    background-color: var(--series-6); color: #090d16; border: none; border-radius: 6px;
+    padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+    transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-save-tab06:hover { opacity: 0.9; transform: translateY(-1px); }
+  .tab06-status-tip { font-size: 12px; color: var(--text-secondary); margin-right: 14px; font-weight: 500; }
+  .tab06-sec-title {
+    font-size: 16px; font-weight: 700; margin: 28px 0 14px; color: #ffffff; display: flex; align-items: center; gap: 8px;
+  }
+  .tab06-sec-title::before { content: ""; display: inline-block; width: 4px; height: 16px; background: var(--cyan); border-radius: 2px; }
+  
+  .tab06-table-wrap {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    overflow-x: auto; margin-bottom: 28px;
+  }
+  .tab06-table-wrap table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 0; }
+  .tab06-table-wrap th {
+    background: #0d1527; color: var(--text-muted); font-weight: 700; font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: 0.03em; padding: 12px 14px; border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--gridline);
+  }
+  .tab06-table-wrap th:last-child { border-right: none; }
+  .tab06-table-wrap td {
+    padding: 12px 14px; border-bottom: 1px solid var(--gridline); border-right: 1px solid var(--gridline);
+    vertical-align: top; color: #cbd5e1; line-height: 1.6;
+  }
+  .tab06-table-wrap td:last-child { border-right: none; }
+  .tab06-table-wrap td[contenteditable="true"] { outline: none; transition: background-color 0.2s, box-shadow 0.2s; }
+  .tab06-table-wrap td[contenteditable="true"]:focus {
+    background-color: color-mix(in srgb, var(--cyan) 8%, var(--card-bg));
+    box-shadow: inset 0 0 0 1.5px var(--cyan); color: #ffffff;
+  }
 
-        .table-wrapper {
-            overflow-x: auto;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--bg-secondary);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-        }
+  /* 甘特圖 2-Week Sprint 專屬樣式 */
+  .gantt-board-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin-bottom: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .gantt-title { font-size: 15px; font-weight: 700; color: #ffffff; letter-spacing: -0.01em; margin-bottom: 12px; }
+  .gantt-legend { display: flex; gap: 20px; margin-bottom: 16px; font-size: 12px; align-items: center; flex-wrap: wrap; }
+  .gantt-legend-item { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; }
+  .gantt-legend-color { width: 12px; height: 12px; border-radius: 3px; }
+  .gantt-c-align { background-color: #244b6c; }
+  .gantt-c-exec { background-color: #e5933a; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            text-align: left;
-        }
+  .gantt-control-panel {
+    display: flex; gap: 16px; margin-bottom: 20px; background: #090d16; padding: 10px 16px;
+    border-radius: 8px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; font-size: 12px;
+  }
+  .gantt-control-title { color: var(--cyan); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .gantt-ctrl-item { display: flex; align-items: center; gap: 6px; color: var(--text-secondary); font-weight: 600; }
+  .gantt-pct-input {
+    width: 48px; background: #0f172a; border: 1px solid var(--border); color: #ffffff;
+    text-align: center; border-radius: 4px; font-weight: 700; font-size: 12px; padding: 3px 2px; outline: none;
+  }
+  .gantt-pct-input:focus { border-color: var(--cyan); }
 
-        th {
-            background-color: #0f172a;
-            color: #cbd5e1;
-            padding: 12px 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            border-bottom: 1px solid var(--border-color);
-            white-space: nowrap;
-        }
+  .gantt-chart-container { display: grid; grid-template-columns: 140px 1fr; gap: 16px; position: relative; padding-top: 8px; }
+  .gantt-y-labels { display: flex; flex-direction: column; justify-content: space-around; padding-bottom: 40px; }
+  .gantt-y-label { height: 44px; display: flex; align-items: center; font-size: 13px; font-weight: 600; color: #e2e8f0; }
+  .gantt-plot-area { display: flex; flex-direction: column; justify-content: space-around; position: relative; padding-bottom: 40px; border-left: 1px solid #334155; }
+  .gantt-grid-overlay { position: absolute; inset: 0 0 40px 0; display: grid; pointer-events: none; }
+  .gantt-grid-col { height: 100%; }
+  .gantt-row { height: 44px; position: relative; display: flex; align-items: center; z-index: 2; }
+  .gantt-bar { position: absolute; height: 8px; border-radius: 4px; transition: height 0.2s ease; }
+  .gantt-bar.align { background-color: #244b6c; }
+  .gantt-bar.exec-track { background-color: rgba(229, 147, 58, 0.22); border: 1px solid rgba(229, 147, 58, 0.4); overflow: hidden; }
+  .gantt-progress-fill { height: 100%; background: #e5933a; border-radius: 3px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .gantt-x-axis { position: absolute; bottom: 0; left: 140px; right: 0; display: grid; border-top: 1px solid #334155; padding-top: 6px; }
+  .gantt-x-tick { position: relative; font-size: 10.5px; font-family: monospace; }
+  .gantt-axis-subtitle { text-align: center; font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 12px; letter-spacing: 0.04em; }
 
-        td {
-            padding: 12px 14px;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: top;
-        }
+  /* Tab 06 業務線與 Sprint 二級分頁樣式 */
+  .sub-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .sub-tab-btn {
+    background-color: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--border);
+    padding: 8px 16px; font-size: 12.5px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;
+  }
+  .sub-tab-btn:hover { color: var(--text-primary); border-color: var(--cyan); }
+  .sub-tab-btn.active { background-color: var(--series-1); color: #090d16; border-color: var(--series-1); }
+  .sub-tab-content { display: none; }
+  .sub-tab-content.active { display: block; }
 
-        /* 可手動編輯樣式與聚焦狀態 */
-        td[contenteditable="true"] {
-            outline: none;
-            transition: background-color 0.15s, box-shadow 0.15s;
-            cursor: text;
-        }
+  .badge-front { background-color: var(--badge-front); color: var(--badge-text); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+  .badge-mid { background-color: var(--badge-mid); color: var(--badge-text); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+  .badge-back { background-color: var(--badge-back); color: var(--badge-text); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
 
-        td[contenteditable="true"]:hover {
-            background-color: rgba(56, 189, 248, 0.05);
-        }
-
-        td[contenteditable="true"]:focus {
-            background-color: var(--editable-focus-bg);
-            box-shadow: inset 0 0 0 2px var(--editable-focus-outline);
-            border-radius: 4px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--badge-text);
-        }
-
-        .badge-front { background-color: var(--badge-front); }
-        .badge-mid { background-color: var(--badge-mid); }
-        .badge-back { background-color: var(--badge-back); }
-
-        .okr-title {
-            font-weight: 700;
-            color: #e2e8f0;
-            margin-bottom: 4px;
-        }
-
-        ul.kr-list {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        ul.kr-list li {
-            position: relative;
-            padding-left: 14px;
-            margin-bottom: 4px;
-            color: #cbd5e1;
-        }
-
-        ul.kr-list li::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: var(--accent-cyan);
-        }
-
-        .metrics-list {
-            color: #93c5fd;
-            font-weight: 500;
-            list-style: none;
-        }
-
-        .metrics-list li {
-            margin-bottom: 3px;
-        }
-
-        .metrics-list li::before {
-            content: "• ";
-            color: #60a5fa;
-        }
-
-        .metadata {
-            margin-top: 24px;
-            padding: 16px;
-            border-radius: 8px;
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-    </style>
+  .okr-title { font-weight: 700; color: #ffffff; margin-bottom: 4px; }
+  ul.kr-list { list-style: none; padding-left: 0; }
+  ul.kr-list li { position: relative; padding-left: 14px; margin-bottom: 4px; color: #cbd5e1; }
+  ul.kr-list li::before { content: "•"; position: absolute; left: 0; color: var(--cyan); }
+  .metrics-list { color: #93c5fd; font-weight: 500; list-style: none; padding-left: 0; }
+  .metrics-list li { margin-bottom: 3px; }
+  .metrics-list li::before { content: "• "; color: #38bdf8; }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <div class="header-main">
-            <div>
-                <h1>Cross-Team OKR Matrix & Sprint Delivery Plan</h1>
-                <p class="sub-header">表格所有內容格均已支援<b>點擊直接編輯 (contenteditable)</b>，點擊「儲存修改」可持久化保存至瀏覽器。</p>
+<!-- 全站密碼保護遮罩 -->
+<div id="site_lock_overlay">
+  <div class="site-lock-box">
+    <h2>🔒 專案存取驗證</h2>
+    <p>此 Executive Team Dashboard 包含機密資料，請輸入全站存取密碼以繼續。</p>
+    <input type="password" id="site_pwd_input" placeholder="請輸入密碼 (四位數: _ _ _ _)" onkeydown="if(event.key==='Enter') verifySitePassword()">
+    <button onclick="verifySitePassword()">進入系統</button>
+    <div id="site_lock_error" class="site-lock-error"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="rbac-top-banner">
+    <div class="rbac-content">
+      <span class="rbac-icon">🔒</span>
+      <span id="disp_rbac_notice">
+        <b>數據權限控管：</b>本看板實施部門資料隔離機制，各部門負責人僅限查閱所屬團隊之年度預算、編制名單與考績明細；跨部門全域彙整資料依最小特權原則（PoLP）予以嚴格隔離保護。
+      </span>
+    </div>
+    <div class="rbac-badge" id="disp_rbac_badge">部門專屬檢視 · 權限隔離</div>
+  </div>
+
+  <div class="main-nav">
+    <div class="main-nav-item active" id="nav_01" onclick="switchTab('tab01')">01 全球雙軌薪酬對標</div>
+    <div class="main-nav-item" id="nav_02" onclick="switchTab('tab02')">02 雙軌晉升示意圖</div>
+    <div class="main-nav-item" id="nav_03" onclick="switchTab('tab03')">03 LIVE O-CHART 對照 年度預算預測</div>
+    <div class="main-nav-item" id="nav_04" onclick="switchTab('tab04')">04 OKR 對齊與新招募預算</div>
+    <div class="main-nav-item" id="nav_05" onclick="switchTab('tab05')">05 人才盤點與晉升準備</div>
+    <div class="main-nav-item" id="nav_06" onclick="switchTab('tab06')">06 跨團隊 OKR 對齊</div>
+  </div>
+
+  <header class="top">
+    <div>
+      <h1 id="headerTitle">Executive Team Dashboard</h1>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn" id="btnZh" onclick="setLanguage('zh')">繁中</button>
+      <button class="lang-btn active" id="btnEn" onclick="setLanguage('en')">EN</button>
+    </div>
+  </header>
+
+  <!-- ================= 01 全球雙軌薪酬對標 ================= -->
+  <div id="pane_tab01" class="pane active">
+    <div class="comp-region-selector" id="regBar"></div>
+    <div class="comp-function-selector" id="fnBar"></div>
+    <div class="tier-cards-grid" id="tierCardsGrid"></div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:90px;" id="th_lvl">職級代碼</th>
+          <th id="th_title_scope">代表職稱 / 職責範疇</th>
+          <th id="th_t3">T3 初創梯隊 (年薪)</th>
+          <th id="th_t2">T2 全球基準 (Global Benchmark)</th>
+          <th id="th_t1">T1 頂尖梯隊 (年薪)</th>
+          <th id="th_region_ann">地區調整後年薪 (T2)</th>
+          <th id="th_region_mon">地區調整後月薪 (T2)</th>
+        </tr>
+      </thead>
+      <tbody id="compTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ================= 02 雙軌晉升示意圖 ================= -->
+  <div id="pane_tab02" class="pane">
+    <div class="comp-function-selector" id="ladderFnBar"></div>
+    <div class="layout-grid">
+      <div class="ladder-box" id="ladderTree"></div>
+      <div id="ladderCards"></div>
+    </div>
+  </div>
+
+  <!-- ================= 03 LIVE O-CHART 對照 年度預算預測 ================= -->
+  <div id="pane_tab03" class="pane">
+    <div class="top-dashboard-card">
+      <div class="top-dashboard-title" id="budget_card_title">研發部門 人事成本與預算預測</div>
+      <div class="top-dashboard-kpis">
+        <div class="top-kpi-box">
+          <div class="top-kpi-label" id="lbl_top_hc">總編制總人數</div>
+          <div class="top-kpi-val" id="disp_total_hc" style="color:var(--cyan);">0 人</div>
+        </div>
+        <div class="top-kpi-box">
+          <div class="top-kpi-label" id="lbl_top_budget">年度總薪酬預算 (USD)</div>
+          <div class="top-kpi-val" id="disp_total_budget" style="color:#34d399;">$0</div>
+        </div>
+      </div>
+      <div class="top-dashboard-notes">
+        <div id="runway_desc_line">• 資本跑道 (Runway)：依據市場梯隊結合地區指數計算，已自動折算跨國雇主法定成本準備金 (約 12%)。</div>
+        <div id="span_hc_structure">• 職級比例結構：符合 40% 骨幹 (L4) + 25% 初階 (L3) + 25% 資深 (L5) + 10% 領導層之健康分佈。</div>
+      </div>
+    </div>
+
+    <div class="calc-top-bar">
+      <div class="dept-ctrl">
+        <label style="font-weight:700; color:var(--cyan);" id="lbl_dept_name">部門名稱：</label>
+        <input type="text" id="dept_name_input" value="研發部門" oninput="runBudgetCalc()">
+      </div>
+      <div class="tier-ctrl">
+        <label style="font-size:12.5px; color:var(--text-secondary);" id="lbl_tier_select">企業市場梯隊：</label>
+        <select id="calc_tier" onchange="runBudgetCalc()">
+          <option value="1.40">T1 頂尖梯隊 (Top-Tier) ×1.40</option>
+          <option value="1.00" selected>T2 全球基準 (Global Benchmark) ×1.00</option>
+          <option value="0.75">T3 初創梯隊 (Startup) ×0.75</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive-wrap">
+      <table class="matrix-calc-table">
+        <thead>
+          <tr>
+            <th style="width:75px;" id="th_matrix_lvl">職階代碼</th>
+            <th style="width:130px; text-align:left;" id="th_matrix_role">職位代表</th>
+            <th>🇺🇸 US<br><span style="font-size:9.5px; color:var(--text-muted);">×1.10</span></th>
+            <th>🇸🇬 SG<br><span style="font-size:9.5px; color:var(--text-muted);">×0.95</span></th>
+            <th>🇦🇪 UAE<br><span style="font-size:9.5px; color:var(--text-muted);">×0.90</span></th>
+            <th>🇪🇺 EU<br><span style="font-size:9.5px; color:var(--text-muted);">×0.80</span></th>
+            <th>🇹🇼 TW<br><span style="font-size:9.5px; color:var(--text-muted);">×0.65</span></th>
+            <th>🇲🇾 MY<br><span style="font-size:9.5px; color:var(--text-muted);">×0.45</span></th>
+            <th>🇮🇳 IN<br><span style="font-size:9.5px; color:var(--text-muted);">×0.40</span></th>
+            <th style="width:130px;" id="th_matrix_subhc">該職階人數 (佔比 %)</th>
+            <th style="width:130px; text-align:right;" id="th_matrix_subcost">年薪預算小計 (USD)</th>
+          </tr>
+        </thead>
+        <tbody id="matrixTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="org-chart-wrapper">
+      <h3 id="org_chart_title" style="font-size:15px; margin-bottom:18px; color:var(--cyan);">研發部門 動態組織架構圖 (Live Org Chart)</h3>
+      <div class="org-tree" id="orgTreeContainer"></div>
+    </div>
+  </div>
+
+  <!-- ================= 04 OKR 對齊、新招募職缺與預算 ================= -->
+  <div id="pane_tab04" class="pane">
+    <div class="okr-dashboard-top">
+      <div class="okr-top-card">
+        <div class="lbl" id="lbl_top_base_cost">現有編制年度預算</div>
+        <div class="val" id="disp_okr_base_cost" style="color:var(--text-secondary);">$1,529,500</div>
+      </div>
+      <div class="okr-top-card">
+        <div class="lbl" id="lbl_top_new_cost" style="color:var(--series-3);">新增職缺預算 (USD)</div>
+        <div class="val" id="disp_okr_new_cost" style="color:#34d399;">+$414,500 <span style="font-size:12px; color:var(--series-3); font-weight:700;">(+27.1%)</span></div>
+      </div>
+      <div class="okr-top-card" style="border-color:rgba(6,182,212,0.3); background:color-mix(in srgb, var(--cyan) 6%, #070b14);">
+        <div class="lbl" id="lbl_top_total_cost" style="color:var(--cyan);">加入新招後總年度預算</div>
+        <div class="val" id="disp_okr_total_cost" style="color:var(--cyan);">$1,944,000 <span style="font-size:12px; color:var(--cyan); font-weight:700;">(+27.1%)</span></div>
+      </div>
+      <div class="okr-top-card">
+        <div class="lbl" id="lbl_top_final_hc">新總編制人數</div>
+        <div class="val" id="disp_okr_final_hc" style="color:var(--purple);">18 人 <span style="font-size:12px; color:var(--purple); font-weight:700;">(+20.0%)</span></div>
+      </div>
+    </div>
+
+    <div class="okr-content-grid">
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:15px; color:var(--text-primary);" id="sec_okr_edit_title">Strategic OKRs — Click to Edit</h3>
+          <button class="btn-add-okr" onclick="addNewOkrBox()" id="btn_add_okr_label">+ 新增戰略目標</button>
+        </div>
+        <div id="okrBoxListContainer">
+          <div class="okr-box" id="okr_box_1">
+            <button class="btn-del-okr" onclick="deleteOkrBox(1)" title="刪除此目標">✕</button>
+            <div class="parent-okr-bar">
+              <span class="parent-okr-label">🔗 上級對照:</span>
+              <input type="text" class="parent-okr-input" value="O0-公司總部 2027 年全球化佈局與核心吞吐量翻倍藍圖">
             </div>
-            <div class="action-bar">
-                <span id="saveHint" class="save-hint">已成功儲存至本機！</span>
-                <button class="action-btn save-btn" onclick="saveData()">儲存修改 (Save)</button>
-                <button class="action-btn" onclick="resetData()">重設為預設值</button>
+            <input type="text" class="okr-input-obj" value="Objective 1: 全球核心清算架構高併發重構與 99.99% 高可用性">
+            <textarea class="okr-textarea-kr">• KR1: 完成多幣種虛擬資金池路由引擎重構，降低 40% 延遲
+• KR2: 通過 SOC2 Type II 審計與零重大資安漏洞
+• KR3: 建立全球分佈式 24/7 SRE 自動化自愈體系</textarea>
+          </div>
+          <div class="okr-box" id="okr_box_2">
+            <button class="btn-del-okr" onclick="deleteOkrBox(2)" title="刪除此目標">✕</button>
+            <div class="parent-okr-bar">
+              <span class="parent-okr-label">🔗 上級對照:</span>
+              <input type="text" class="parent-okr-input" value="O0-公司總部跨國人效優化與研發成本結構精實目標">
             </div>
+            <input type="text" class="okr-input-obj" value="Objective 2: 區域交付中心降本增效與人才密度優化">
+            <textarea class="okr-textarea-kr">• KR1: 藉由 Geo-Arbitrage 將邊際研發成本降低 25%
+• KR2: 自動化覆蓋率提升至 85%，壓縮月結週期至 T+2
+• KR3: 落地 L3-L8 全序列雙軌職涯階梯與能力錨定</textarea>
+          </div>
         </div>
-    </header>
+      </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('business-lines')">8 Business Lines Alignment</button>
-        <button class="tab-btn" onclick="switchTab('sprint-1')">Sprint 1: W1–W2</button>
-        <button class="tab-btn" onclick="switchTab('sprint-2')">Sprint 2: W3–W4</button>
-        <button class="tab-btn" onclick="switchTab('sprint-3')">Sprint 3: W5–W6</button>
-        <button class="tab-btn" onclick="switchTab('sprint-4')">Sprint 4: W7–W8</button>
-    </div>
-
-    <!-- TAB 1: 8 BUSINESS LINES OKR ALIGNMENT -->
-    <div id="business-lines" class="tab-content active">
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 100px;">Quadrant</th>
-                        <th style="width: 50px;">#</th>
-                        <th style="width: 130px;">Business Line</th>
-                        <th style="width: 180px;">Core Metrics</th>
-                        <th>Business Objective & Key Results (Business OKRs)</th>
-                        <th>Aligned HRBP OKR (Strategic Enablement)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="badge badge-front">Front Office</span></td>
-                        <td><strong>01</strong></td>
-                        <td contenteditable="true"><strong>Spot Trading</strong></td>
-                        <td contenteditable="true">
-                            <ul class="metrics-list">
-                                <li>Net Fee Revenue</li>
-                                <li>Hot-Coin First-to-List Rate</li>
-                                <li>Listing Lead Time (&le;3h)</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 極速搶佔熱點現貨首發並確保零虛假刷量</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 熱幣首發上市時間 (Lead Time) 壓縮至 &le; 3 小時</li>
-                                <li><strong>KR2:</strong> 極速搶上線機制下維持 0 洗量/虛假交易事故</li>
-                                <li><strong>KR3:</strong> 核心熱門代幣首發率達成市場對標領先</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 重構 BD 激勵機制與極速上幣敏捷小隊 (Pod)</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> BD 人均年化淨收益 &ge; $1.5M (連續 2 季未達標觸發淘汰)</li>
-                                <li><strong>KR2:</strong> Hot-Coin Agile Squad 單兵人效提升 +25%</li>
-                                <li><strong>KR3:</strong> 跨部門協同 SLA 監控，零內部溝通延遲</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge badge-front">Front Office</span></td>
-                        <td><strong>02</strong></td>
-                        <td contenteditable="true"><strong>Futures Trading</strong></td>
-                        <td contenteditable="true">
-                            <ul class="metrics-list">
-                                <li>Whale/KOL Scale</li>
-                                <li>Open Interest (OI)</li>
-                                <li>System Throughput (TPS)</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 擴大黏性大戶流動性並斬斷黑產套利穿透</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 提升頂級 Whale/KOL 深度與未平倉合約量 (OI)</li>
-                                <li><strong>KR2:</strong> 撮合系統高頻吞吐穩定度保持零當機</li>
-                                <li><strong>KR3:</strong> 杜絕黑產返佣與對敲套利行為</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 規範銷售結算治理並鎖定核心交易引擎專家</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 階梯返佣 SOP 落地，帶動 BD 淨收益增長 +20%</li>
-                                <li><strong>KR2:</strong> 黏性資產納入計分卡，BD 人均持倉量 &ge; $10M</li>
-                                <li><strong>KR3:</strong> 核心 Top 20% 交易引擎關鍵人才留任率 &ge; 95%</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge badge-front">Front Office</span></td>
-                        <td><strong>03</strong></td>
-                        <td contenteditable="true"><strong>Earn &amp; Lending</strong></td>
-                        <td contenteditable="true">
-                            <ul class="metrics-list">
-                                <li>Total AUM</li>
-                                <li>Fund-Matching Efficiency</li>
-                                <li>Product NIM</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 提升資產沉澱規模與優化資金撮合淨利差</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 擴大理財總 AUM 並維持健康利差結構 (Positive NIM)</li>
-                                <li><strong>KR2:</strong> 資金撮合匹配效率提升，縮減閒置週期 50%</li>
-                                <li><strong>KR3:</strong> 嚴打理財高收益產品之快進快出套利</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 推行全員人均 AUM 責任制與產研聯動機制</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 落實人均 AUM 責任制，團隊人均 AUM &ge; $20M</li>
-                                <li><strong>KR2:</strong> 主導 Earn-Futures 雙週同步會，對接耗時降低 50%</li>
-                                <li><strong>KR3:</strong> 獎金池與實際產品淨收入嚴格掛鉤 (相關係數 r &ge; 0.85)</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge badge-mid">Middle Office</span></td>
-                        <td><strong>04</strong></td>
-                        <td contenteditable="true"><strong>Project Milestone</strong></td>
-                        <td contenteditable="true">
-                            <ul class="metrics-list">
-                                <li>8/1 Slack Migration 100%</li>
-                                <li>8/7 Feature Dev Complete</li>
-                                <li>8/14 Release Freeze Entry</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 嚴守系統切換與研發封版交付節點</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 8/1 完成全公司 100% 遷移至 Slack 並停用舊通訊工具</li>
-                                <li><strong>KR2:</strong> 8/7 完成 100% 規劃功能代碼開發</li>
-                                <li><strong>KR3:</strong> 8/14 零重大阻塞順利進入 Release Freeze 封版</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 組織變革管理與研發防倦怠值班機制保障</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> Slack 遷移變革滿意度 &ge; 90%</li>
-                                <li><strong>KR2:</strong> 建立 24 小時支援專線與彈性補休 (Comp-time) 制度</li>
-                                <li><strong>KR3:</strong> 8/14 封版驗證期間 Standby 人力就緒率達 100%</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge badge-mid">Middle Office</span></td>
-                        <td><strong>05</strong></td>
-                        <td contenteditable="true"><strong>Go-Live Validation</strong></td>
-                        <td contenteditable="true">
-                            <ul class="metrics-list">
-                                <li>Functional UAT 100%</li>
-                                <li>Procedural Testing 100%</li>
-                                <li>8/28 Dress Rehearsal</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 零缺陷通過驗收測試並完成全真上線預演</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 8/14 前完成 100% 功能性 UAT 驗收</li>
-                                <li><strong>KR2:</strong> 100% 完成運營程序測試與應急預案校驗</li>
-                                <li><strong>KR3:</strong> 8/28 完成全系統端到端 Dress Rehearsal 演練</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 驅動跨部門卡點日清與領導層驗收連動機制</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 組織每日 15 分鐘跨部門 Standup，卡點日清率 = 100%</li>
-                                <li><strong>KR2:</strong> 建立運營簽核公開看板，進度納入主管 MBO 考核</li>
-                                <li><strong>KR3:</strong> 建立重大卡點升級通道，確保跨部門零溝通阻礙</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge badge-back">Back Office</span></td>
-                        <td><strong>06</strong></td>
-                        <td contenteditable="true"><strong>AI &amp; Security</strong></td>
-                        <td contenteditable="true">
-                            <ul class="metrics-list">
-                                <li>100% Ban on Unapproved AI</li>
-                                <li>Code Leaks = 0</li>
-                                <li>API Key Leaks = 0</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 構築零信任企業資料與代碼安全邊界</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 嚴格執行 100% 封鎖未授權外部 AI 工具 (ChatGPT/DeepSeek 等)</li>
-                                <li><strong>KR2:</strong> 代碼庫及金鑰公網洩漏事故 = 0</li>
-                                <li><strong>KR3:</strong> 核心敏感資料外洩事故 = 0</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 安全紅線文化落地與違規懲處機制機制化</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 全員 100% 完成 AI 安全政策電子簽署與培訓驗收</li>
-                                <li><strong>KR2:</strong> 任何資安違規 100% 觸發調查與績效 PIP 處分</li>
-                                <li><strong>KR3:</strong> 資安外洩事件列為年度/季度績效一票否決項</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge badge-back">Back Office</span></td>
-                        <td><strong>07</strong></td>
-                        <td contenteditable="true"><strong>Vulnerability</strong></td>
-                        <td contenteditable="true">
-                            <ul class="metrics-list">
-                                <li>FastJson Patch On Deadline</li>
-                                <li>100% Code Review Pass</li>
-                                <li>Jackson Migration 100%</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 限時修復高危架構債並達成依賴庫完全升級</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 於既定排程前完成 FastJson 全面升級至 FastJson2/Jackson</li>
-                                <li><strong>KR2:</strong> 100% 漏洞補丁與重構代碼通過嚴格 Code Review</li>
-                                <li><strong>KR3:</strong> 封版前解決現有高危安全漏洞待辦項</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 產研代碼能力賦能與修復質量掛鉤機制</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 舉辦「代碼熟悉與安全開發」實戰工作坊</li>
-                                <li><strong>KR2:</strong> 建立 Jira 漏洞修復進度透明看板，追蹤修復速率</li>
-                                <li><strong>KR3:</strong> 漏洞修復與 CR 質量直接計入 Tech Lead 績效考評</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge badge-back">Back Office</span></td>
-                        <td><strong>08</strong></td>
-                        <td contenteditable="true"><strong>AWS &amp; YubiKey</strong></td>
-                        <td contenteditable="true">
-                            <ul class="metrics-list">
-                                <li>AWS Least-Privilege IAM</li>
-                                <li>100% Mandatory YubiKey</li>
-                                <li>No Root Account Daily Use</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 雲端最小權限治理與硬件級身份鑑權強制化</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 執行 AWS 最小權限 IAM 策略，嚴禁日常使用 Root 帳戶</li>
-                                <li><strong>KR2:</strong> 所有高敏控制台 100% 強制使用 YubiKey 硬件登入</li>
-                                <li><strong>KR3:</strong> 完成雲端冗餘憑證與非活躍金鑰完全收斂</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <div class="okr-title">Objective: 員工生命週期資產閉環與 SoD 職責分離審計</div>
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 建立入職發放與離職當日 100% 實體回收 YubiKey SOP</li>
-                                <li><strong>KR2:</strong> 協同資安部執行 SoD 審查，100% 註銷過期與冗餘特權權限</li>
-                                <li><strong>KR3:</strong> 離職員工當日系統權限凍結達成率 100%</li>
-                            </ul>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:15px; color:var(--text-primary);" id="sec_hire_builder_title">New Hires Requirement List</h3>
+          <button class="btn-add-hire" onclick="addNewHireRow()" id="btn_add_hire_label">+ 新增招募職缺</button>
         </div>
-    </div>
+        <div class="hire-builder-box" id="hireListContainer">
+          <div class="hire-item-card" id="hire_card_1">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+              <input type="text" value="Staff Protocol Architect" style="flex:1; background:#090d16; border:1px solid var(--border); color:#fff; padding:8px 12px; border-radius:6px; font-weight:700; font-size:13px;">
+              <select class="hire-select">
+                <option value="L7_M2">L7 / M2</option>
+                <option value="L6_M1" selected>L6 / M1</option>
+                <option value="L5">L5</option>
+                <option value="L4">L4</option>
+                <option value="L3">L3</option>
+              </select>
+              <select class="hire-select">
+                <option value="US">🇺🇸 US (1.10)</option>
+                <option value="SG" selected>🇸🇬 SG (0.95)</option>
+                <option value="UAE">🇦🇪 UAE (0.90)</option>
+                <option value="EU">🇪🇺 EU (0.80)</option>
+                <option value="TW">🇹🇼 TW (0.65)</option>
+                <option value="MY">🇲🇾 MY (0.45)</option>
+                <option value="IN">🇮🇳 IN (0.40)</option>
+              </select>
+              <button onclick="deleteHireRow(1)" style="background:none; border:none; color:var(--critical); font-size:16px; font-weight:bold; cursor:pointer;" title="刪除此職缺">✕</button>
+            </div>
 
-    <!-- TAB 2: SPRINT 1 -->
-    <div id="sprint-1" class="tab-content">
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 110px;">ORG LEVEL</th>
-                        <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
-                        <th>MID-OFFICE OKR (MATCHING / MIGRATION)</th>
-                        <th>BACK-OFFICE OKR (SECURITY / IAM)</th>
-                        <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td contenteditable="true"><strong>目標 (O1)</strong></td>
-                        <td contenteditable="true"><strong>確立商業激勵機制與防套利基線</strong></td>
-                        <td contenteditable="true"><strong>啟動工具遷移與交付基線鎖定</strong></td>
-                        <td contenteditable="true"><strong>構築零信任安全防線與帳號收斂</strong></td>
-                        <td contenteditable="true"><strong>制度落地與關鍵技術人才鎖定</strong></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 現貨/合約 BD 新佣金制度上線，佣金與淨手續費收益 100% 掛鉤</li>
-                                <li><strong>KR2:</strong> 上線 T+1 延遲結算與設備 ID 重疊監控，截斷首波黑產套利</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 完成 Slack 遷移全員環境配置與團隊權限初始化 (進度 50%)</li>
-                                <li><strong>KR2:</strong> 鎖定 8/7 功能開發範圍，明確雙週排期阻礙點清單</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 阻斷未授權 AI 工具 (ChatGPT/DeepSeek 等) 外部存取率達 100%</li>
-                                <li><strong>KR2:</strong> 盤點 AWS Root 帳號使用日誌，高權限角色清退率達 50%</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 頒布 BD 考核底線制度 (連 2 季未達 $1.5M 觸發退出流程)</li>
-                                <li><strong>KR2:</strong> 完成 Top 20% 高潛力交易引擎核心人才 1-on-1 保留溝通 (保留率 100%)</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>目標 (O2)</strong></td>
-                        <td contenteditable="true"><strong>啟動高收益與衍生品資金沉澱</strong></td>
-                        <td contenteditable="true"><strong>優化跨部門資產對接節奏</strong></td>
-                        <td contenteditable="true"><strong>硬件認證與離職合規流程重塑</strong></td>
-                        <td contenteditable="true"><strong>全員安全紅線制度化與簽署</strong></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 合約 BD 人均持倉量 (OI) 目標分解至團隊 ($10M/人)</li>
-                                <li><strong>KR2:</strong> 鎖定高淨值客戶 (Whale/KOL) 存量結構，制定防羊毛黨方案</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 建立理財 (Earn) 與合約清算撮合週度同步機制</li>
-                                <li><strong>KR2:</strong> 撮合對接卡點平均排查耗時縮短 20%</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 完成 YubiKey 採購與金鑰發放管理流程制定</li>
-                                <li><strong>KR2:</strong> 確立離職當日 100% 權限即時凍結與防護 SOP</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 全員 AI 與資安紅線電子簽署率 (e-Signature) 達 100%</li>
-                                <li><strong>KR2:</strong> 確立違規即進 PIP/調查機制，組織宣導覆蓋率 100%</li>
-                            </ul>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <div style="font-size:11.5px; color:var(--text-muted);">基準定價: $240,000 × 0.95 (SG)</div>
+              <div style="font-size:16px; font-weight:800; color:#34d399;">$228,000 <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">USD/yr</span></div>
+            </div>
+
+            <div class="role-okr-container">
+              <div class="role-okr-title">🎯 崗位專屬 3 大 OKR / KR 目標</div>
+              <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
+                <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #1</span>
+                <input type="text" class="role-okr-input" value="O1-KR1.1: 核心清算架構重構與路由优化">
+              </div>
+              <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
+                <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #2</span>
+                <input type="text" class="role-okr-input" value="O1-KR1.2: 降低跨鏈驗證延遲達 40%">
+              </div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span style="font-size:10.5px; color:var(--cyan); font-weight:700; width:45px;">KR #3</span>
+                <input type="text" class="role-okr-input" value="O1-KR1.3: 制定去中心化協議安全審查規範">
+              </div>
+            </div>
+
+            <div class="funnel-container">
+              <div class="funnel-title">招募漏斗階段追蹤 (手動輸入候選人數)</div>
+              <div class="funnel-steps-grid">
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="24"><div class="f-name">HR SCREEN</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="12"><div class="f-name">TECH SCREEN</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="6"><div class="f-name">LINE MGR</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="4"><div class="f-name">CODING</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="2"><div class="f-name">DEPT HEAD</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="2"><div class="f-name">SYS DESIGN</div></div>
+                <div class="funnel-step"><input type="text" maxlength="3" class="f-input" value="1"><div class="f-name">OFFER</div></div>
+              </div>
+              <div class="dynamic-funnel-viz">
+                <div class="viz-bar-row"><div class="viz-label">HR SCREEN</div><div class="viz-track"><div class="viz-fill" style="width: 100%;"></div></div><div class="viz-val">24</div></div>
+                <div class="viz-bar-row"><div class="viz-label">TECH SCREEN</div><div class="viz-track"><div class="viz-fill" style="width: 50%;"></div></div><div class="viz-val">12</div></div>
+                <div class="viz-bar-row"><div class="viz-label">LINE MGR</div><div class="viz-track"><div class="viz-fill" style="width: 25%;"></div></div><div class="viz-val">6</div></div>
+                <div class="viz-bar-row"><div class="viz-label">CODING</div><div class="viz-track"><div class="viz-fill" style="width: 17%;"></div></div><div class="viz-val">4</div></div>
+                <div class="viz-bar-row"><div class="viz-label">DEPT HEAD</div><div class="viz-track"><div class="viz-fill" style="width: 8%;"></div></div><div class="viz-val">2</div></div>
+                <div class="viz-bar-row"><div class="viz-label">SYS DESIGN</div><div class="viz-track"><div class="viz-fill" style="width: 8%;"></div></div><div class="viz-val">2</div></div>
+                <div class="viz-bar-row"><div class="viz-label">OFFER</div><div class="viz-track"><div class="viz-fill" style="width: 4%;"></div></div><div class="viz-val">1</div></div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 05 人才盤點與晉升準備 ================= -->
+  <div id="pane_tab05" class="pane">
+    <div id="tr_dashboard_content">
+      <div class="tr-wrap">
+        <header class="top">
+          <div>
+            <h1 id="tr_headerTitle">人才盤點與晉升準備儀表板<span class="tr-badge" id="tr_cycleBadge">2027 年 4 月週期</span></h1>
+            <div class="sub" id="tr_headerSub">九宮格落點評估 · 方案 B 潛力權重體系 (組長/主管 70% · 負責人/HRBP 30%) · Google 試算表連動</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span id="tr_current_auth_label" style="font-size:12px; color:var(--cyan); font-weight:700;">🔓 多部門權限已解鎖</span>
+            </div>
+            <div id="tr_syncStatus" style="font-size:12px; color:var(--tr-text-muted);">Synced All Secure Teams</div>
+          </div>
+        </header>
+
+        <div class="tr-tabbar" id="tr_tabbar"></div>
+        <div id="tr_panes"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 06 跨團隊 OKR 對齊 (8 業務線 × 4 Sprint 矩陣) ================= -->
+  <div id="pane_tab06" class="pane">
+    <div class="tab06-header">
+      <div>
+        <h2 style="font-size:18px; font-weight:800; color:#fff;" id="tab06_main_title">Cross-Team OKR Matrix & Sprint Delivery Plan</h2>
+        <div style="font-size:12px; color:var(--text-secondary); margin-top:4px;" id="tab06_sub_title">8 條核心業務線全面對齊 · 4 個雙週 Sprint 敏捷排期 · 實時在線編輯與儲存</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span id="saveStatusTab06" class="tab06-status-tip">✓ 所有變更已即時自動儲存 (Local)</span>
+        <button class="btn-save-tab06" onclick="manualSaveTab06()" id="btn_save_tab06_label">💾 儲存並導出更新檔</button>
+        <button class="btn-add-okr" onclick="resetTab06Data()" style="padding:9px 14px;">重設預設值</button>
+      </div>
     </div>
 
-    <!-- TAB 3: SPRINT 2 -->
-    <div id="sprint-2" class="tab-content">
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 110px;">ORG LEVEL</th>
-                        <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
-                        <th>MID-OFFICE OKR (MATCHING / MIGRATION)</th>
-                        <th>BACK-OFFICE OKR (VULNERABILITY / SECURE DEV)</th>
-                        <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td contenteditable="true"><strong>目標 (O1)</strong></td>
-                        <td contenteditable="true"><strong>激活熱幣綠色通道與做市產能</strong></td>
-                        <td contenteditable="true"><strong>全量交付 Slack 工具遷移 (8/1)</strong></td>
-                        <td contenteditable="true"><strong>啟動技術債清零與漏洞修復</strong></td>
-                        <td contenteditable="true"><strong>賦能極速上幣敏捷小組與變更管理</strong></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 熱幣極速上幣前置流程打通，審核耗時壓縮至 &le; 3 小時</li>
-                                <li><strong>KR2:</strong> 跨業務線建立每日熱幣搶首發監控機制，首發率提升 15%</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> <strong>8/1 完成 100% Slack 遷移</strong>，關閉所有舊通訊工具通道</li>
-                                <li><strong>KR2:</strong> 8/7 功能開發交付進度達標率 &ge; 70%</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 啟動 FastJson 全面升級至 FastJson2/Jackson，修復進度 &ge; 40%</li>
-                                <li><strong>KR2:</strong> 漏洞修復提交之程式碼 100% 導入嚴格 Code Review</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 建立 Hot-Coin Agile Squad 跨職能看板，單兵交付產出提升 15%</li>
-                                <li><strong>KR2:</strong> 組織變革滿意度 (Slack Adoption Satisfaction) 達 &ge; 90%</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>目標 (O2)</strong></td>
-                        <td contenteditable="true"><strong>驅動理財資金沉澱與撮合提速</strong></td>
-                        <td contenteditable="true"><strong>降低資產配對延遲與流程摩擦</strong></td>
-                        <td contenteditable="true"><strong>強化研發代碼架構與安全認知</strong></td>
-                        <td contenteditable="true"><strong>落實 24 小時支援與防倦怠機制</strong></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 理財人均 AUM 責任制上線，推進人均 AUM &ge; $20M 基線</li>
-                                <li><strong>KR2:</strong> 剔除高頻套利快進快出資金，產品利差 (NIM) 保持正向</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 理財-合約跨模組資產配對時間縮短 30%</li>
-                                <li><strong>KR2:</strong> 跨系統溝通延遲工單清零</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 盤點核心系統歷史依賴，標記所有高危組件清單</li>
-                                <li><strong>KR2:</strong> 阻斷所有外部 API Key / 機密程式碼公網洩漏事故 (維持 0 洩漏)</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 落地 24 小時支援通道與彈性補休制度 (Comp-time Policy)</li>
-                                <li><strong>KR2:</strong> 舉辦「代碼架構熟悉與安全開發」實戰工作坊，產研覆蓋率 &gt; 80%</li>
-                            </ul>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <!-- 06-1: 2-Week Sprint 甘特圖看板 -->
+    <div class="gantt-board-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div class="gantt-title" id="gantt_title" style="margin-bottom:0;">OKR Alignment Board (2-Week Sprint Granularity)</div>
+        <span style="font-size:11px; background:rgba(6,182,212,0.12); color:var(--cyan); padding:2px 8px; border-radius:4px; border:1px solid rgba(6,182,212,0.25); font-weight:700;">
+          1 Quarter = 6 Sprints (1 Sprint = 2 Weeks)
+        </span>
+      </div>
+
+      <div class="gantt-legend">
+        <div class="gantt-legend-item">
+          <div class="gantt-legend-color gantt-c-align"></div>
+          <span id="gantt_leg_align">Alignment / Kickoff (Sprint 1)</span>
         </div>
-    </div>
-
-    <!-- TAB 4: SPRINT 3 -->
-    <div id="sprint-3" class="tab-content">
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 110px;">ORG LEVEL</th>
-                        <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
-                        <th>MID-OFFICE OKR (FREEZE / UAT)</th>
-                        <th>BACK-OFFICE OKR (SECURITY / HARDWARE MFA)</th>
-                        <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td contenteditable="true"><strong>目標 (O1)</strong></td>
-                        <td contenteditable="true"><strong>確保封版期間交易業務平穩與黏性鎖定</strong></td>
-                        <td contenteditable="true"><strong>達成 8/14 程式碼封版與全量 UAT 驗證</strong></td>
-                        <td contenteditable="true"><strong>落實高敏系統 YubiKey 強制管控</strong></td>
-                        <td contenteditable="true"><strong>跨部門卡點日清與領導層 MBO 連動</strong></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 大戶/KOL 黏性合約持倉比例提升 20%，零虛假刷量</li>
-                                <li><strong>KR2:</strong> 配合技術封版，暫停非緊急產品變更，全力支援測試</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> <strong>8/7 完成 100% 功能代碼開發</strong></li>
-                                <li><strong>KR2:</strong> <strong>8/14 正式進入 Release Freeze</strong>，功能與流程 UAT 完成度 100%</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 敏感雲端控制台 100% 強制綁定 YubiKey 實體認證登入</li>
-                                <li><strong>KR2:</strong> AWS Least-Privilege IAM 落地，全面停用 Root 每日操作</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 每日 15 分鐘跨部門 Standup 卡點當日排除率 (Clearance) = 100%</li>
-                                <li><strong>KR2:</strong> 將驗收簽核進度 100% 折算納入管理層/Tech Lead 考評指標</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>目標 (O2)</strong></td>
-                        <td contenteditable="true"><strong>理財利差最佳化與業績對齊</strong></td>
-                        <td contenteditable="true"><strong>交付流程測試與演練環境搭建</strong></td>
-                        <td contenteditable="true"><strong>攻堅剩餘架構債與漏洞修復</strong></td>
-                        <td contenteditable="true"><strong>封版值班人力部署與倦怠監控</strong></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 理財與合約聯動利潤核算完成，達成率與獎金池緊密掛鉤</li>
-                                <li><strong>KR2:</strong> 確保封版驗證期間資金出入帳通道零堵塞</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 完成 100% 程序性測試與回滾預案驗證</li>
-                                <li><strong>KR2:</strong> 搭建 8/28 正式演練 (Dress Rehearsal) 所需之全量沙盒環境</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> FastJson 依賴全面遷移至 FastJson2/Jackson 達成率 100%</li>
-                                <li><strong>KR2:</strong> 配合資安團隊完成 100% 權限隔離 (SoD) 交叉抽查</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 8/14 Freeze 期間 Standby 輪值支援人力就緒率 = 100%</li>
-                                <li><strong>KR2:</strong> 連續高強度加班人員主動介入關懷，確保關鍵工程師留任率 100%</li>
-                            </ul>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="gantt-legend-item">
+          <div class="gantt-legend-color gantt-c-exec"></div>
+          <span id="gantt_leg_exec">Execution & Dashboard Tracking (Sprint 2–6)</span>
         </div>
-    </div>
+      </div>
 
-    <!-- TAB 5: SPRINT 4 -->
-    <div id="sprint-4" class="tab-content">
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 110px;">ORG LEVEL</th>
-                        <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
-                        <th>MID-OFFICE OKR (DRESS REHEARSAL / CUTOVER)</th>
-                        <th>BACK-OFFICE OKR (AUDIT / LIFECYCLE LOCKDOWN)</th>
-                        <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td contenteditable="true"><strong>目標 (O1)</strong></td>
-                        <td contenteditable="true"><strong>業務人效達標與商務激勵兌現</strong></td>
-                        <td contenteditable="true"><strong>執行 8/28 全真預演與平穩上線</strong></td>
-                        <td contenteditable="true"><strong>資安閉環驗收與資產生命週期鎖定</strong></td>
-                        <td contenteditable="true"><strong>人效復盤、末位淘汰執行與長期賦能</strong></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> BD 人均淨收益達成率評定，人均淨收達到 &ge; $1.5M/年</li>
-                                <li><strong>KR2:</strong> 綠色通道常態化運作，熱幣上幣交付時間穩定保持 &le; 3 小時</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> <strong>8/28 完成 100% 全真模擬預演 (Dress Rehearsal)</strong></li>
-                                <li><strong>KR2:</strong> 正式發版割接期間重大 P0/P1 故障 = 0，營運 Sign-off 100%</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 離職人員 YubiKey 回收與系統權限即日凍結達成率 = 100%</li>
-                                <li><strong>KR2:</strong> 清退 100% 冗餘、過期之特權帳號，保持長期 SoD 合規</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 連續 2 季未達標人員 100% 啟動退出/轉崗流程</li>
-                                <li><strong>KR2:</strong> 獎金與實際產品淨收入相關係數達成 r &ge; 0.85 嚴格兌現</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>目標 (O2)</strong></td>
-                        <td contenteditable="true"><strong>合約深度與理財規模沉澱</strong></td>
-                        <td contenteditable="true"><strong>跨部門復盤與交付閉環</strong></td>
-                        <td contenteditable="true"><strong>產研代碼質量與安全評級入檔</strong></td>
-                        <td contenteditable="true"><strong>敏捷團隊整體效能總評</strong></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> BD 人均合約持倉 (OI) 穩定在 &ge; $10M，零返佣黑產穿透</li>
-                                <li><strong>KR2:</strong> 理財資產總規模 (AUM) 達成既定目標，資金配對時間縮短 50%</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> 上線後首週跨部門協同 SLA 達成率 100% (零溝通延誤)</li>
-                                <li><strong>KR2:</strong> 產出《跨團隊上線復盤報告》與技術優化待辦清單</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> FastJson 升級上線後零回退、零相容性報警</li>
-                                <li><strong>KR2:</strong> 程式碼洩漏與 API 外洩事故保持為 0，安全防線完全閉環</li>
-                            </ul>
-                        </td>
-                        <td contenteditable="true">
-                            <ul class="kr-list">
-                                <li><strong>KR1:</strong> Hot-Coin Agile Squad 單兵人效整體提升 +25% 驗收歸檔</li>
-                                <li><strong>KR2:</strong> 將漏洞修復品質與 Code Review 通過率納入 Team Lead 季度考評</li>
-                            </ul>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+      <div class="gantt-control-panel">
+        <span class="gantt-control-title" id="gantt_ctrl_title">⚡ 雙週 Sprint 進度動態同步：</span>
+        <div class="gantt-ctrl-item">
+          <span>Engineering:</span>
+          <input type="number" id="inp_gantt_eng" min="0" max="100" class="gantt-pct-input" value="70" oninput="updateSprintProgress('eng', this.value)">
+          <span>%</span>
+          <span id="badge_sprint_eng" style="font-size:10.5px; color:var(--cyan); font-weight:700; margin-left:4px;">(Sprint 4)</span>
         </div>
+        <div class="gantt-ctrl-item">
+          <span>Commercial:</span>
+          <input type="number" id="inp_gantt_comm" min="0" max="100" class="gantt-pct-input" value="85" oninput="updateSprintProgress('comm', this.value)">
+          <span>%</span>
+          <span id="badge_sprint_comm" style="font-size:10.5px; color:var(--cyan); font-weight:700; margin-left:4px;">(Sprint 5)</span>
+        </div>
+        <div class="gantt-ctrl-item">
+          <span>Product Ops:</span>
+          <input type="number" id="inp_gantt_ops" min="0" max="100" class="gantt-pct-input" value="50" oninput="updateSprintProgress('ops', this.value)">
+          <span>%</span>
+          <span id="badge_sprint_ops" style="font-size:10.5px; color:var(--cyan); font-weight:700; margin-left:4px;">(Sprint 3)</span>
+        </div>
+      </div>
+
+      <div class="gantt-chart-container">
+        <div class="gantt-y-labels">
+          <div class="gantt-y-label">Engineering</div>
+          <div class="gantt-y-label">Commercial</div>
+          <div class="gantt-y-label">Product Ops</div>
+        </div>
+
+        <div class="gantt-plot-area">
+          <div class="gantt-grid-overlay" style="grid-template-columns: repeat(6, 1fr);">
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px dashed rgba(255,255,255,0.08);"></div>
+            <div class="gantt-grid-col" style="border-right: 1px solid #334155;"></div>
+          </div>
+
+          <div class="gantt-row">
+            <div class="gantt-bar align" style="left: 0%; width: 16.66%;"></div>
+            <div class="gantt-bar exec-track" style="left: 16.66%; width: 83.34%;">
+              <div class="gantt-progress-fill" id="gantt_bar_eng" style="width: 70%;"></div>
+            </div>
+          </div>
+
+          <div class="gantt-row">
+            <div class="gantt-bar align" style="left: 0%; width: 8.33%;"></div>
+            <div class="gantt-bar exec-track" style="left: 8.33%; width: 91.67%;">
+              <div class="gantt-progress-fill" id="gantt_bar_comm" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <div class="gantt-row">
+            <div class="gantt-bar align" style="left: 0%; width: 16.66%;"></div>
+            <div class="gantt-bar exec-track" style="left: 16.66%; width: 66.67%;">
+              <div class="gantt-progress-fill" id="gantt_bar_ops" style="width: 50%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gantt-x-axis" style="grid-template-columns: repeat(6, 1fr);">
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 1</span>
+            <span style="font-size:10px; color:var(--text-muted);">W0–W2</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 2</span>
+            <span style="font-size:10px; color:var(--text-muted);">W2–W4</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 3</span>
+            <span style="font-size:10px; color:var(--text-muted);">W4–W6</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 4</span>
+            <span style="font-size:10px; color:var(--text-muted);">W6–W8</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 5</span>
+            <span style="font-size:10px; color:var(--text-muted);">W8–W10</span>
+          </div>
+          <div class="gantt-x-tick" style="display:flex; flex-direction:column; align-items:flex-start; position:relative;">
+            <span style="color:var(--cyan); font-size:10px; font-weight:800;">SPRINT 6</span>
+            <span style="font-size:10px; color:var(--text-muted);">W10–W12</span>
+            <span style="position:absolute; right:0; top:12px; font-size:10px; color:var(--text-muted); font-weight:700;">W12</span>
+          </div>
+        </div>
+      </div>
+      <div class="gantt-axis-subtitle" id="gantt_sub_timeline">Quarter Timeline · 2-Week Agile Iteration Cadence</div>
     </div>
 
-    <div class="metadata">
-        <span><strong>操作模式：</strong>已開啟所有儲存格的 `contenteditable="true"` 編輯功能，修改後可透過右上角「儲存修改」保存至瀏覽器 LocalStorage。</span>
-        <span><strong>信心指數：</strong>10/10</span>
+    <!-- 06-2: 8 Business Lines 與 4 Sprints 二級分頁按鈕 -->
+    <div class="sub-tabs">
+      <button class="sub-tab-btn active" onclick="switchSubTab('sub_business_lines')">8 Business Lines Alignment</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('sub_sprint_1')">Sprint 1: W1–W2</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('sub_sprint_2')">Sprint 2: W3–W4</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('sub_sprint_3')">Sprint 3: W5–W6</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('sub_sprint_4')">Sprint 4: W7–W8</button>
     </div>
+
+    <!-- SUB-TAB 1: 8 BUSINESS LINES OKR ALIGNMENT -->
+    <div id="sub_business_lines" class="sub-tab-content active">
+      <div class="tab06-table-wrap">
+        <table id="tbl_sub_business_lines">
+          <thead>
+            <tr>
+              <th style="width: 100px;">Quadrant</th>
+              <th style="width: 50px;">#</th>
+              <th style="width: 130px;">Business Line</th>
+              <th style="width: 180px;">Core Metrics</th>
+              <th>Business Objective & Key Results (Business OKRs)</th>
+              <th>Aligned HRBP OKR (Strategic Enablement)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge-front">Front Office</span></td>
+              <td><strong>01</strong></td>
+              <td contenteditable="true"><strong>Spot Trading</strong></td>
+              <td contenteditable="true">
+                <ul class="metrics-list">
+                  <li>Net Fee Revenue</li>
+                  <li>Hot-Coin First-to-List Rate</li>
+                  <li>Listing Lead Time (&le;3h)</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 極速搶佔熱點現貨首發並確保零虛假刷量</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 熱幣首發上市時間 (Lead Time) 壓縮至 &le; 3 小時</li>
+                  <li><strong>KR2:</strong> 極速搶上線機制下維持 0 洗量/虛假交易事故</li>
+                  <li><strong>KR3:</strong> 核心熱門代幣首發率達成市場對標領先</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 重構 BD 激勵機制與極速上幣敏捷小隊 (Pod)</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> BD 人均年化淨收益 &ge; $1.5M (連續 2 季未達標觸發淘汰)</li>
+                  <li><strong>KR2:</strong> Hot-Coin Agile Squad 單兵人效提升 +25%</li>
+                  <li><strong>KR3:</strong> 跨部門協同 SLA 監控，零內部溝通延遲</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="badge-front">Front Office</span></td>
+              <td><strong>02</strong></td>
+              <td contenteditable="true"><strong>Futures Trading</strong></td>
+              <td contenteditable="true">
+                <ul class="metrics-list">
+                  <li>Whale/KOL Scale</li>
+                  <li>Open Interest (OI)</li>
+                  <li>System Throughput (TPS)</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 擴大黏性大戶流動性並斬斷黑產套利穿透</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 提升頂級 Whale/KOL 深度與未平倉合約量 (OI)</li>
+                  <li><strong>KR2:</strong> 撮合系統高頻吞吐穩定度保持零當機</li>
+                  <li><strong>KR3:</strong> 杜絕黑產返佣與對敲套利行為</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 規範銷售結算治理並鎖定核心交易引擎專家</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 階梯返佣 SOP 落地，帶動 BD 淨收益增長 +20%</li>
+                  <li><strong>KR2:</strong> 黏性資產納入計分卡，BD 人均持倉量 &ge; $10M</li>
+                  <li><strong>KR3:</strong> 核心 Top 20% 交易引擎關鍵人才留任率 &ge; 95%</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="badge-front">Front Office</span></td>
+              <td><strong>03</strong></td>
+              <td contenteditable="true"><strong>Earn &amp; Lending</strong></td>
+              <td contenteditable="true">
+                <ul class="metrics-list">
+                  <li>Total AUM</li>
+                  <li>Fund-Matching Efficiency</li>
+                  <li>Product NIM</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 提升資產沉澱規模與優化資金撮合淨利差</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 擴大理財總 AUM 並維持健康利差結構 (Positive NIM)</li>
+                  <li><strong>KR2:</strong> 資金撮合匹配效率提升，縮減閒置週期 50%</li>
+                  <li><strong>KR3:</strong> 嚴打理財高收益產品之快進快出套利</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 推行全員人均 AUM 責任制與產研聯動機制</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 落實人均 AUM 責任制，團隊人均 AUM &ge; $20M</li>
+                  <li><strong>KR2:</strong> 主導 Earn-Futures 雙週同步會，對接耗時降低 50%</li>
+                  <li><strong>KR3:</strong> 獎金池與實際產品淨收入嚴格掛鉤 (相關係數 r &ge; 0.85)</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="badge-mid">Middle Office</span></td>
+              <td><strong>04</strong></td>
+              <td contenteditable="true"><strong>Project Milestone</strong></td>
+              <td contenteditable="true">
+                <ul class="metrics-list">
+                  <li>8/1 Slack Migration 100%</li>
+                  <li>8/7 Feature Dev Complete</li>
+                  <li>8/14 Release Freeze Entry</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 嚴守系統切換與研發封版交付節點</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 8/1 完成全公司 100% 遷移至 Slack 並停用舊通訊工具</li>
+                  <li><strong>KR2:</strong> 8/7 完成 100% 規劃功能代碼開發</li>
+                  <li><strong>KR3:</strong> 8/14 零重大阻塞順利進入 Release Freeze 封版</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 組織變革管理與研發防倦怠值班機制保障</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> Slack 遷移變革滿意度 &ge; 90%</li>
+                  <li><strong>KR2:</strong> 建立 24 小時支援專線與彈性補休 (Comp-time) 制度</li>
+                  <li><strong>KR3:</strong> 8/14 封版驗證期間 Standby 人力就緒率達 100%</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="badge-mid">Middle Office</span></td>
+              <td><strong>05</strong></td>
+              <td contenteditable="true"><strong>Go-Live Validation</strong></td>
+              <td contenteditable="true">
+                <ul class="metrics-list">
+                  <li>Functional UAT 100%</li>
+                  <li>Procedural Testing 100%</li>
+                  <li>8/28 Dress Rehearsal</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 零缺陷通過驗收測試並完成全真上線預演</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 8/14 前完成 100% 功能性 UAT 驗收</li>
+                  <li><strong>KR2:</strong> 100% 完成運營程序測試與應急預案校驗</li>
+                  <li><strong>KR3:</strong> 8/28 完成全系統端到端 Dress Rehearsal 演練</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 驅動跨部門卡點日清與領導層驗收連動機制</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 組織每日 15 分鐘跨部門 Standup，卡點日清率 = 100%</li>
+                  <li><strong>KR2:</strong> 建立運營簽核公開看板，進度納入主管 MBO 考核</li>
+                  <li><strong>KR3:</strong> 建立重大卡點升級通道，確保跨部門零溝通阻礙</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="badge-back">Back Office</span></td>
+              <td><strong>06</strong></td>
+              <td contenteditable="true"><strong>AI &amp; Security</strong></td>
+              <td contenteditable="true">
+                <ul class="metrics-list">
+                  <li>100% Ban on Unapproved AI</li>
+                  <li>Code Leaks = 0</li>
+                  <li>API Key Leaks = 0</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 構築零信任企業資料與代碼安全邊界</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 嚴格執行 100% 封鎖未授權外部 AI 工具 (ChatGPT/DeepSeek 等)</li>
+                  <li><strong>KR2:</strong> 代碼庫及金鑰公網洩漏事故 = 0</li>
+                  <li><strong>KR3:</strong> 核心敏感資料外洩事故 = 0</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 安全紅線文化落地與違規懲處機制機制化</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 全員 100% 完成 AI 安全政策電子簽署與培訓驗收</li>
+                  <li><strong>KR2:</strong> 任何資安違規 100% 觸發調查與績效 PIP 處分</li>
+                  <li><strong>KR3:</strong> 資安外洩事件列為年度/季度績效一票否決項</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="badge-back">Back Office</span></td>
+              <td><strong>07</strong></td>
+              <td contenteditable="true"><strong>Vulnerability</strong></td>
+              <td contenteditable="true">
+                <ul class="metrics-list">
+                  <li>FastJson Patch On Deadline</li>
+                  <li>100% Code Review Pass</li>
+                  <li>Jackson Migration 100%</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 限時修復高危架構債並達成依賴庫完全升級</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 於既定排程前完成 FastJson 全面升級至 FastJson2/Jackson</li>
+                  <li><strong>KR2:</strong> 100% 漏洞補丁與重構代碼通過嚴格 Code Review</li>
+                  <li><strong>KR3:</strong> 封版前解決現有高危安全漏洞待辦項</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 產研代碼能力賦能與修復質量掛鉤機制</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 舉辦「代碼熟悉與安全開發」實戰工作坊</li>
+                  <li><strong>KR2:</strong> 建立 Jira 漏洞修復進度透明看板，追蹤修復速率</li>
+                  <li><strong>KR3:</strong> 漏洞修復與 CR 質量直接計入 Tech Lead 績效考評</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="badge-back">Back Office</span></td>
+              <td><strong>08</strong></td>
+              <td contenteditable="true"><strong>AWS &amp; YubiKey</strong></td>
+              <td contenteditable="true">
+                <ul class="metrics-list">
+                  <li>AWS Least-Privilege IAM</li>
+                  <li>100% Mandatory YubiKey</li>
+                  <li>No Root Account Daily Use</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 雲端最小權限治理與硬件級身份鑑權強制化</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 執行 AWS 最小權限 IAM 策略，嚴禁日常使用 Root 帳戶</li>
+                  <li><strong>KR2:</strong> 所有高敏控制台 100% 強制使用 YubiKey 硬件登入</li>
+                  <li><strong>KR3:</strong> 完成雲端冗餘憑證與非活躍金鑰完全收斂</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <div class="okr-title">Objective: 員工生命週期資產閉環與 SoD 職責分離審計</div>
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 建立入職發放與離職當日 100% 實體回收 YubiKey SOP</li>
+                  <li><strong>KR2:</strong> 協同資安部執行 SoD 審查，100% 註銷過期與冗餘特權權限</li>
+                  <li><strong>KR3:</strong> 離職員工當日系統權限凍結達成率 100%</li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SUB-TAB 2: SPRINT 1 -->
+    <div id="sub_sprint_1" class="sub-tab-content">
+      <div class="tab06-table-wrap">
+        <table id="tbl_sub_sprint_1">
+          <thead>
+            <tr>
+              <th style="width: 110px;">ORG LEVEL</th>
+              <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
+              <th>MID-OFFICE OKR (MATCHING / MIGRATION)</th>
+              <th>BACK-OFFICE OKR (SECURITY / IAM)</th>
+              <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td contenteditable="true"><strong>目標 (O1)</strong></td>
+              <td contenteditable="true"><strong>確立商業激勵機制與防套利基線</strong></td>
+              <td contenteditable="true"><strong>啟動工具遷移與交付基線鎖定</strong></td>
+              <td contenteditable="true"><strong>構築零信任安全防線與帳號收斂</strong></td>
+              <td contenteditable="true"><strong>制度落地與關鍵技術人才鎖定</strong></td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 現貨/合約 BD 新佣金制度上線，佣金與淨手續費收益 100% 掛鉤</li>
+                  <li><strong>KR2:</strong> 上線 T+1 延遲結算與設備 ID 重疊監控，截斷首波黑產套利</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 完成 Slack 遷移全員環境配置與團隊權限初始化 (進度 50%)</li>
+                  <li><strong>KR2:</strong> 鎖定 8/7 功能開發範圍，明確雙週排期阻礙點清單</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 阻斷未授權 AI 工具 (ChatGPT/DeepSeek 等) 外部存取率達 100%</li>
+                  <li><strong>KR2:</strong> 盤點 AWS Root 帳號使用日誌，高權限角色清退率達 50%</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 頒布 BD 考核底線制度 (連 2 季未達 $1.5M 觸發退出流程)</li>
+                  <li><strong>KR2:</strong> 完成 Top 20% 高潛力交易引擎核心人才 1-on-1 保留溝通 (保留率 100%)</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>目標 (O2)</strong></td>
+              <td contenteditable="true"><strong>啟動高收益與衍生品資金沉澱</strong></td>
+              <td contenteditable="true"><strong>優化跨部門資產對接節奏</strong></td>
+              <td contenteditable="true"><strong>硬件認證與離職合規流程重塑</strong></td>
+              <td contenteditable="true"><strong>全員安全紅線制度化與簽署</strong></td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 合約 BD 人均持倉量 (OI) 目標分解至團隊 ($10M/人)</li>
+                  <li><strong>KR2:</strong> 鎖定高淨值客戶 (Whale/KOL) 存量結構，制定防羊毛黨方案</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 建立理財 (Earn) 與合約清算撮合週度同步機制</li>
+                  <li><strong>KR2:</strong> 撮合對接卡點平均排查耗時縮短 20%</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 完成 YubiKey 採購與金鑰發放管理流程制定</li>
+                  <li><strong>KR2:</strong> 確立離職當日 100% 權限即時凍結與防護 SOP</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 全員 AI 與資安紅線電子簽署率 (e-Signature) 達 100%</li>
+                  <li><strong>KR2:</strong> 確立違規即進 PIP/調查機制，組織宣導覆蓋率 100%</li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SUB-TAB 3: SPRINT 2 -->
+    <div id="sub_sprint_2" class="sub-tab-content">
+      <div class="tab06-table-wrap">
+        <table id="tbl_sub_sprint_2">
+          <thead>
+            <tr>
+              <th style="width: 110px;">ORG LEVEL</th>
+              <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
+              <th>MID-OFFICE OKR (MATCHING / MIGRATION)</th>
+              <th>BACK-OFFICE OKR (VULNERABILITY / SECURE DEV)</th>
+              <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td contenteditable="true"><strong>目標 (O1)</strong></td>
+              <td contenteditable="true"><strong>激活熱幣綠色通道與做市產能</strong></td>
+              <td contenteditable="true"><strong>全量交付 Slack 工具遷移 (8/1)</strong></td>
+              <td contenteditable="true"><strong>啟動技術債清零與漏洞修復</strong></td>
+              <td contenteditable="true"><strong>賦能極速上幣敏捷小組與變更管理</strong></td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 熱幣極速上幣前置流程打通，審核耗時壓縮至 &le; 3 小時</li>
+                  <li><strong>KR2:</strong> 跨業務線建立每日熱幣搶首發監控機制，首發率提升 15%</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> <strong>8/1 完成 100% Slack 遷移</strong>，關閉所有舊通訊工具通道</li>
+                  <li><strong>KR2:</strong> 8/7 功能開發交付進度達標率 &ge; 70%</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 啟動 FastJson 全面升級至 FastJson2/Jackson，修復進度 &ge; 40%</li>
+                  <li><strong>KR2:</strong> 漏洞修復提交之程式碼 100% 導入嚴格 Code Review</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 建立 Hot-Coin Agile Squad 跨職能看板，單兵交付產出提升 15%</li>
+                  <li><strong>KR2:</strong> 組織變革滿意度 (Slack Adoption Satisfaction) 達 &ge; 90%</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>目標 (O2)</strong></td>
+              <td contenteditable="true"><strong>驅動理財資金沉澱與撮合提速</strong></td>
+              <td contenteditable="true"><strong>降低資產配對延遲與流程摩擦</strong></td>
+              <td contenteditable="true"><strong>強化研發代碼架構與安全認知</strong></td>
+              <td contenteditable="true"><strong>落實 24 小時支援與防倦怠機制</strong></td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 理財人均 AUM 責任制上線，推進人均 AUM &ge; $20M 基線</li>
+                  <li><strong>KR2:</strong> 剔除高頻套利快進快出資金，產品利差 (NIM) 保持正向</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 理財-合約跨模組資產配對時間縮短 30%</li>
+                  <li><strong>KR2:</strong> 跨系統溝通延遲工單清零</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 盤點核心系統歷史依賴，標記所有高危組件清單</li>
+                  <li><strong>KR2:</strong> 阻斷所有外部 API Key / 機密程式碼公網洩漏事故 (維持 0 洩漏)</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 落地 24 小時支援通道與彈性補休制度 (Comp-time Policy)</li>
+                  <li><strong>KR2:</strong> 舉辦「代碼架構熟悉與安全開發」實戰工作坊，產研覆蓋率 &gt; 80%</li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SUB-TAB 4: SPRINT 3 -->
+    <div id="sub_sprint_3" class="sub-tab-content">
+      <div class="tab06-table-wrap">
+        <table id="tbl_sub_sprint_3">
+          <thead>
+            <tr>
+              <th style="width: 110px;">ORG LEVEL</th>
+              <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
+              <th>MID-OFFICE OKR (FREEZE / UAT)</th>
+              <th>BACK-OFFICE OKR (SECURITY / HARDWARE MFA)</th>
+              <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td contenteditable="true"><strong>目標 (O1)</strong></td>
+              <td contenteditable="true"><strong>確保封版期間交易業務平穩與黏性鎖定</strong></td>
+              <td contenteditable="true"><strong>達成 8/14 程式碼封版與全量 UAT 驗證</strong></td>
+              <td contenteditable="true"><strong>落實高敏系統 YubiKey 強制管控</strong></td>
+              <td contenteditable="true"><strong>跨部門卡點日清與領導層 MBO 連動</strong></td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 大戶/KOL 黏性合約持倉比例提升 20%，零虛假刷量</li>
+                  <li><strong>KR2:</strong> 配合技術封版，暫停非緊急產品變更，全力支援測試</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> <strong>8/7 完成 100% 功能代碼開發</strong></li>
+                  <li><strong>KR2:</strong> <strong>8/14 正式進入 Release Freeze</strong>，功能與流程 UAT 完成度 100%</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 敏感雲端控制台 100% 強制綁定 YubiKey 實體認證登入</li>
+                  <li><strong>KR2:</strong> AWS Least-Privilege IAM 落地，全面停用 Root 每日操作</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 每日 15 分鐘跨部門 Standup 卡點當日排除率 (Clearance) = 100%</li>
+                  <li><strong>KR2:</strong> 將驗收簽核進度 100% 折算納入管理層/Tech Lead 考評指標</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>目標 (O2)</strong></td>
+              <td contenteditable="true"><strong>理財利差最佳化與業績對齊</strong></td>
+              <td contenteditable="true"><strong>交付流程測試與演練環境搭建</strong></td>
+              <td contenteditable="true"><strong>攻堅剩餘架構債與漏洞修復</strong></td>
+              <td contenteditable="true"><strong>封版值班人力部署與倦怠監控</strong></td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 理財與合約聯動利潤核算完成，達成率與獎金池緊密掛鉤</li>
+                  <li><strong>KR2:</strong> 確保封版驗證期間資金出入帳通道零堵塞</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 完成 100% 程序性測試與回滾預案驗證</li>
+                  <li><strong>KR2:</strong> 搭建 8/28 正式演練 (Dress Rehearsal) 所需之全量沙盒環境</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> FastJson 依賴全面遷移至 FastJson2/Jackson 達成率 100%</li>
+                  <li><strong>KR2:</strong> 配合資安團隊完成 100% 權限隔離 (SoD) 交叉抽查</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 8/14 Freeze 期間 Standby 輪值支援人力就緒率 = 100%</li>
+                  <li><strong>KR2:</strong> 連續高強度加班人員主動介入關懷，確保關鍵工程師留任率 100%</li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SUB-TAB 5: SPRINT 4 -->
+    <div id="sub_sprint_4" class="sub-tab-content">
+      <div class="tab06-table-wrap">
+        <table id="tbl_sub_sprint_4">
+          <thead>
+            <tr>
+              <th style="width: 110px;">ORG LEVEL</th>
+              <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
+              <th>MID-OFFICE OKR (DRESS REHEARSAL / CUTOVER)</th>
+              <th>BACK-OFFICE OKR (AUDIT / LIFECYCLE LOCKDOWN)</th>
+              <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td contenteditable="true"><strong>目標 (O1)</strong></td>
+              <td contenteditable="true"><strong>業務人效達標與商務激勵兌現</strong></td>
+              <td contenteditable="true"><strong>執行 8/28 全真預演與平穩上線</strong></td>
+              <td contenteditable="true"><strong>資安閉環驗收與資產生命週期鎖定</strong></td>
+              <td contenteditable="true"><strong>人效復盤、末位淘汰執行與長期賦能</strong></td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> BD 人均淨收益達成率評定，人均淨收達到 &ge; $1.5M/年</li>
+                  <li><strong>KR2:</strong> 綠色通道常態化運作，熱幣上幣交付時間穩定保持 &le; 3 小時</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> <strong>8/28 完成 100% 全真模擬預演 (Dress Rehearsal)</strong></li>
+                  <li><strong>KR2:</strong> 正式發版割接期間重大 P0/P1 故障 = 0，營運 Sign-off 100%</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 離職人員 YubiKey 回收與系統權限即日凍結達成率 = 100%</li>
+                  <li><strong>KR2:</strong> 清退 100% 冗餘、過期之特權帳號，保持長期 SoD 合規</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 連續 2 季未達標人員 100% 啟動退出/轉崗流程</li>
+                  <li><strong>KR2:</strong> 獎金與實際產品淨收入相關係數達成 r &ge; 0.85 嚴格兌現</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>目標 (O2)</strong></td>
+              <td contenteditable="true"><strong>合約深度與理財規模沉澱</strong></td>
+              <td contenteditable="true"><strong>跨部門復盤與交付閉環</strong></td>
+              <td contenteditable="true"><strong>產研代碼質量與安全評級入檔</strong></td>
+              <td contenteditable="true"><strong>敏捷團隊整體效能總評</strong></td>
+            </tr>
+            <tr>
+              <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> BD 人均合約持倉 (OI) 穩定在 &ge; $10M，零返佣黑產穿透</li>
+                  <li><strong>KR2:</strong> 理財資產總規模 (AUM) 達成既定目標，資金配對時間縮短 50%</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> 上線後首週跨部門協同 SLA 達成率 100% (零溝通延誤)</li>
+                  <li><strong>KR2:</strong> 產出《跨團隊上線復盤報告》與技術優化待辦清單</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> FastJson 升級上線後零回退、零相容性報警</li>
+                  <li><strong>KR2:</strong> 程式碼洩漏與 API 外洩事故保持為 0，安全防線完全閉環</li>
+                </ul>
+              </td>
+              <td contenteditable="true">
+                <ul class="kr-list">
+                  <li><strong>KR1:</strong> Hot-Coin Agile Squad 單兵人效整體提升 +25% 驗收歸檔</li>
+                  <li><strong>KR2:</strong> 將漏洞修復品質與 Code Review 通過率納入 Team Lead 季度考評</li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-    // 切換分頁
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+const SITE_PASSWORD = "5885";
 
-        const targetTab = document.getElementById(tabId);
-        if (targetTab) {
-            targetTab.classList.add('active');
-        }
+function verifySitePassword() {
+  const inputVal = document.getElementById('site_pwd_input').value.trim();
+  const errorEl = document.getElementById('site_lock_error');
+  if (inputVal === SITE_PASSWORD) {
+    document.getElementById('site_lock_overlay').style.display = 'none';
+    sessionStorage.setItem('site_unlocked', 'true');
+  } else {
+    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入！";
+  }
+}
 
-        const clickedBtn = Array.from(document.querySelectorAll('.tab-btn'))
-            .find(btn => btn.getAttribute('onclick').includes(tabId));
-        if (clickedBtn) {
-            clickedBtn.classList.add('active');
-        }
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('site_unlocked') === 'true') {
+    document.getElementById('site_lock_overlay').style.display = 'none';
+  }
+});
+
+let currentLang = 'en';
+let currentTab = 'tab01';
+let currentRegionCode = 'SG';
+let currentFnCode = 'eng';
+let currentLadderFn = 'eng';
+
+const COMP_REGIONS = [
+  { code: 'US', labelZh: '美國', labelEn: 'United States', flag: '🇺🇸', factor: 1.10 },
+  { code: 'SG', labelZh: '新加坡', labelEn: 'Singapore', flag: '🇸🇬', factor: 0.95 },
+  { code: 'UAE', labelZh: '阿聯酋 (杜拜)', labelEn: 'UAE (Dubai)', flag: '🇦🇪', factor: 0.90 },
+  { code: 'EU', labelZh: '歐洲', labelEn: 'Europe', flag: '🇪🇺', factor: 0.80 },
+  { code: 'TW', labelZh: '台灣', labelEn: 'Taiwan', flag: '🇹🇼', factor: 0.65 },
+  { code: 'MY', labelZh: '馬來西亞', labelEn: 'Malaysia', flag: '🇲🇾', factor: 0.45 },
+  { code: 'IN', labelZh: '印度', labelEn: 'India', flag: '🇮🇳', factor: 0.40 }
+];
+
+const BASE_RATES = {
+  L3: 95000, L4: 140000, L5: 190000, L6_M1: 240000, L7_M2: 330000, L8_M3: 500000
+};
+
+const MATRIX_CONFIG = {
+  L7_M2: { key: 'L7_M2', code: 'L7 / M2', titleZh: '部門總監 / 負責人', titleEn: 'Dept Head / Director', US: 0, SG: 1, UAE: 0, EU: 0, TW: 0, MY: 0, IN: 0 },
+  L6_M1: { key: 'L6_M1', code: 'L6 / M1', titleZh: '組長 / 主任架構師', titleEn: 'Team Lead / Staff', US: 0, SG: 1, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
+  L5:    { key: 'L5',     code: 'L5',      titleZh: '資深專家 / 骨幹', titleEn: 'Senior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
+  L4:    { key: 'L4',     code: 'L4',      titleZh: '中階主力執行者', titleEn: 'Mid-Level Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 3, MY: 2, IN: 0 },
+  L3:    { key: 'L3',     code: 'L3',      titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 4, MY: 2, IN: 0 }
+};
+
+const COMP_FUNCTIONS = {
+  eng: {
+    nameZh: "研發工程 (Engineering)", nameEn: "Engineering",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Engineer", titleEn: "Junior Engineer", scopeZh: "基礎模組與 UI 元件維護、單元測試、SOP 功能開發", scopeEn: "Base module & UI maintenance, unit testing, standard feature delivery" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Mid-Level Engineer", titleEn: "Mid-Level Engineer", scopeZh: "獨立負責核心業務模組、模組設計與除錯上線", scopeEn: "End-to-end ownership of core modules, architectural design & bug fixing" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Engineer", titleEn: "Senior Engineer", scopeZh: "核心系統高併發架構設計、重大線上故障排查、技術重構", scopeEn: "High-concurrency systems design, major incident mitigation & refactoring" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Eng / Team Lead", titleEn: "Staff Eng / Team Lead", scopeZh: "技術軌：全域架構決策 (RFC) ｜ 管理軌：帶領 3–6 人工程小組", scopeEn: "Tech: Global RFC decisions | Mgmt: Lead 3-6 engineers agile delivery" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Principal / Dept Head", titleEn: "Principal / Dept Head", scopeZh: "技術軌：跨部門重大技術決策 ｜ 管理軌：統籌主要研發部門", scopeEn: "Tech: Cross-org technical strategy | Mgmt: Lead major engineering pillar" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "VP of Eng / CTO", titleEn: "VP of Eng / CTO", scopeZh: "全面掌管跨國研發與技術基建、技術與管理雙軌匯流統帥", scopeEn: "Unified leadership over global technology organization & infrastructure" }
+    ]
+  },
+  prod: {
+    nameZh: "產品管理 (Product)", nameEn: "Product Management",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Associate Product Manager", titleEn: "Associate PM", scopeZh: "功能需求細化、PRD 編寫、競品日常追蹤與敏捷驗收", scopeEn: "Feature detailing, PRD drafting, competitor tracking & sprint acceptance" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Product Manager (PM)", titleEn: "Product Manager", scopeZh: "獨立閉環單一產品線、用戶旅程設計、指標轉化率把控", scopeEn: "End-to-end ownership of product line, user journeys & conversion metrics" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Product Manager", titleEn: "Senior PM", scopeZh: "主導複雜交易/支付業務架構、跨端流程標準化、ROI 達成", scopeEn: "Complex payment/trading systems, multi-platform UX standardization & ROI" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal PM / Product Lead", titleEn: "Principal PM / Product Lead", scopeZh: "專家軌：產品頂層協議設計 ｜ 管理軌：帶領 3–6 人產品小組", scopeEn: "IC: Top-level protocol design | Mgmt: Lead 3-6 product managers" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Head of Product", titleEn: "Head of Product", scopeZh: "掌管核心業務線產品矩陣、跨國本地化產品體驗與戰略排期", scopeEn: "Lead full product portfolio, internationalization & roadmap strategy" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "Chief Product Officer (CPO)", titleEn: "Chief Product Officer", scopeZh: "全面負責公司全球產品戰略藍圖、新商業模式破局", scopeEn: "Overall product vision, global expansion strategy & business innovations" }
+    ]
+  },
+  ops: {
+    nameZh: "營運管理 (Operations)", nameEn: "Operations",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Operations Specialist", titleEn: "Junior Ops Specialist", scopeZh: "SOP 流程執行、日常工單對帳、用戶反饋流轉", scopeEn: "SOP task execution, ticket reconciliation & client issue dispatch" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Operations Specialist", titleEn: "Operations Specialist", scopeZh: "獨立負責端到端業務流轉、通道維護與日常突發異常排除", scopeEn: "End-to-end workflow management, channel maintenance & incident handling" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Operations Specialist", titleEn: "Senior Ops Specialist", scopeZh: "主導自動化降本流程、跨國複雜清算規則制定、重大客訴閉環", scopeEn: "Workflow automation, cross-border settlement logic & critical escalation" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Specialist / Ops Lead", titleEn: "Staff Specialist / Ops Lead", scopeZh: "專家軌：跨域營運架構治理 ｜ 管理軌：帶領 3–6 人運營小隊", scopeEn: "IC: Cross-domain ops architecture | Mgmt: Lead 3-6 ops specialists" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Operations Director", titleEn: "Operations Director", scopeZh: "掌管大區運營中心、單位營運成本（Unit Cost）控制", scopeEn: "Direct regional operations centers, unit cost reduction & SLA defense" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "VP of Operations / COO", titleEn: "VP of Operations / COO", scopeZh: "統籌全球跨國營運交付體系、跨部門經營損益閉環責任", scopeEn: "Global operating model governance, compliance defense & P&L ownership" }
+    ]
+  },
+  bd: {
+    nameZh: "商務與銷售 (BD & Sales)", nameEn: "BD & Sales",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior BD Associate", titleEn: "Junior BD Associate", scopeZh: "陌生線索挖掘、潛在客戶觸達、商務會議排程與 CRM 紀錄", scopeEn: "Cold outreach, lead qualification, CRM logging & pipeline prep" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Account Executive (AE)", titleEn: "Account Executive", scopeZh: "獨立負責商機端到端轉化、商業談判、合約簽署與上線", scopeEn: "Full deal lifecycle, negotiation, contract execution & client onboarding" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior AE / Strategic BD", titleEn: "Senior AE / Strategic BD", scopeZh: "區域 Top 機構客戶攻堅、高難度商業模式創新與定制方案", scopeEn: "Top-tier institutional accounts, high-stakes custom pricing & structuring" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal Deal Maker / Sales Lead", titleEn: "Principal Deal Maker / Lead", scopeZh: "專家軌：跨國戰略大單成交 ｜ 管理軌：帶領小組扛季度 Quota", scopeEn: "IC: Multi-million cross-border deals | Mgmt: Quota ownership & team lead" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Regional Sales Head", titleEn: "Regional Sales Head", scopeZh: "負責單一戰區營收盈虧（P&L）、在地化團隊梯隊建設", scopeEn: "Regional P&L accountability, territory expansion & sales leadership" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "Chief Revenue Officer / VP Sales", titleEn: "Chief Revenue Officer", scopeZh: "全面掌控全球商業版圖、獲客成本（CAC）與全球總營收", scopeEn: "Global go-to-market execution, client acquisition cost optimization & revenue" }
+    ]
+  },
+  legal: {
+    nameZh: "法務與合規 (Legal & Compliance)", nameEn: "Legal & Compliance",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Legal / Compliance Specialist", titleEn: "Legal/Compliance Specialist", scopeZh: "標準合約審閱、日常 AML 警報初篩、公文查詢函初審", scopeEn: "NDA/vendor contract review, initial AML triage & regulatory intake" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Legal Counsel / AML Officer", titleEn: "Legal Counsel / AML Officer", scopeZh: "獨立承接跨國商務協議談判、牌照申請對接、爭議處置協商", scopeEn: "Cross-border negotiation, regulatory licensing filings & dispute settlement" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Legal Counsel", titleEn: "Senior Legal Counsel", scopeZh: "跨國子公司設立架構、海外併購協議、各國監管審計現場應對", scopeEn: "Entity structuring, M&A due diligence, onsite regulatory audits & exams" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Regulatory Architect / Lead", titleEn: "Staff Counsel / Lead", scopeZh: "專家軌：全球牌照藍圖設計 ｜ 管理軌：管理 3–6 人合規審查組", scopeEn: "IC: Global license strategy | Mgmt: Lead 3-6 AML/legal team members" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Legal Director", titleEn: "Legal Director", scopeZh: "掌管跨國重大涉訴防禦、行業立法倡導、調配外聘律師預算", scopeEn: "Complex litigation defense, public policy advocacy & outside counsel mgmt" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "General Counsel / CCO", titleEn: "General Counsel / CCO", scopeZh: "董事會最高法規顧問、全球法律風險與執法免責最高防線", scopeEn: "Board advisor, enterprise legal risk mitigation & regulatory defense" }
+    ]
+  },
+  fin_hr: {
+    nameZh: "財務與人資 (Finance & HR)", nameEn: "Finance & HR",
+    roles: [
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Analyst / HR Specialist", titleEn: "Junior Analyst / Specialist", scopeZh: "日常會計憑證核算、報銷初審、入轉調離手續與考勤審查", scopeEn: "Voucher booking, expense audit, onboarding ops & attendance tracking" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Senior Accountant / HRBP", titleEn: "Senior Accountant / HRBP", scopeZh: "獨立主導月結關帳、預算追蹤 ｜ 事業群招聘閉環與常規員工關係", scopeEn: "Month-end close, FP&A variance | Business unit recruiting & employee relations" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Finance / HR Specialist", titleEn: "Senior Finance / HR Specialist", scopeZh: "跨國稅收籌劃與多主體合併 ｜ 9-Box 人才盤點與爭議離職談判", scopeEn: "International tax planning, consolidation | 9-Box calibration & separation" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal Architect / People Lead", titleEn: "Principal Architect / Lead", scopeZh: "專家軌：全球資金池或薪酬架構 ｜ 管理軌：領導會計/HR小組", scopeEn: "IC: Global treasury/comp model | Mgmt: Lead accounting/people pods" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Financial Controller / HR Director", titleEn: "Controller / HR Director", scopeZh: "四大審計無保留通過 ｜ 大區人力成本上限控制與文化治理", scopeEn: "Big 4 clean audit sign-off | Headcount budget governance & culture" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "CFO / CHRO", titleEn: "CHRO", scopeZh: "全面掌控全球資本水庫，海外上市進程 ｜ 全球高管繼任佈局", scopeEn: "Capital treasury & overseas IPO readiness | Global executive succession" }
+    ]
+  }
+};
+
+function switchTab(tabId) {
+  currentTab = tabId;
+  const navTabs = ['tab01', 'tab02', 'tab03', 'tab04', 'tab05', 'tab06'];
+  navTabs.forEach(id => {
+    const navEl = document.getElementById('nav_' + id);
+    if(navEl) navEl.classList.toggle('active', id === tabId);
+  });
+  document.querySelectorAll('.pane').forEach(el => el.classList.remove('active'));
+  document.getElementById('pane_' + tabId).classList.add('active');
+
+  if(tabId === 'tab01') renderCompTab();
+  else if(tabId === 'tab02') renderLadderTab();
+  else if(tabId === 'tab03') {
+    setTimeout(() => {
+      renderMatrixTable();
+      runBudgetCalc();
+    }, 10);
+  } else if(tabId === 'tab05') {
+    initAllTalentReviewTeams();
+  }
+}
+
+function renderCompTab() {
+  const regBar = document.getElementById('regBar');
+  regBar.innerHTML = COMP_REGIONS.map(r => `
+    <button class="comp-reg-btn ${r.code === currentRegionCode ? 'active' : ''}" onclick="selectReg('${r.code}')">
+      ${currentLang === 'zh' ? r.labelZh : r.labelEn} ×${r.factor.toFixed(2)}
+    </button>
+  `).join('');
+
+  const fnBar = document.getElementById('fnBar');
+  fnBar.innerHTML = Object.keys(COMP_FUNCTIONS).map(k => `
+    <button class="comp-fn-btn ${k === currentFnCode ? 'active' : ''}" onclick="selectFn('${k}')">
+      ${currentLang === 'zh' ? COMP_FUNCTIONS[k].nameZh : COMP_FUNCTIONS[k].nameEn}
+    </button>
+  `).join('');
+
+  const tierGrid = document.getElementById('tierCardsGrid');
+  if (currentLang === 'zh') {
+    tierGrid.innerHTML = `
+      <div class="tier-card t1"><div class="tier-badge">×1.40</div><div class="tier-title">T1 頂尖梯隊 (Top-Tier)</div><div class="tier-desc">大型交易所 / 已上市或近上市級巨頭</div><div class="tag-pills"><span class="tag-pill">Binance</span><span class="tag-pill">Coinbase</span><span class="tag-pill">OKX</span><span class="tag-pill">Circle</span><span class="tag-pill">Tether</span></div></div>
+      <div class="tier-card t2"><div class="tier-badge">×1.00</div><div class="tier-title">T2 全球基準 (Global Benchmark)</div><div class="tier-desc">已規模化營運的中大型成熟跨國企業</div><div class="tag-pills"><span class="tag-pill">Kraken</span><span class="tag-pill">Bybit</span><span class="tag-pill">Crypto.com</span><span class="tag-pill">Gemini</span><span class="tag-pill">Polygon Labs</span></div></div>
+      <div class="tier-card t3"><div class="tier-badge">×0.75</div><div class="tier-title">T3 初創梯隊 (Startup)</div><div class="tier-desc">種子輪至 A 輪階段新創 / DAO / 早期協議</div><div class="tag-pills"><span class="tag-pill">Seed-Series A</span><span class="tag-pill">DAO 治理</span><span class="tag-pill">早期協議團隊</span><span class="tag-pill">Token-heavy</span></div></div>
+    `;
+  } else {
+    tierGrid.innerHTML = `
+      <div class="tier-card t1"><div class="tier-badge">×1.40</div><div class="tier-title">T1 Industry Leaders (Top-Tier)</div><div class="tier-desc">Mega exchanges / Public & late-stage tech titans</div><div class="tag-pills"><span class="tag-pill">Binance</span><span class="tag-pill">Coinbase</span><span class="tag-pill">OKX</span><span class="tag-pill">Circle</span><span class="tag-pill">Tether</span></div></div>
+      <div class="tier-card t2"><div class="tier-badge">×1.00</div><div class="tier-title">T2 Global Benchmark</div><div class="tier-desc">Scaled mid-to-large mature global enterprises</div><div class="tag-pills"><span class="tag-pill">Kraken</span><span class="tag-pill">Bybit</span><span class="tag-pill">Crypto.com</span><span class="tag-pill">Gemini</span><span class="tag-pill">Polygon Labs</span></div></div>
+      <div class="tier-card t3"><div class="tier-badge">×0.75</div><div class="tier-title">T3 Early Startups</div><div class="tier-desc">Seed to Series A stage / DAOs / Early protocols</div><div class="tag-pills"><span class="tag-pill">Seed-Series A</span><span class="tag-pill">DAO Governance</span><span class="tag-pill">Early Protocols</span><span class="tag-pill">Token-heavy</span></div></div>
+    `;
+  }
+
+  const reg = COMP_REGIONS.find(r => r.code === currentRegionCode) || COMP_REGIONS[1];
+  const fn = COMP_FUNCTIONS[currentFnCode] || COMP_FUNCTIONS.eng;
+
+  document.getElementById('th_lvl').innerText = currentLang === 'zh' ? '職級代碼' : 'Level';
+  document.getElementById('th_title_scope').innerText = currentLang === 'zh' ? '代表職稱 / 職責範疇' : 'Representative Title & Scope';
+  document.getElementById('th_t3').innerText = currentLang === 'zh' ? 'T3 初創梯隊 (年薪)' : 'T3 Startup (Annual)';
+  document.getElementById('th_t2').innerText = currentLang === 'zh' ? 'T2 全球基準 (Global Benchmark)' : 'T2 Global Benchmark (Annual)';
+  document.getElementById('th_t1').innerText = currentLang === 'zh' ? 'T1 頂尖梯隊 (年薪)' : 'T1 Top-Tier (Annual)';
+  document.getElementById('th_region_ann').innerText = `${currentLang==='zh'?'地區調整後年薪 (T2)':'Adj Annual Base (T2)'} (${reg.code} ×${reg.factor.toFixed(2)})`;
+  document.getElementById('th_region_mon').innerText = `${currentLang==='zh'?'地區調整後月薪 (T2)':'Adj Monthly Base (T2)'} (${reg.code})`;
+
+  const ratesKeys = ['L3', 'L4', 'L5', 'L6_M1', 'L7_M2', 'L8_M3'];
+  document.getElementById('compTableBody').innerHTML = fn.roles.map((r, idx) => {
+    const base = BASE_RATES[ratesKeys[idx]];
+    const t3 = base * 0.75;
+    const t1 = base * 1.40;
+    const adjAnn = base * reg.factor;
+    const adjMon = adjAnn / 12;
+    const title = currentLang === 'zh' ? r.titleZh : r.titleEn;
+    const scope = currentLang === 'zh' ? r.scopeZh : r.scopeEn;
+
+    return `
+      <tr>
+        <td><div class="comp-badge">${r.lvl}</div></td>
+        <td>
+          <div style="font-weight:700; font-size:13.5px; color:var(--text-primary); margin-bottom:2px;">${title}</div>
+          <div style="font-size:12px; color:var(--text-muted);">${scope}</div>
+        </td>
+        <td style="font-family:monospace; color:var(--text-secondary);">$${t3.toLocaleString()}</td>
+        <td style="font-family:monospace; font-weight:600;">$${base.toLocaleString()}</td>
+        <td style="font-family:monospace; color:var(--warning);">$${t1.toLocaleString()}</td>
+        <td>
+          <div class="num-green">$${Math.round(adjAnn).toLocaleString()}</div>
+          <div class="num-sub">× ${reg.factor.toFixed(2)} (${reg.code})</div>
+        </td>
+        <td>
+          <div class="num-green">$${Math.round(adjMon).toLocaleString()}</div>
+          <div class="num-sub">/ ${currentLang==='zh'?'月':'mo'}</div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function selectReg(code) { currentRegionCode = code; renderCompTab(); }
+function selectFn(code) { currentFnCode = code; renderCompTab(); }
+
+function renderLadderTab() {
+  const fnBar = document.getElementById('ladderFnBar');
+  fnBar.innerHTML = Object.keys(COMP_FUNCTIONS).map(k => `
+    <button class="comp-fn-btn ${k === currentLadderFn ? 'active' : ''}" onclick="selectLadderFn('${k}')">
+      ${currentLang === 'zh' ? COMP_FUNCTIONS[k].nameZh : COMP_FUNCTIONS[k].nameEn}
+    </button>
+  `).join('');
+
+  const fn = COMP_FUNCTIONS[currentLadderFn] || COMP_FUNCTIONS.eng;
+  const treeRows = [
+    { lvl: "L3", icTitle: currentLang === 'zh' ? fn.roles[0].titleZh : fn.roles[0].titleEn, icDesc: currentLang === 'zh' ? "標準執行與基礎交付" : "Execution & standard delivery" },
+    { lvl: "L4", icTitle: currentLang === 'zh' ? fn.roles[1].titleZh : fn.roles[1].titleEn, icDesc: currentLang === 'zh' ? "獨立負責核心業務模組" : "Independent core module ownership" },
+    { lvl: "L5", icTitle: currentLang === 'zh' ? fn.roles[2].titleZh : fn.roles[2].titleEn, icDesc: currentLang === 'zh' ? "高併發架構與重大攻堅" : "Complex architecture & key problem solving" },
+    { lvl: "L6 / M1", icTitle: "Staff", icDesc: "RFC Architecture", mgmtTitle: "Team Lead", mgmtDesc: "Lead 3-6 Pod" },
+    { lvl: "L7 / M2", icTitle: "Principal", icDesc: "Cross-org Impact", mgmtTitle: "Dept Head", mgmtDesc: "Manage Domain" },
+    { lvl: "L8 / M3", fullTitle: "VP of Eng / CTO", fullDesc: "Global Organization Leadership" }
+  ];
+
+  let treeHtml = treeRows.map(row => {
+    if (row.fullTitle) {
+      return `<div class="ladder-row"><div class="ladder-badge">${row.lvl}</div><div class="ladder-content-grid"><div class="ladder-cell full" style="border-left: 3px solid var(--green);"><div class="t" style="color:var(--green);">${row.fullTitle}</div><div class="d">${row.fullDesc}</div></div></div></div>`;
     }
+    if (row.mgmtTitle) {
+      return `<div class="ladder-row"><div class="ladder-badge">${row.lvl}</div><div class="ladder-content-grid"><div class="ladder-cell" style="border-left: 3px solid var(--cyan);"><div class="t">${row.icTitle}</div><div class="d">${row.icDesc}</div></div><div class="ladder-cell" style="border-left: 3px solid var(--purple);"><div class="t" style="color:var(--purple);">${row.mgmtTitle}</div><div class="d">${row.mgmtDesc}</div></div></div></div>`;
+    }
+    return `<div class="ladder-row"><div class="ladder-badge">${row.lvl}</div><div class="ladder-content-grid"><div class="ladder-cell" style="border-left: 3px solid var(--cyan);"><div class="t">${row.icTitle}</div><div class="d">${row.icDesc}</div></div><div class="ladder-cell empty">—</div></div></div>`;
+  }).join('');
 
-    const STORAGE_KEY = 'OKR_DASHBOARD_DATA_V1';
+  document.getElementById('ladderTree').innerHTML = treeHtml;
 
-    // 儲存編輯內容至 LocalStorage
-    function saveData() {
-        const tabsData = {};
-        const tabIds = ['business-lines', 'sprint-1', 'sprint-2', 'sprint-3', 'sprint-4'];
-        
-        tabIds.forEach(id => {
-            const tableWrap = document.querySelector(`#${id} .table-wrapper`);
-            if (tableWrap) {
-                tabsData[id] = tableWrap.innerHTML;
-            }
+  document.getElementById('ladderCards').innerHTML = fn.roles.map((r, i) => {
+    let cls = "card";
+    if (i === 3) cls += " m-track";
+    else if (i === 4) cls += " l7-track";
+    else if (i === 5) cls += " l8-track";
+    const title = currentLang === 'zh' ? r.titleZh : r.titleEn;
+    const scope = currentLang === 'zh' ? r.scopeZh : r.scopeEn;
+
+    return `
+      <div class="${cls}">
+        <div class="card-head">
+          <div class="card-title">${r.lvl}: ${title}</div>
+          <div class="card-sub">Behavioral Anchor</div>
+        </div>
+        <ul class="card-bullets">
+          <li><b>Scope</b>：${scope}</li>
+          <li><b>Delivery</b>：Autonomously drive level-aligned OKRs & robust execution.</li>
+        </ul>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectLadderFn(code) { currentLadderFn = code; renderLadderTab(); }
+
+function renderMatrixTable() {
+  const tbody = document.getElementById('matrixTableBody');
+  if(!tbody) return;
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+
+  document.getElementById('th_matrix_lvl').innerText = currentLang === 'zh' ? '職階代碼' : 'Level';
+  document.getElementById('th_matrix_role').innerText = currentLang === 'zh' ? '職位代表' : 'Role Representation';
+  document.getElementById('th_matrix_subhc').innerText = currentLang === 'zh' ? '該職階人數 (佔比 %)' : 'Headcount (%)';
+  document.getElementById('th_matrix_subcost').innerText = currentLang === 'zh' ? '年薪預算小計 (USD)' : 'Subtotal Cost (USD)';
+
+  tbody.innerHTML = levels.map(k => {
+    const item = MATRIX_CONFIG[k];
+    const roleTitle = currentLang === 'zh' ? item.titleZh : item.titleEn;
+    return `
+      <tr>
+        <td><div class="comp-badge">${item.code}</div></td>
+        <td><b style="color:var(--text-primary); font-size:13px;">${roleTitle}</b></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.US}" oninput="updateMatrixVal('${k}','US',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.SG}" oninput="updateMatrixVal('${k}','SG',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.UAE}" oninput="updateMatrixVal('${k}','UAE',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.EU}" oninput="updateMatrixVal('${k}','EU',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.TW}" oninput="updateMatrixVal('${k}','TW',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.MY}" oninput="updateMatrixVal('${k}','MY',this.value)"></td>
+        <td style="text-align:center;"><input type="number" min="0" class="hc-input" value="${item.IN}" oninput="updateMatrixVal('${k}','IN',this.value)"></td>
+        <td style="text-align:center;"><span id="subhc_${k}" style="font-weight:700; color:var(--cyan);">0 人 (0.0%)</span></td>
+        <td style="text-align:right;"><span id="subcost_${k}" class="num-green">$0</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function updateMatrixVal(levelKey, regCode, val) {
+  MATRIX_CONFIG[levelKey][regCode] = Math.max(parseInt(val) || 0, 0);
+  runBudgetCalc();
+}
+
+function runBudgetCalc() {
+  const deptInput = document.getElementById('dept_name_input');
+  let deptName = deptInput ? deptInput.value.trim() : '';
+  if (!deptName) deptName = currentLang === 'zh' ? '研發部門' : 'Engineering Dept';
+
+  const tierSelect = document.getElementById('calc_tier');
+  const tierMultiplier = tierSelect ? (parseFloat(tierSelect.value) || 1.0) : 1.0;
+  let totalHc = 0;
+  let totalBudget = 0;
+
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+  const rowStats = {};
+
+  levels.forEach(k => {
+    const item = MATRIX_CONFIG[k];
+    const base = BASE_RATES[k];
+    let rowHc = 0;
+    let rowCost = 0;
+
+    COMP_REGIONS.forEach(r => {
+      const cnt = item[r.code] || 0;
+      rowHc += cnt;
+      rowCost += cnt * (base * tierMultiplier * r.factor);
+    });
+
+    rowStats[k] = { hc: rowHc, cost: rowCost };
+    totalHc += rowHc;
+    totalBudget += rowCost;
+  });
+
+  levels.forEach(k => {
+    const stat = rowStats[k];
+    const pct = totalHc > 0 ? ((stat.hc / totalHc) * 100).toFixed(1) : "0.0";
+    const subhcEl = document.getElementById(`subhc_${k}`);
+    const subcostEl = document.getElementById(`subcost_${k}`);
+    
+    if(subhcEl) {
+      const unit = currentLang === 'zh' ? '人' : 'HC';
+      subhcEl.innerHTML = `${stat.hc} ${unit} <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(${pct}%)</span>`;
+    }
+    if(subcostEl) {
+      subcostEl.innerText = '$' + Math.round(stat.cost).toLocaleString();
+    }
+  });
+
+  const dispHc = document.getElementById('disp_total_hc');
+  const dispBudget = document.getElementById('disp_total_budget');
+  if(dispHc) dispHc.innerText = totalHc + (currentLang==='zh'?' 人':' HC');
+  if(dispBudget) dispBudget.innerText = '$' + Math.round(totalBudget).toLocaleString();
+
+  renderLiveOrgChart(deptName);
+}
+
+function renderLiveOrgChart(deptName) {
+  const container = document.getElementById('orgTreeContainer');
+  if(!container) return;
+  container.innerHTML = '';
+  const levels = ['L7_M2', 'L6_M1', 'L5', 'L4', 'L3'];
+
+  levels.forEach(k => {
+    const item = MATRIX_CONFIG[k];
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'org-level-row';
+
+    COMP_REGIONS.forEach(r => {
+      const cnt = item[r.code] || 0;
+      if (cnt > 0) {
+        const roleName = currentLang === 'zh' ? item.titleZh : item.titleEn;
+        let borderTopColor = 'var(--border)';
+        if(k==='L7_M2') borderTopColor = 'var(--pink)';
+        else if(k==='L6_M1') borderTopColor = 'var(--purple)';
+        else if(k==='L5') borderTopColor = 'var(--cyan)';
+
+        rowDiv.innerHTML += `
+          <div class="org-node" style="border-top:3px solid ${borderTopColor};">
+            <div class="lvl">${item.code}</div>
+            <div class="role">${roleName}</div>
+            <div class="loc-tag">${r.flag} ${r.code} × ${cnt}</div>
+          </div>
+        `;
+      }
+    });
+
+    if(rowDiv.children.length > 0) {
+      container.appendChild(rowDiv);
+    }
+  });
+}
+
+// Talent Review (Tab 5) Code
+const BASE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRGPWPZC10sDW7DNW_X21iuKxKNwGhmERDWdBI8RdXPBjunnRelJtf9I2PYPzSBE80EvHrgyLgyWs8C/pub?output=csv&single=true&gid=";
+let trLoadedTeamsData = [];
+let trActiveKey = null;
+
+const deptDirectory = [
+  { key: 'BD', label: 'Sales & Ops Dept', gid: '1804429324' },
+  { key: 'FT', label: 'Fiat Dept', gid: '1952213325' },
+  { key: 'SEC', label: 'Security Dept', gid: '1349594726' },
+  { key: 'FIN', label: 'Finance Dept', gid: '2080233148' },
+  { key: 'LEGAL', label: 'Legal Dept', gid: '1224573719' }
+];
+
+const trI18n = {
+  zh: {
+    kpi_reviewed: "評估總人數", kpi_locs: "個地區/國家", kpi_cohort: "佔團隊",
+    kpi_b1: "優先晉升 (Box 1)", kpi_growth: "成長儲備池 (Box 2+4)", kpi_core: "深耕骨幹 (Box 5)", kpi_pip: "淘汰/輔導池 (Box 9/6)",
+    sec1_title: "部門人才九宮格分佈", sec1_desc: "團隊落點分佈矩陣，涵蓋潛力與績效指標及法務合規風險預警。",
+    sec2_title: "員工盤點總表", sec2_desc: "績效採 Q1–Q4 加權均分 (S=5, A=4, B=3, B−=2, C=1)。潛力採主管 70% + HRBP 30% (高=5, 中=3, 低=1.5)。點擊欄位標題可排序。",
+    sec3_title: "高潛留才策略手冊 (Box 1, 2, 4)", sec3_desc: "主管、HRBP 與員工三方具體行動分工，結合激勵對話與晉升防禦機制。",
+    sec4_title: "績效改善 PIP 計畫 (Box 9 / 6)", sec4_desc: "2–4 週二元化量化指標、嚴肅談判話術與多國勞工法規最後手段性防禦機制。",
+    axis_pot: "潛力 POTENTIAL →", axis_perf: "績效 PERFORMANCE →",
+    legend_fast: "優先晉升", legend_growth: "儲備池", legend_maintain: "維持深耕", legend_mobility: "輪調觀察", legend_pip: "淘汰/PIP",
+    side_loc: "各地區人數分佈", side_lvl: "各職級人數分佈", all_boxes: "所有落點 (All Boxes)",
+    th_id: "工號", th_name: "姓名", th_level: "職級", th_loc: "地區", th_perf: "績效均分", th_pot: "潛力得分", th_box: "九宮格落點", th_status: "2027/04 處置狀態", th_target: "目標職級",
+    search_placeholder: "搜尋姓名 / 工號...", empty_pool: "此部門目前無人員在此區間。",
+    action_title: "責任分工 (Action Plan)", script_title: "主管與 HRBP 談判話術 (Dialogue Playbook)",
+    tag_ctx: "現況背景與核心貢獻", tag_risk: "績效缺口與合規風險",
+    mgr_label: "主管 Action:", hr_label: "HRBP Action:", self_label: "員工本人 Action:",
+    dialogue_mgr_label: "Direct Manager 話術：", dialogue_hr_label: "HRBP 控場話術：",
+    star_mgr_action: "委任跨團隊策略專案主導權，建立雙週 1:1 職涯護航機制，提前鋪設晉升 Runway。",
+    star_hr_action: "啟動外部薪酬水位審查（Comp Benchmark），規劃中長期留任激勵（Retention Equity/Grant）。",
+    star_self_action: "制定個人發展計畫（IDP），主動承接架構設計或團隊知識傳承，擴大跨域影響力。",
+    star_mgr_script: "“你在過去四季的交付是組織的標竿。我們已正式將你列入 2027 年 4 月晉升計畫，接下來我會全力為你爭取資源。”",
+    star_hr_script: "“組織高度認可你的戰略貢獻，我們正與管理層制定具競爭力的中長期留任配套。”",
+    pip_mgr_action: "設定 2–4 週具體二元化（Binary）檢核標準（如交付率 100%、零失誤率），落實每週 1:1 書面進度日誌。",
+    pip_hr_action: "建立合規檔案庫（輔導紀錄與轉崗評估），把控法定預告期，必要時主導協議離職談判。",
+    pip_self_action: "簽署改善計畫確認書，每日更新產出日誌並於每週五提交主管覆核。",
+    pip_mgr_script: "“我們檢視了過去四季的量化數據，交付成果與組織標準有顯著落差。今天正式啟動 2–4 週 PIP。”",
+    pip_hr_script: "“公司依法提供合理的改善機會，但若指標未能如期達成，我們將依當地法規進入法定終止程序。”"
+  },
+  en: {
+    kpi_reviewed: "Headcount Reviewed", kpi_locs: "locations", kpi_cohort: "of cohort",
+    kpi_b1: "Fast-Track (Box 1)", kpi_growth: "Growth Pool (Box 2+4)", kpi_core: "Maintain & Deepen (Box 5)", kpi_pip: "PIP Pool (Box 9/6)",
+    sec1_title: "Departmental 9-Box Distribution", sec1_desc: "Talent matrix distribution across performance and potential dimensions.",
+    sec2_title: "Talent Review Table", sec2_desc: "Performance and Potential calculations with sortable columns.",
+    sec3_title: "High-Potential Retention Playbook", sec3_desc: "Actionable RACI matrix across Manager, HRBP, and Employee.",
+    sec4_title: "Underperformer PIP Plan", sec4_desc: "2–4 week binary milestones and statutory compliance rules.",
+    axis_pot: "POTENTIAL →", axis_perf: "PERFORMANCE →",
+    legend_fast: "Fast-Track", legend_growth: "Growth Pool", legend_maintain: "Maintain", legend_mobility: "Mobility Review", legend_pip: "PIP / Action",
+    side_loc: "Headcount by Location", side_lvl: "Headcount by Level", all_boxes: "All Boxes",
+    th_id: "ID", th_name: "Name", th_level: "Level", th_loc: "Location", th_perf: "Perf Avg", th_pot: "Pot Score", th_box: "9-Box", th_status: "Apr 2027 Status", th_target: "Target Level",
+    search_placeholder: "Search name / ID...", empty_pool: "No candidates currently in this cohort.",
+    action_title: "Role-Based Action Plan", script_title: "1-on-1 Dialogue Playbook",
+    tag_ctx: "Context & Contribution", tag_risk: "Deficiency & Risk Context",
+    mgr_label: "Direct Manager:", hr_label: "HRBP:", self_label: "Employee (Self):",
+    dialogue_mgr_label: "Direct Manager Opener:", dialogue_hr_label: "HRBP Closing Script:",
+    star_mgr_action: "Assign key strategic project ownership; set up bi-weekly 1:1 career sponsorship cadence.",
+    star_hr_action: "Initiate external compensation benchmarking; structure tailored retention packages.",
+    star_self_action: "Draft an IDP; lead knowledge transfer sessions to scale organizational leverage.",
+    star_mgr_script: "“Your delivery over the past four quarters stands out as an organizational benchmark. We have officially mapped you to the April 2027 promotion track.”",
+    star_hr_script: "“Leadership strongly recognizes your strategic contribution. We are proactively reviewing retention packages.”",
+    pip_mgr_action: "Establish 2–4 week binary performance metrics; conduct documented weekly reviews.",
+    pip_hr_action: "Audit counseling records and transfer-feasibility assessments; manage statutory notice.",
+    pip_self_action: "Sign PIP acknowledgment; maintain daily output logs and submit for manager review.",
+    pip_mgr_script: "“We have reviewed your performance metrics, and results fall significantly short of required standards. Today we are initiating a 2–4 week PIP.”",
+    pip_hr_script: "“The company provides fair opportunity to improve; however, failure to meet targets will initiate formal statutory separation.”"
+  }
+};
+
+const trBoxDefs = {
+  1: { zh: "Box 1 · 頂尖之星 (Star)", en: "Box 1 · Star", poolZh: "優先晉升 (Fast-Track)", poolEn: "Fast-Track Promotion" },
+  2: { zh: "Box 2 · 成長高潛 (High Pot)", en: "Box 2 · High Potential", poolZh: "儲備池 (6-12 個月)", poolEn: "Growth Pool (6-12mo)" },
+  3: { zh: "Box 3 · 璞玉待磨 (Rough Diamond)", en: "Box 3 · Rough Diamond", poolZh: "橫向輪調激發", poolEn: "Talent Mobility Review" },
+  4: { zh: "Box 4 · 高績效標竿 (High Perf)", en: "Box 4 · High Performer", poolZh: "儲備池 (6-12 個月)", poolEn: "Succession Pool" },
+  5: { zh: "Box 5 · 核心骨幹 (Core Player)", en: "Box 5 · Core Player", poolZh: "維持現職深耕", poolEn: "Maintain & Deepen" },
+  6: { zh: "Box 6 · 瓶頸待激發 (Dilemma)", en: "Box 6 · Dilemma", poolZh: "限期觀察/雙週輔導", poolEn: "Watch / Coach" },
+  7: { zh: "Box 7 · 資深專家 (Solid Pro)", en: "Box 7 · Solid Pro", poolZh: "專家深耕 (不轉管理)", poolEn: "Maintain & Deepen" },
+  8: { zh: "Box 8 · 穩定貢獻 (Effective)", en: "Box 8 · Effective", poolZh: "標準維持者", poolEn: "Maintain" },
+  9: { zh: "Box 9 · 風險淘汰 (Underperformer)", en: "Box 9 · Underperformer", poolZh: "啟動 2-4 週 PIP", poolEn: "Action / PIP Pool" }
+};
+
+const trComplianceGuidelines = {
+  TW: { title: "TW — Labor Standards Act, Article 11-5", text: "Mandatory 2–4 week objective PIP with bi-weekly check-ins. Reassignment-feasibility assessment is required." },
+  SG: { title: "SG — Tripartite Advisory Guidelines", text: "2–4 week PIP requires clear weekly progress logs. Serve statutory notice if targets remain unmet." },
+  MY: { title: "MY — Industrial Relations Act 1967", text: "Issue at least two formal written warning letters detailing consequences, and maintain a mentorship log." },
+  US: { title: "US — At-Will Doctrine", text: "A written PIP with binary metrics is primary documentation defending against employment claims." },
+  EU: { title: "EU — Stringent Dismissal Protection", text: "A 2–4 week turnaround is legally insufficient in most EU jurisdictions. Recommend mutual separation." },
+  UAE: { title: "UAE — Federal Decree-Law No. 33 of 2021", text: "Minimum 30-day statutory notice applies before any termination step." },
+  IN: { title: "IN — Industrial Disputes & S&E Acts", text: "Requires written counseling records and a fair opportunity to improve." }
+};
+
+function parseCSV(text) {
+  const p = [];
+  let row = [''], i = 0, inQuote = false;
+  text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  for (let ch of text) {
+    if (ch === '"') inQuote = !inQuote;
+    else if (ch === ',' && !inQuote) { row.push(''); i++; }
+    else if (ch === '\n' && !inQuote) { p.push(row.map(s => s.trim().replace(/^"|"$/g, ''))); row = ['']; i = 0; }
+    else row[i] += ch;
+  }
+  if (row.length > 1 || row[0] !== '') p.push(row.map(s => s.trim().replace(/^"|"$/g, '')));
+  if (p.length < 2) return [];
+  const headers = p[0].map(h => h.replace(/^[\uFEFF\s]+|[\s]+$/g, ''));
+  return p.slice(1).map(r => {
+    let o = {};
+    headers.forEach((h, idx) => o[h] = r[idx] || '');
+    return o;
+  });
+}
+
+function processRow(row) {
+  const perfMap = { "S": 5.0, "A": 4.0, "B": 3.0, "B-": 2.0, "C": 1.0 };
+  const potMap = { "高": 5.0, "中": 3.0, "低": 1.5, "HIGH": 5.0, "MED": 3.0, "LOW": 1.5 };
+  const q1 = perfMap[String(row.Q1).trim().toUpperCase()] || parseFloat(row.Q1) || 0;
+  const q2 = perfMap[String(row.Q2).trim().toUpperCase()] || parseFloat(row.Q2) || 0;
+  const q3 = perfMap[String(row.Q3).trim().toUpperCase()] || parseFloat(row.Q3) || 0;
+  const q4 = perfMap[String(row.Q4).trim().toUpperCase()] || parseFloat(row.Q4) || 0;
+  const perf = (q1 + q2 + q3 + q4) / 4;
+  const leadPot = potMap[String(row.Manager_Pot || row.Lead_Pot || "中").trim()] || 3.0;
+  const headPot = potMap[String(row.HRBP_Pot || row.Head_Pot || "中").trim()] || 3.0;
+  const pot = (leadPot * 0.7) + (headPot * 0.3);
+
+  let perfTier = perf >= 4.2 ? 'High' : (perf >= 3.0 ? 'Med' : 'Low');
+  let potTier = pot >= 4.0 ? 'High' : (pot >= 2.8 ? 'Med' : 'Low');
+  let boxNum = 9;
+  if (perfTier === 'High' && potTier === 'High') boxNum = 1;
+  else if (perfTier === 'Med' && potTier === 'High') boxNum = 2;
+  else if (perfTier === 'Low' && potTier === 'High') boxNum = 3;
+  else if (perfTier === 'High' && potTier === 'Med') boxNum = 4;
+  else if (perfTier === 'Med' && potTier === 'Med') boxNum = 5;
+  else if (perfTier === 'Low' && potTier === 'Med') boxNum = 6;
+  else if (perfTier === 'High' && potTier === 'Low') boxNum = 7;
+  else if (perfTier === 'Med' && potTier === 'Low') boxNum = 8;
+  else boxNum = 9;
+
+  let target = row.Current_Level || '';
+  if (boxNum === 1) target = target.startsWith('L4') ? 'M1 / L5' : (target.startsWith('M') ? `M${parseInt(target[1]||1)+1}` : `L${parseInt(target[1]||1)+1}`);
+
+  return {
+    id: row.Employee_ID || '', name: row.Name || '', level: row.Current_Level || '',
+    loc: (row.Location || row.Region || '').toUpperCase(), perf: Number(perf.toFixed(2)),
+    pot: Number(pot.toFixed(2)), boxNum, box: `Box ${boxNum}`, target, notes: row.Notes || '', flagged: (boxNum === 9 && pot >= 2.5 && pot < 2.8)
+  };
+}
+
+function computeTrAgg(employees){
+  const counts = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  employees.forEach(e => { if(counts[e.boxNum] !== undefined) counts[e.boxNum]++; });
+  const n = employees.length;
+  const pct = k => n ? Math.round(counts[k]/n*100) : 0;
+  const byField = (field) => {
+    const m = {};
+    employees.forEach(e=>{ if(e[field]) m[e[field]] = (m[e[field]]||0)+1; });
+    return Object.entries(m).sort((a,b)=>b[1]-a[1]);
+  };
+  return {counts, pct, n, byLoc: byField('loc'), byLevel: byField('level')};
+}
+
+function renderTrMatrix(team, t){
+  const a = computeTrAgg(team.employees);
+  const c = a.counts, p = a.pct;
+  const maxLoc = Math.max(...a.byLoc.map(x=>x[1]), 1);
+  const maxLvl = Math.max(...a.byLevel.map(x=>x[1]), 1);
+
+  const getTip = (num) => {
+    const matched = team.employees.filter(e => e.boxNum === num);
+    const names = matched.map(e => `${e.name} (${e.loc})`).join(', ');
+    return `${trBoxDefs[num].en} — ${matched.length} employees.\n${names}`;
+  };
+
+  const cell = (num, tone) => `
+    <div class="tr-cell tone-${tone}" data-tip="${getTip(num).replace(/"/g,'&quot;')}">
+      <div class="name">${trBoxDefs[num].en}</div>
+      <div><div class="count">${c[num]}</div><div class="pct">${p(num)}%</div></div>
+      <div class="pool">${trBoxDefs[num].poolEn}</div>
+    </div>`;
+
+  return `
+  <div class="tr-box-grid-wrap">
+    <div>
+      <div class="tr-grid-with-axes">
+        <div class="tr-axis-label-y">${t.axis_pot}</div>
+        <div class="tr-box-grid">
+          ${cell(3,'warn')}${cell(2,'growth')}${cell(1,'good')}
+          ${cell(6,'crit')}${cell(5,'maintain')}${cell(4,'growth')}
+          ${cell(9,'crit')}${cell(8,'maintain')}${cell(7,'maintain')}
+        </div>
+      </div>
+      <div class="tr-grid-x-axis"><div></div><div class="tr-x-labels"><div>Low</div><div>Medium</div><div>High</div></div></div>
+      <div style="text-align:center; color:var(--tr-text-muted); font-size:11px; font-weight:600; margin-top:2px;">${t.axis_perf}</div>
+    </div>
+    <div class="tr-side-card">
+      <h3>${t.side_loc}</h3>
+      ${a.byLoc.map(([k,v])=>`<div class="tr-bar-row"><div>${k}</div><div class="tr-bar-track"><div class="tr-bar-fill" style="width:${Math.round(v/maxLoc*100)}%"></div></div><div class="n">${v}</div></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderTrKPIs(team, t){
+  const a = computeTrAgg(team.employees);
+  const c = a.counts;
+  return `
+  <div class="tr-kpi-row">
+    <div class="tr-kpi"><div class="label">${t.kpi_reviewed}</div><div class="value">${a.n}</div></div>
+    <div class="tr-kpi good"><div class="label">${t.kpi_b1}</div><div class="value">${c[1]}</div></div>
+    <div class="tr-kpi"><div class="label">${t.kpi_growth}</div><div class="value">${c[2]+c[4]}</div></div>
+    <div class="tr-kpi"><div class="label">${t.kpi_core}</div><div class="value">${c[5]+c[7]+c[8]}</div></div>
+    <div class="tr-kpi crit"><div class="label">${t.kpi_pip}</div><div class="value">${c[9]+c[6]}</div></div>
+  </div>`;
+}
+
+function renderTrRetentionCards(team, t){
+  const ret = team.employees.filter(e => e.boxNum === 1 || e.boxNum === 2 || e.boxNum === 4);
+  const b3 = team.employees.filter(e => e.boxNum === 3);
+
+  let html = ret.map(p => {
+    const boxTag = trBoxDefs[p.boxNum].en;
+    return `
+    <div class="tr-pcard">
+      <div>
+        <div class="pc-head">
+          <div><div class="pc-title">${p.name}</div><div class="pc-sub">${boxTag} · ${p.loc} · ${p.level} ➔ Target: ${p.target}</div></div>
+        </div>
+        <div class="section-tag">${t.tag_ctx || 'Context & Contribution'}</div>
+        <p style="margin:2px 0 8px 0; font-size:12.5px; color:var(--tr-text-secondary);">${p.notes || "Consistent high-value business impact and technical excellence."}</p>
+        <div class="section-tag">${t.action_title}</div>
+        <div class="tr-action-grid">
+          <div class="tr-action-item"><b>${t.mgr_label}</b> ${t.star_mgr_action}</div>
+          <div class="tr-action-item"><b>${t.hr_label}</b> ${t.star_hr_action}</div>
+          <div class="tr-action-item"><b>${t.self_label}</b> ${t.star_self_action}</div>
+        </div>
+        <div class="section-tag">${t.script_title}</div>
+        <div class="tr-dialogue-box tr-dialogue-mgr"><b>${t.dialogue_mgr_label}</b> ${t.star_mgr_script}</div>
+        <div class="tr-dialogue-box tr-dialogue-hr"><b>${t.dialogue_hr_label}</b> ${t.star_hr_script}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  if(b3.length > 0){
+    html += `
+      <div class="tr-pcard" style="grid-column:1 / -1; background:color-mix(in srgb, var(--tr-warning) 10%, var(--tr-card-bg));">
+        <div class="pc-head">
+          <div><div class="pc-title">${b3.length} Box 3 · Rough Diamonds — Mobility Review</div><div class="pc-sub">High agility/potential with role mismatch in current operational track</div></div>
+        </div>
+        <ul style="margin:6px 0 10px 18px; font-size:12.5px;">
+          ${b3.map(p=>`<li><b>${p.name}</b> (${p.level}, ${p.loc}) — ${p.notes || 'High potential candidate'}</li>`).join('')}
+        </ul>
+        <div class="tr-action-grid">
+          <div class="tr-action-item"><b>${t.mgr_label}</b> Assess whether current operational load restricts strengths; propose rotation.</div>
+          <div class="tr-action-item"><b>${t.hr_label}</b> Facilitate internal transfer to strategic/technical track with a 90-day review checkpoint.</div>
+        </div>
+      </div>`;
+  }
+  return html || `<div style="color:var(--tr-text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
+}
+
+function renderTrPIPCards(team, t){
+  const pips = team.employees.filter(e => e.boxNum === 9 || e.boxNum === 6);
+  return pips.map(p => {
+    const guide = trComplianceGuidelines[p.loc] || { title: `${p.loc} — Labor Code Framework`, text: "Ensure written KPIs, documented check-in logs, and reasonable opportunity to improve." };
+    const boxTag = trBoxDefs[p.boxNum].en;
+    return `
+    <div class="tr-pcard crit">
+      <div>
+        <div class="pc-head">
+          <div><div class="pc-title">${p.name}</div><div class="pc-sub">${p.level} · ${p.loc} · <span style="color:var(--tr-critical); font-weight:700;">${boxTag}</span></div></div>
+        </div>
+        <div class="section-tag">${t.tag_risk || 'Deficiency & Risk Context'}</div>
+        <p style="margin:2px 0 8px 0; font-size:12.5px; color:var(--tr-text-secondary);">${p.notes || "Performance consistently below target."}</p>
+        <div class="section-tag">${t.action_title}</div>
+        <div class="tr-action-grid">
+          <div class="tr-action-item"><b>${t.mgr_label}</b> ${t.pip_mgr_action}</div>
+          <div class="tr-action-item"><b>${t.hr_label}</b> ${t.pip_hr_action}</div>
+          <div class="tr-action-item"><b>${t.self_label}</b> ${t.pip_self_action}</div>
+        </div>
+        <div class="section-tag">${t.script_title}</div>
+        <div class="tr-dialogue-box tr-dialogue-mgr"><b>${t.dialogue_mgr_label}</b> ${t.pip_mgr_script}</div>
+        <div class="tr-dialogue-box tr-dialogue-hr"><b>${t.dialogue_hr_label}</b> ${t.pip_hr_script}</div>
+        <div class="tr-jrisk"><b>${guide.title}</b>${guide.text}</div>
+      </div>
+    </div>`;
+  }).join('') || `<div style="color:var(--tr-text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
+}
+
+function buildTrPane(team, idx, t){
+  const tbodyId = 'tr_tbody_' + team.key;
+  const boxFilterId = 'tr_boxFilter_' + team.key;
+  const searchId = 'tr_search_' + team.key;
+  return `
+  <div class="tr-teampane ${idx===0?'active':''}" id="tr_pane_${team.key}">
+    ${renderTrKPIs(team, t)}
+    <section>
+      <h2><span class="num">1</span> Talent Review Matrix — ${team.label}</h2>
+      ${renderTrMatrix(team, t)}
+    </section>
+    <section>
+      <h2><span class="num">2</span> Talent Review Table</h2>
+      <p class="desc">Performance = Q1–Q4 average (S=5, A=4, B=3, B−=2, C=1). Potential = Lead×0.7 + Head×0.3 (High=5, Med=3, Low=1.5). Click header to sort.</p>
+      <div class="tr-table-tools">
+        <select id="${boxFilterId}">
+          <option value="">All Boxes</option>
+          <option value="1">Box 1</option><option value="2">Box 2</option><option value="3">Box 3</option>
+          <option value="4">Box 4</option><option value="5">Box 5</option><option value="6">Box 6</option><option value="9">Box 9</option>
+        </select>
+        <input id="${searchId}" type="text" placeholder="${t.search_placeholder}">
+      </div>
+      <div class="tr-table-wrap">
+        <table id="tr_table_${team.key}">
+          <thead><tr>
+            <th data-k="id">${t.th_id}</th><th data-k="name">${t.th_name}</th><th data-k="level">${t.th_level}</th><th data-k="loc">${t.th_loc}</th>
+            <th data-k="perf">${t.th_perf}</th><th data-k="pot">${t.th_pot}</th><th data-k="box">${t.th_box}</th><th data-k="status">${t.th_status}</th><th data-k="target">${t.th_target}</th>
+          </tr></thead>
+          <tbody id="${tbodyId}"></tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <h2><span class="num">3</span> High-Potential Retention & Care Playbook (Box 1, 2, 4)</h2>
+      <p class="desc">Actionable RACI matrix across Manager, HRBP, and Employee with calibrated 1-on-1 retention scripts.</p>
+      <div class="tr-cards">${renderTrRetentionCards(team, t)}</div>
+    </section>
+    <section>
+      <h2><span class="num">4</span> Underperformer PIP Plan (Box 9 / 6)</h2>
+      <p class="desc">2–4 week binary milestones, firm manager conversation openers, and jurisdiction-specific statutory compliance rules.</p>
+      <div class="tr-cards">${renderTrPIPCards(team, t)}</div>
+    </section>
+  </div>`;
+}
+
+function wireTrTable(team){
+  const tbodyId = 'tr_tbody_' + team.key;
+  const boxFilterId = 'tr_boxFilter_' + team.key;
+  const searchId = 'tr_search_' + team.key;
+  let sortKey = null, sortDir = 1;
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+
+  function draw(rows){
+    tbody.innerHTML = rows.map(e => {
+      const pillLabel = trBoxDefs[e.boxNum].en;
+      const statusLabel = trBoxDefs[e.boxNum].poolEn;
+      const pillCls = (e.boxNum===1)?'b1':((e.boxNum===2||e.boxNum===4)?'b2':((e.boxNum===3)?'b3':((e.boxNum===9||e.boxNum===6)?'b9':'b5')));
+      return `
+        <tr>
+          <td class="tr-mono">${e.id}</td>
+          <td>${e.name}${e.flagged ? ` <span class="tr-flag" title="Reclassified to Box 9 per &lt;2.8 threshold.">&#9888;</span>` : ''}</td>
+          <td>${e.level}</td><td>${e.loc}</td>
+          <td class="tr-mono">${e.perf.toFixed(2)}</td><td class="tr-mono">${e.pot.toFixed(2)}</td>
+          <td><span class="tr-pill ${pillCls}">${pillLabel}</span></td>
+          <td>${statusLabel}</td><td>${e.target}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  function apply(){
+    const boxVal = document.getElementById(boxFilterId).value;
+    const q = document.getElementById(searchId).value.trim().toLowerCase();
+    let rows = team.employees.filter(e => (!boxVal || String(e.boxNum)===boxVal) && (!q || e.name.toLowerCase().includes(q) || e.id.toLowerCase().includes(q)));
+    if(sortKey){
+      rows = rows.slice().sort((a,b)=>{
+        const av=a[sortKey], bv=b[sortKey];
+        if(typeof av === "number") return (av-bv)*sortDir;
+        return String(av).localeCompare(String(bv))*sortDir;
+      });
+    }
+    draw(rows);
+  }
+
+  document.getElementById(boxFilterId).addEventListener('change', apply);
+  document.getElementById(searchId).addEventListener('input', apply);
+  document.querySelectorAll(`#tr_table_${team.key} thead th`).forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const k = th.dataset.k;
+      if(sortKey===k){ sortDir*=-1; } else { sortKey=k; sortDir=1; }
+      apply();
+    });
+  });
+  apply();
+}
+
+async function initAllTalentReviewTeams() {
+  trLoadedTeamsData = [];
+  const t = trI18n[currentLang];
+  const tabbar = document.getElementById('tr_tabbar');
+  const panes = document.getElementById('tr_panes');
+  if(!tabbar || !panes) return;
+
+  for (const cfg of deptDirectory) {
+    try {
+      const res = await fetch(BASE_CSV_URL + cfg.gid);
+      const csvText = await res.text();
+      const employees = parseCSV(csvText).map(processRow);
+      trLoadedTeamsData.push({ key: cfg.key, label: cfg.label, employees });
+    } catch(err) {
+      trLoadedTeamsData.push({ key: cfg.key, label: cfg.label, employees: [] });
+    }
+  }
+
+  if (!trActiveKey && trLoadedTeamsData.length > 0) {
+    trActiveKey = trLoadedTeamsData[0].key;
+  }
+
+  tabbar.innerHTML = trLoadedTeamsData.map(d => `<button class="tr-tabbtn ${d.key===trActiveKey?'active':''}" data-key="${d.key}">${d.label}</button>`).join('');
+  panes.innerHTML = trLoadedTeamsData.map((d, i) => buildTrPane(d, d.key===trActiveKey?0:1, t)).join('');
+
+  trLoadedTeamsData.forEach(d => wireTrTable(d));
+
+  tabbar.querySelectorAll('.tr-tabbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabbar.querySelectorAll('.tr-tabbtn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      trActiveKey = btn.dataset.key;
+      document.querySelectorAll('.tr-teampane').forEach(p => p.classList.remove('active'));
+      const targetPane = document.getElementById('tr_pane_' + trActiveKey);
+      if(targetPane) targetPane.classList.add('active');
+    });
+  });
+}
+
+// Tab 06 二級切換與儲存邏輯 (8 Business Lines & 4 Sprints)
+const STORAGE_KEY_OKR_ALL = 'EXEC_OKR_DASHBOARD_ALL_V2';
+const STORAGE_KEY_GANTT_PROGRESS = 'app_tab06_gantt_progress';
+let tab06TimeoutId = null;
+
+let ganttProgress = {
+  eng: 70,
+  comm: 85,
+  ops: 50
+};
+
+function updateSprintProgress(deptKey, rawVal) {
+  let val = parseInt(rawVal, 10);
+  if (isNaN(val)) val = 0;
+  if (val > 100) val = 100;
+  if (val < 0) val = 0;
+
+  const inpEl = document.getElementById(`inp_gantt_${deptKey}`);
+  if (inpEl && inpEl.value != val) inpEl.value = val;
+
+  ganttProgress[deptKey] = val;
+  const barEl = document.getElementById(`gantt_bar_${deptKey}`);
+  if (barEl) {
+    barEl.style.width = val + '%';
+  }
+
+  const sprintIndex = Math.min(Math.floor(val / 16.66) + 1, 6);
+  const badgeEl = document.getElementById(`badge_sprint_${deptKey}`);
+  if (badgeEl) {
+    badgeEl.innerText = val >= 100 ? (currentLang === 'zh' ? '(已交付達成)' : '(Completed)') : `(Sprint ${sprintIndex})`;
+  }
+
+  triggerAutoSaveTab06();
+}
+
+function switchSubTab(subId) {
+  document.querySelectorAll('.sub-tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.sub-tab-btn').forEach(el => el.classList.remove('active'));
+
+  const target = document.getElementById(subId);
+  if (target) target.classList.add('active');
+
+  const clickedBtn = Array.from(document.querySelectorAll('.sub-tab-btn'))
+    .find(btn => btn.getAttribute('onclick').includes(subId));
+  if (clickedBtn) clickedBtn.classList.add('active');
+}
+
+function initTab06Storage() {
+  const savedGantt = localStorage.getItem(STORAGE_KEY_GANTT_PROGRESS);
+  if (savedGantt) {
+    try {
+      const parsed = JSON.parse(savedGantt);
+      if (parsed) {
+        ganttProgress = Object.assign(ganttProgress, parsed);
+        ['eng', 'comm', 'ops'].forEach(k => {
+          updateSprintProgress(k, ganttProgress[k]);
         });
+      }
+    } catch(e){}
+  } else {
+    ['eng', 'comm', 'ops'].forEach(k => {
+      updateSprintProgress(k, ganttProgress[k]);
+    });
+  }
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(tabsData));
-
-        const hint = document.getElementById('saveHint');
-        hint.style.opacity = '1';
-        setTimeout(() => {
-            hint.style.opacity = '0';
-        }, 2500);
-    }
-
-    // 載入已儲存內容
-    function loadSavedData() {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-
-        try {
-            const tabsData = JSON.parse(raw);
-            Object.keys(tabsData).forEach(id => {
-                const tableWrap = document.querySelector(`#${id} .table-wrapper`);
-                if (tableWrap && tabsData[id]) {
-                    tableWrap.innerHTML = tabsData[id];
-                }
-            });
-        } catch (e) {
-            console.error("載入本機資料失敗", e);
+  const savedTables = localStorage.getItem(STORAGE_KEY_OKR_ALL);
+  if (savedTables) {
+    try {
+      const data = JSON.parse(savedTables);
+      const subKeys = ['sub_business_lines', 'sub_sprint_1', 'sub_sprint_2', 'sub_sprint_3', 'sub_sprint_4'];
+      subKeys.forEach(key => {
+        const wrap = document.querySelector(`#${key} .tab06-table-wrap`);
+        if (wrap && data[key]) {
+          wrap.innerHTML = data[key];
         }
+      });
+    } catch(e){
+      console.error("載入 OKR 歷史資料失敗", e);
     }
+  }
 
-    // 重設為原始預設值
-    function resetData() {
-        if (confirm("確定要放棄自訂修改並恢復預設 OKR 矩陣嗎？")) {
-            localStorage.removeItem(STORAGE_KEY);
-            window.location.reload();
-        }
-    }
+  bindTab06InputEvents();
+}
 
-    // 頁面初始化自動載入
-    window.addEventListener('DOMContentLoaded', loadSavedData);
+function bindTab06InputEvents() {
+  document.querySelectorAll('#pane_tab06 td[contenteditable="true"]').forEach(cell => {
+    cell.removeEventListener('input', triggerAutoSaveTab06);
+    cell.addEventListener('input', triggerAutoSaveTab06);
+  });
+}
+
+function triggerAutoSaveTab06() {
+  const statusTip = document.getElementById('saveStatusTab06');
+  if (statusTip) {
+    statusTip.innerText = currentLang === 'zh' ? '編輯中，自動儲存中...' : 'Editing, auto-saving...';
+    statusTip.style.color = '#fbbf24';
+  }
+  clearTimeout(tab06TimeoutId);
+  tab06TimeoutId = setTimeout(saveTab06ToStorage, 600);
+}
+
+function saveTab06ToStorage() {
+  const data = {};
+  const subKeys = ['sub_business_lines', 'sub_sprint_1', 'sub_sprint_2', 'sub_sprint_3', 'sub_sprint_4'];
+  subKeys.forEach(key => {
+    const wrap = document.querySelector(`#${key} .tab06-table-wrap`);
+    if (wrap) data[key] = wrap.innerHTML;
+  });
+  localStorage.setItem(STORAGE_KEY_OKR_ALL, JSON.stringify(data));
+  localStorage.setItem(STORAGE_KEY_GANTT_PROGRESS, JSON.stringify(ganttProgress));
+  
+  const statusTip = document.getElementById('saveStatusTab06');
+  if (statusTip) {
+    statusTip.innerText = currentLang === 'zh' ? '✓ 所有變更已即時自動儲存 (Local)' : '✓ All changes auto-saved (Local)';
+    statusTip.style.color = '#34d399';
+  }
+}
+
+function manualSaveTab06() {
+  saveTab06ToStorage();
+  const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Executive_Dashboard_CrossTeam_OKR_Sprints.html';
+  a.click();
+  
+  const statusTip = document.getElementById('saveStatusTab06');
+  if (statusTip) {
+    statusTip.innerText = currentLang === 'zh' ? '✓ 已完成儲存並下載完整更新檔！' : '✓ Successfully saved & downloaded file!';
+    statusTip.style.color = '#38bdf8';
+  }
+}
+
+function resetTab06Data() {
+  if (confirm(currentLang === 'zh' ? "確定要放棄自訂修改並恢復預設 OKR 矩陣嗎？" : "Reset custom OKR matrix modifications back to defaults?")) {
+    localStorage.removeItem(STORAGE_KEY_OKR_ALL);
+    window.location.reload();
+  }
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  document.getElementById('btnZh').className = `lang-btn ${lang==='zh'?'active':''}`;
+  document.getElementById('btnEn').className = `lang-btn ${lang==='en'?'active':''}`;
+  document.getElementById('headerTitle').innerText = "Executive Team Dashboard";
+
+  if (lang === 'zh') {
+    document.getElementById('nav_01').innerText = "01 全球雙軌薪酬對標";
+    document.getElementById('nav_02').innerText = "02 雙軌晉升示意圖";
+    document.getElementById('nav_03').innerText = "03 LIVE O-CHART 對照 年度預算預測";
+    document.getElementById('nav_04').innerText = "04 OKR 對齊與新招募預算";
+    document.getElementById('nav_05').innerText = "05 人才盤點與晉升準備";
+    document.getElementById('nav_06').innerText = "06 跨團隊 OKR 對齊";
+
+    document.getElementById('tab06_main_title').innerText = "Cross-Team OKR Matrix & Sprint Delivery Plan";
+    document.getElementById('tab06_sub_title').innerText = "8 條核心業務線全面對齊 · 4 個雙週 Sprint 敏捷排期 · 實時在線編輯與儲存";
+    document.getElementById('btn_save_tab06_label').innerText = "💾 儲存並導出更新檔";
+    document.getElementById('gantt_title').innerText = "OKR 對齊看板 (雙週 Sprint 顆粒度)";
+    document.getElementById('gantt_leg_align').innerText = "前期對齊 (Sprint 1 / W0–W2)";
+    document.getElementById('gantt_leg_exec').innerText = "敏捷執行與追蹤 (Sprint 2–6)";
+    document.getElementById('gantt_ctrl_title').innerText = "⚡ 雙週 Sprint 進度動態同步：";
+    document.getElementById('gantt_sub_timeline').innerText = "季度推進時程 · 2-Week 敏捷迭代節奏 (Weeks)";
+  } else {
+    document.getElementById('nav_01').innerText = "01 Global Compensation Benchmark";
+    document.getElementById('nav_02').innerText = "02 Dual-Track Career Ladder";
+    document.getElementById('nav_03').innerText = "03 Live Org Chart & Annual Budget";
+    document.getElementById('nav_04').innerText = "04 OKR Alignment & Hiring Budget";
+    document.getElementById('nav_05').innerText = "05 Talent Review & Secure Access";
+    document.getElementById('nav_06').innerText = "06 Cross-Team OKR Alignment";
+
+    document.getElementById('tab06_main_title').innerText = "Cross-Team OKR Matrix & Sprint Delivery Plan";
+    document.getElementById('tab06_sub_title').innerText = "8 Business Lines Aligned · 4 Sprints Cadence · Real-time In-place Editable";
+    document.getElementById('btn_save_tab06_label').innerText = "💾 Save & Export HTML";
+    document.getElementById('gantt_title').innerText = "OKR Alignment Board (2-Week Sprint Granularity)";
+    document.getElementById('gantt_leg_align').innerText = "Alignment / Kickoff (Sprint 1)";
+    document.getElementById('gantt_leg_exec').innerText = "Execution & Dashboard Tracking (Sprint 2–6)";
+    document.getElementById('gantt_ctrl_title').innerText = "⚡ Synchronize Pipeline Progress:";
+    document.getElementById('gantt_sub_timeline').innerText = "Quarter Timeline · 2-Week Agile Iteration Cadence";
+  }
+
+  ['eng', 'comm', 'ops'].forEach(k => {
+    updateSprintProgress(k, ganttProgress[k]);
+  });
+
+  renderCompTab();
+  renderLadderTab();
+  if (currentTab === 'tab05') {
+    initAllTalentReviewTeams();
+  }
+}
+
+window.onload = () => {
+  renderMatrixTable();
+  setLanguage(currentLang);
+  initTab06Storage();
+  switchTab('tab01');
+};
 </script>
-
 </body>
 </html>

@@ -461,7 +461,7 @@
   .tr-table-wrap table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--tr-card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--tr-border); }
   .tr-table-wrap thead th { text-align: left; padding: 9px 10px; background: var(--tr-page-plane); color: var(--tr-text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; cursor: pointer; white-space: nowrap; border-bottom: 1px solid var(--tr-border); }
   .tr-table-wrap thead th:hover { color: #fff; }
-  .tr-table-wrap tbody td { padding: 8px 10px; border-bottom: 1px solid var(--tr-gridline); vertical-align: top; color: #fff; }
+  .tr-table-wrap tbody td { padding: 8px 10px; border-bottom: 1px solid var(--gridline); vertical-align: top; color: #fff; }
   .tr-table-wrap tbody tr:last-child td { border-bottom: none; }
   .tr-table-wrap tbody tr:hover { background: color-mix(in srgb, #fff 4%, transparent); }
   .tr-pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
@@ -493,6 +493,116 @@
 
   .tr-jrisk { margin-top: 10px; padding: 8px 10px; border-radius: 7px; font-size: 11.5px; background: color-mix(in srgb, var(--tr-warning) 16%, var(--tr-card-bg)); border: 1px solid color-mix(in srgb, var(--tr-warning) 45%, transparent); color: #fff; }
   .tr-jrisk b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 2px; }
+
+  /* Tab 06 Cross-Team OKR Specific Styles (Dark Theme Unified) */
+  .tab06-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .btn-save-tab06 {
+    background-color: var(--series-6);
+    color: #090d16;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-save-tab06:hover { opacity: 0.9; transform: translateY(-1px); }
+  .tab06-status-tip {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-right: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  .tab06-sec-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 24px 0 12px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab06-sec-title::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background: var(--cyan);
+    border-radius: 2px;
+  }
+  .tab06-table-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow-x: auto;
+    margin-bottom: 28px;
+  }
+  .tab06-table-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 0;
+  }
+  .tab06-table-wrap th {
+    background: #0d1527;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--gridline);
+  }
+  .tab06-table-wrap th:last-child { border-right: none; }
+  .tab06-table-wrap td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--gridline);
+    border-right: 1px solid var(--gridline);
+    vertical-align: top;
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+  .tab06-table-wrap td:last-child { border-right: none; }
+  .tab06-table-wrap td[contenteditable="true"] {
+    outline: none;
+    transition: background-color 0.2s, box-shadow 0.2s;
+  }
+  .tab06-table-wrap td[contenteditable="true"]:focus {
+    background-color: color-mix(in srgb, var(--cyan) 8%, var(--card-bg));
+    box-shadow: inset 0 0 0 1.5px var(--cyan);
+    color: #ffffff;
+  }
+  .tab06-legend-list {
+    list-style: none;
+    padding: 18px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .tab06-legend-list li {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
 </style>
 </head>
 <body>
@@ -515,7 +625,6 @@
       <span id="disp_rbac_notice">
         <b>數據權限控管：</b>本看板實施部門資料隔離機制，各部門負責人僅限查閱所屬團隊之年度預算、編制名單與考績明細；跨部門全域彙整資料依最小特權原則（PoLP）予以嚴格隔離保護。
       </span>
-
     </div>
     <div class="rbac-badge" id="disp_rbac_badge">部門專屬檢視 · 權限隔離</div>
   </div>
@@ -526,6 +635,7 @@
     <div class="main-nav-item" id="nav_03" onclick="switchTab('tab03')">03 LIVE O-CHART 對照 年度預算預測</div>
     <div class="main-nav-item" id="nav_04" onclick="switchTab('tab04')">04 OKR 對齊與新招募預算</div>
     <div class="main-nav-item" id="nav_05" onclick="switchTab('tab05')">05 人才盤點與晉升準備</div>
+    <div class="main-nav-item" id="nav_06" onclick="switchTab('tab06')">06 跨團隊 OKR 對齊</div>
   </div>
 
   <header class="top">
@@ -782,6 +892,149 @@
     </div>
   </div>
 
+  <!-- ================= 06 跨團隊 OKR 對齊與團隊健康度 ================= -->
+  <div id="pane_tab06" class="pane">
+    <div class="tab06-header">
+      <div>
+        <h2 style="font-size:18px; font-weight:800; color:#fff;" id="tab06_main_title">跨團隊 OKR 對齊矩陣與團隊健康度評分模型</h2>
+        <div style="font-size:12px; color:var(--text-secondary); margin-top:4px;" id="tab06_sub_title">產研前中後台雙向賦能 · HRBP 敏捷對齊 · 數據化健康評分監控</div>
+      </div>
+      <div style="display:flex; align-items:center;">
+        <span id="saveStatusTab06" class="tab06-status-tip">✓ 所有變更已即時自動儲存 (Local)</span>
+        <button class="btn-save-tab06" onclick="manualSaveTab06()" id="btn_save_tab06_label">💾 儲存並導出更新檔</button>
+      </div>
+    </div>
+
+    <div class="tab06-sec-title" id="tab06_sec1_title">跨團隊 OKR 對齊矩陣 (Cross-Team OKR Matrix)</div>
+    <div class="tab06-table-wrap">
+      <table id="matrixTableTab06">
+        <thead>
+          <tr>
+            <th style="width:11%; text-align:left;" id="th_tab06_org">組織層級</th>
+            <th style="width:22.25%; text-align:left;" id="th_tab06_front">前台 OKR (Spot / Derivative / Meme)</th>
+            <th style="width:22.25%; text-align:left;" id="th_tab06_mid">中台 OKR (Matching / Copy Trade / Wallet)</th>
+            <th style="width:22.25%; text-align:left;" id="th_tab06_back">後台 OKR (SRE / Security / Compliance)</th>
+            <th style="width:22.25%; text-align:left;" id="th_tab06_hrbp">同步對齊之 HRBP OKR (HR Alignment)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; background:#090d16; color:var(--cyan);">目標 (O1)</td>
+            <td contenteditable="true"><b>O1：搶佔全球 Meme 幣首發流量市占</b></td>
+            <td contenteditable="true"><b>O1：建立自動化極速上幣與行情網關</b></td>
+            <td contenteditable="true"><b>O1：確保新幣高併發上線時系統不宕機</b></td>
+            <td contenteditable="true"><b>O1：賦能「極速上幣 Pod」，拉升敏捷交付人效與響應速度</b></td>
+          </tr>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; background:#090d16; color:var(--cyan);">關鍵結果 (KRs)</td>
+            <td contenteditable="true">
+              • KR1：首月上線 300+ 熱點 Meme 幣<br>
+              • KR2：新用戶獲客成本（CAC）降低 25%
+            </td>
+            <td contenteditable="true">
+              • KR1：上幣流水線對接時間壓至 &lt; 1 小時<br>
+              • KR2：行情對接與測試自動化率達 40%
+            </td>
+            <td contenteditable="true">
+              • KR1：上幣瞬間流量高峰 0 宕機/0 卡單<br>
+              • KR2：充提幣鏈上確認到帳 &lt; 3 分鐘
+            </td>
+            <td contenteditable="true">
+              • KR1：4–6 人 Pod Sprint 交付達成率 &gt; 85%<br>
+              • KR2：零新增 Headcount 下交付週期縮短 35%<br>
+              • KR3：Pod 團隊績效整體提升 25%
+            </td>
+          </tr>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; background:#090d16; color:var(--cyan);">目標 (O2)</td>
+            <td contenteditable="true"><b>O2：拉升跟單與衍生品 AUM 規模</b></td>
+            <td contenteditable="true"><b>O2：研發低延遲跟單清算與風控引擎</b></td>
+            <td contenteditable="true"><b>O2：實現 CI/CD 自動化與預測性維運</b></td>
+            <td contenteditable="true"><b>O2：落地數據驅動的人才盤點與雙軌晉升，維護 Pod 健康</b></td>
+          </tr>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; background:#090d16; color:var(--cyan);">關鍵結果 (KRs)</td>
+            <td contenteditable="true">
+              • KR1：跟單交易總量成長 50%<br>
+              • KR2：600+ 合約交易對滿意度提升 18%
+            </td>
+            <td contenteditable="true">
+              • KR1：帶單與跟單同步延遲 &lt; 50ms<br>
+              • KR2：實時強平與風控響應 &lt; 500ms
+            </td>
+            <td contenteditable="true">
+              • KR1：故障修復時間 MTTR &lt; 5 分鐘<br>
+              • KR2：部署自動化覆蓋率達 90%
+            </td>
+            <td contenteditable="true">
+              • KR1：完成 300 人產研 Calibration 與雙軌晉升<br>
+              • KR2：消除主觀晉升，組織效能提升 20%<br>
+              • KR3：Pod 團隊健康度維持 85 分以上（綠燈）
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab06-sec-title" id="tab06_sec2_title">團隊健康度評分模型與應對策略 (Health Scorecard)</div>
+    <div class="tab06-table-wrap">
+      <table id="healthTableTab06">
+        <thead>
+          <tr>
+            <th style="width:18%; text-align:left;" id="th_health_dim">維度</th>
+            <th style="width:40%; text-align:left;" id="th_health_metric">衡量指標</th>
+            <th style="width:16%; text-align:center;" id="th_health_score">實際表現得分 (100分制)</th>
+            <th style="width:12%; text-align:center;" id="th_health_wt">權重</th>
+            <th style="width:14%; text-align:center;" id="th_health_wtd_score">加權分數</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; color:#fff;">人效與交付</td>
+            <td contenteditable="true">Sprint 達成率 85%、插單率 10%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; font-weight:700;">90</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace;">30%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; color:var(--series-3); font-weight:700;">27.0</td>
+          </tr>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; color:#fff;">人才穩定度</td>
+            <td contenteditable="true">當季主動離職率 2%（含 1 名核心離職）</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; font-weight:700;">70</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace;">30%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; color:var(--series-3); font-weight:700;">21.0</td>
+          </tr>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; color:#fff;">組織敬業度</td>
+            <td contenteditable="true">eNPS 為 +15，加班滿意度偏低</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; font-weight:700;">65</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace;">20%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; color:var(--warning); font-weight:700;">13.0</td>
+          </tr>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; color:#fff;">管理與合規</td>
+            <td contenteditable="true">ER 案件 100% 按時處理，升級事件 1 起</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; font-weight:700;">85</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace;">20%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; color:var(--series-3); font-weight:700;">17.0</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr style="background:#090d16; font-weight:bold;">
+            <td contenteditable="true" colspan="4" style="text-align:left; color:#fff;" id="td_health_total_label">合計評分：當前團隊健康度總分</td>
+            <td contenteditable="true" style="text-align:center; color:var(--warning); font-size:15px; font-weight:800;">78.0 分</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="tab06-sec-title" id="tab06_sec3_title">健康等級劃分與 HRBP 應對策略</div>
+    <ul class="tab06-legend-list" id="tab06_legend_content">
+      <li>🟢 <b>85 – 100 分（綠燈 - 健康高效）</b>：保持現狀，專注於 key player 的梯隊培養與激勵。</li>
+      <li>🟡 <b>70 – 84 分（黃燈 - 預警狀態）</b>：團隊交付尚可，但敬業度與離職率已出現警訊。HRBP 應立即介入（暫停非必要擴招、1-on-1 脈衝訪談、優化雙月 KPI 排期）。</li>
+      <li>🔴 <b>&lt; 70 分（紅燈 - 高風險）</b>：團隊面臨 Burnout 或管理失能，需與 CTO/Head 共同進行架構重組與管理介入。</li>
+    </ul>
+  </div>
+
 </div>
 
 <script>
@@ -828,9 +1081,9 @@ const BASE_RATES = {
 const MATRIX_CONFIG = {
   L7_M2: { key: 'L7_M2', code: 'L7 / M2', titleZh: '部門總監 / 負責人', titleEn: 'Dept Head / Director', US: 0, SG: 1, UAE: 0, EU: 0, TW: 0, MY: 0, IN: 0 },
   L6_M1: { key: 'L6_M1', code: 'L6 / M1', titleZh: '組長 / 主任架構師', titleEn: 'Team Lead / Staff', US: 0, SG: 1, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
-  L5:    { key: 'L5',    code: 'L5',     titleZh: '資深專家 / 骨幹', titleEn: 'Senior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
-  L4:    { key: 'L4',    code: 'L4',     titleZh: '中階主力執行者', titleEn: 'Mid-Level Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 3, MY: 2, IN: 0 },
-  L3:    { key: 'L3',    code: 'L3',     titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 4, MY: 2, IN: 0 }
+  L5:    { key: 'L5',     code: 'L5',      titleZh: '資深專家 / 骨幹', titleEn: 'Senior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 1, MY: 0, IN: 0 },
+  L4:    { key: 'L4',     code: 'L4',      titleZh: '中階主力執行者', titleEn: 'Mid-Level Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 3, MY: 2, IN: 0 },
+  L3:    { key: 'L3',     code: 'L3',      titleZh: '初階專員 / 助理', titleEn: 'Junior Specialist', US: 0, SG: 0, UAE: 0, EU: 0, TW: 4, MY: 2, IN: 0 }
 };
 
 const COMP_FUNCTIONS = {
@@ -904,7 +1157,7 @@ const COMP_FUNCTIONS = {
 
 function switchTab(tabId) {
   currentTab = tabId;
-  const navTabs = ['tab01', 'tab02', 'tab03', 'tab04', 'tab05'];
+  const navTabs = ['tab01', 'tab02', 'tab03', 'tab04', 'tab05', 'tab06'];
   navTabs.forEach(id => {
     const navEl = document.getElementById('nav_' + id);
     if(navEl) navEl.classList.toggle('active', id === tabId);
@@ -1602,6 +1855,70 @@ async function initAllTalentReviewTeams() {
   });
 }
 
+// Tab 06 Storage & Logic
+const STORAGE_KEY_MATRIX_TAB06 = 'app_tab06_matrix_data';
+const STORAGE_KEY_HEALTH_TAB06 = 'app_tab06_health_data';
+let tab06TimeoutId = null;
+
+function initTab06Storage() {
+  const savedMatrix = localStorage.getItem(STORAGE_KEY_MATRIX_TAB06);
+  const savedHealth = localStorage.getItem(STORAGE_KEY_HEALTH_TAB06);
+  if (savedMatrix) {
+    const tableEl = document.getElementById('matrixTableTab06');
+    if (tableEl) tableEl.innerHTML = savedMatrix;
+  }
+  if (savedHealth) {
+    const healthEl = document.getElementById('healthTableTab06');
+    if (healthEl) healthEl.innerHTML = savedHealth;
+  }
+  bindTab06InputEvents();
+}
+
+function bindTab06InputEvents() {
+  document.querySelectorAll('#pane_tab06 td[contenteditable="true"]').forEach(cell => {
+    cell.removeEventListener('input', triggerAutoSaveTab06);
+    cell.addEventListener('input', triggerAutoSaveTab06);
+  });
+}
+
+function triggerAutoSaveTab06() {
+  const statusTip = document.getElementById('saveStatusTab06');
+  if (statusTip) {
+    statusTip.innerText = currentLang === 'zh' ? '編輯中，自動儲存中...' : 'Editing, auto-saving...';
+    statusTip.style.color = '#fbbf24';
+  }
+  clearTimeout(tab06TimeoutId);
+  tab06TimeoutId = setTimeout(saveTab06ToStorage, 600);
+}
+
+function saveTab06ToStorage() {
+  const matrixEl = document.getElementById('matrixTableTab06');
+  const healthEl = document.getElementById('healthTableTab06');
+  if (matrixEl) localStorage.setItem(STORAGE_KEY_MATRIX_TAB06, matrixEl.innerHTML);
+  if (healthEl) localStorage.setItem(STORAGE_KEY_HEALTH_TAB06, healthEl.innerHTML);
+  
+  const statusTip = document.getElementById('saveStatusTab06');
+  if (statusTip) {
+    statusTip.innerText = currentLang === 'zh' ? '✓ 所有變更已即時自動儲存 (Local)' : '✓ All changes auto-saved (Local)';
+    statusTip.style.color = '#34d399';
+  }
+}
+
+function manualSaveTab06() {
+  saveTab06ToStorage();
+  const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Executive_Dashboard_CrossTeam_OKR.html';
+  a.click();
+  
+  const statusTip = document.getElementById('saveStatusTab06');
+  if (statusTip) {
+    statusTip.innerText = currentLang === 'zh' ? '✓ 已完成儲存並下載完整更新檔！' : '✓ Successfully saved & downloaded file!';
+    statusTip.style.color = '#38bdf8';
+  }
+}
+
 function setLanguage(lang) {
   currentLang = lang;
   document.getElementById('btnZh').className = `lang-btn ${lang==='zh'?'active':''}`;
@@ -1614,12 +1931,52 @@ function setLanguage(lang) {
     document.getElementById('nav_03').innerText = "03 LIVE O-CHART 對照 年度預算預測";
     document.getElementById('nav_04').innerText = "04 OKR 對齊與新招募預算";
     document.getElementById('nav_05').innerText = "05 人才盤點與晉升準備";
+    document.getElementById('nav_06').innerText = "06 跨團隊 OKR 對齊";
+
+    // Tab 06 i18n
+    document.getElementById('tab06_main_title').innerText = "跨團隊 OKR 對齊矩陣與團隊健康度評分模型";
+    document.getElementById('tab06_sub_title').innerText = "產研前中後台雙向賦能 · HRBP 敏捷對齊 · 數據化健康評分監控";
+    document.getElementById('btn_save_tab06_label').innerText = "💾 儲存並導出更新檔";
+    document.getElementById('tab06_sec1_title').innerText = "跨團隊 OKR 對齊矩陣 (Cross-Team OKR Matrix)";
+    document.getElementById('tab06_sec2_title').innerText = "團隊健康度評分模型與應對策略 (Health Scorecard)";
+    document.getElementById('tab06_sec3_title').innerText = "健康等級劃分與 HRBP 應對策略";
+    document.getElementById('th_tab06_org').innerText = "組織層級";
+    document.getElementById('th_tab06_front').innerText = "前台 OKR (Spot / Derivative / Meme)";
+    document.getElementById('th_tab06_mid').innerText = "中台 OKR (Matching / Copy Trade / Wallet)";
+    document.getElementById('th_tab06_back').innerText = "後台 OKR (SRE / Security / Compliance)";
+    document.getElementById('th_tab06_hrbp').innerText = "同步對齊之 HRBP OKR (HR Alignment)";
+    document.getElementById('th_health_dim').innerText = "維度";
+    document.getElementById('th_health_metric').innerText = "衡量指標";
+    document.getElementById('th_health_score').innerText = "實際表現得分 (100分制)";
+    document.getElementById('th_health_wt').innerText = "權重";
+    document.getElementById('th_health_wtd_score').innerText = "加權分數";
+    document.getElementById('td_health_total_label').innerText = "合計評分：當前團隊健康度總分";
   } else {
     document.getElementById('nav_01').innerText = "01 Global Compensation Benchmark";
     document.getElementById('nav_02').innerText = "02 Dual-Track Career Ladder";
     document.getElementById('nav_03').innerText = "03 Live Org Chart & Annual Budget";
     document.getElementById('nav_04').innerText = "04 OKR Alignment & Hiring Budget";
     document.getElementById('nav_05').innerText = "05 Talent Review & Secure Access";
+    document.getElementById('nav_06').innerText = "06 Cross-Team OKR Alignment";
+
+    // Tab 06 i18n
+    document.getElementById('tab06_main_title').innerText = "Cross-Team OKR Alignment Matrix & Health Scorecard";
+    document.getElementById('tab06_sub_title').innerText = "Front-Mid-Back Office Co-alignment · HRBP Pod Enablement · Quantitative Health Monitoring";
+    document.getElementById('btn_save_tab06_label').innerText = "💾 Save & Export HTML";
+    document.getElementById('tab06_sec1_title').innerText = "Cross-Team OKR Matrix";
+    document.getElementById('tab06_sec2_title').innerText = "Team Health Scorecard & Metric Drivers";
+    document.getElementById('tab06_sec3_title').innerText = "Health Thresholds & Action Playbook";
+    document.getElementById('th_tab06_org').innerText = "Org Level";
+    document.getElementById('th_tab06_front').innerText = "Front-Office OKR (Spot / Derivative / Meme)";
+    document.getElementById('th_tab06_mid').innerText = "Mid-Office OKR (Matching / Copy / Wallet)";
+    document.getElementById('th_tab06_back').innerText = "Back-Office OKR (SRE / Security / Compliance)";
+    document.getElementById('th_tab06_hrbp').innerText = "Aligned HRBP OKR (Strategic Enablement)";
+    document.getElementById('th_health_dim').innerText = "Dimension";
+    document.getElementById('th_health_metric').innerText = "Metric Definition";
+    document.getElementById('th_health_score').innerText = "Raw Score (100 Max)";
+    document.getElementById('th_health_wt').innerText = "Weight";
+    document.getElementById('th_health_wtd_score').innerText = "Weighted Score";
+    document.getElementById('td_health_total_label').innerText = "Aggregate Evaluation: Current Team Health Score";
   }
 
   renderCompTab();
@@ -1632,6 +1989,7 @@ function setLanguage(lang) {
 window.onload = () => {
   renderMatrixTable();
   setLanguage(currentLang);
+  initTab06Storage();
   switchTab('tab01');
 };
 </script>

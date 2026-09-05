@@ -207,6 +207,7 @@
   .tr-kpi { background: var(--tr-card-bg); border: 1px solid var(--tr-border); border-radius: 10px; padding: 14px 16px; }
   .tr-kpi .label { font-size: 11px; color: var(--tr-text-muted); text-transform: uppercase; letter-spacing: .03em; }
   .tr-kpi .value { font-size: 24px; font-weight: 700; margin-top: 4px; font-variant-numeric: proportional-nums; color: #fff; }
+  .tr-kpi .foot { font-size: 11px; color: var(--tr-text-secondary); margin-top: 2px; }
   .tr-kpi.crit .value { color: var(--tr-critical); }
   .tr-kpi.good .value { color: var(--tr-good); }
   .tr-box-grid-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
@@ -232,11 +233,11 @@
   .tr-bar-row { display: grid; grid-template-columns: 60px 1fr 28px; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; }
   .tr-bar-track { height: 10px; background: var(--tr-gridline); border-radius: 4px; overflow: hidden; }
   .tr-bar-fill { height: 100%; background: var(--tr-series-1); border-radius: 4px 0 0 4px; }
-  .tr-bar-row .n { text-align: right; color: var(--tr-text-muted); font-variant-numeric: tabular-nums; }
+  .tr-bar-row .n { text-align: right; color: var(--text-muted); font-variant-numeric: tabular-nums; }
   .tr-table-tools { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
   .tr-table-tools select, .tr-table-tools input { font-family: inherit; font-size: 12px; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--tr-border); background: var(--tr-card-bg); color: #fff; }
-  .tr-table-wrap table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--tr-card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--tr-border); }
-  .tr-table-wrap thead th { text-align: left; padding: 9px 10px; background: var(--tr-page-plane); color: var(--tr-text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; cursor: pointer; white-space: nowrap; border-bottom: 1px solid var(--tr-border); }
+  .tr-table-wrap table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .tr-table-wrap thead th { text-align: left; padding: 9px 10px; background: var(--page-plane); color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; cursor: pointer; white-space: nowrap; border-bottom: 1px solid var(--border); }
   .tr-table-wrap thead th:hover { color: #fff; }
   .tr-table-wrap tbody td { padding: 8px 10px; border-bottom: 1px solid var(--gridline); vertical-align: top; color: #fff; }
   .tr-table-wrap tbody tr:hover { background: color-mix(in srgb, #fff 4%, transparent); }
@@ -249,13 +250,13 @@
   .tr-mono { font-variant-numeric: tabular-nums; color: var(--text-secondary); }
   .tr-flag { color: var(--tr-critical); font-weight: 700; cursor: help; }
   .tr-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
-  .tr-pcard { background: var(--tr-card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
+  .tr-pcard { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
   .tr-pcard.crit { border-color: color-mix(in srgb, var(--tr-critical) 45%, var(--tr-border)); }
   .tr-pcard .pc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
   .tr-pcard .pc-title { font-size: 15px; font-weight: 700; color: #fff; }
-  .tr-pcard .pc-sub { font-size: 11.5px; color: var(--tr-text-muted); }
-  .tr-pcard .section-tag { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--tr-text-muted); font-weight: 700; margin: 10px 0 4px; }
-  .tr-action-grid { display: grid; grid-template-columns: 1fr; gap: 8px; background: color-mix(in srgb, var(--tr-page-plane) 60%, var(--tr-card-bg)); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--tr-border); margin: 8px 0; }
+  .tr-pcard .pc-sub { font-size: 11.5px; color: var(--text-muted); }
+  .tr-pcard .section-tag { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); font-weight: 700; margin: 10px 0 4px; }
+  .tr-action-grid { display: grid; grid-template-columns: 1fr; gap: 8px; background: color-mix(in srgb, var(--tr-page-plane) 60%, var(--card-bg)); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--tr-border); margin: 8px 0; }
   .tr-action-item { font-size: 12px; line-height: 1.45; color: #fff; }
   .tr-action-item b { color: #fff; display: inline-block; width: 130px; }
   .tr-dialogue-box { margin: 6px 0; padding: 8px 12px; border-radius: 6px; font-size: 12px; line-height: 1.45; font-style: italic; }
@@ -263,7 +264,7 @@
   .tr-dialogue-hr { background: var(--tr-page-plane); border-left: 3px solid var(--tr-series-3); color: #fff; margin-top: 4px; }
   .tr-pcard.crit .tr-dialogue-mgr { border-left-color: var(--tr-critical); }
   .tr-pcard.crit .tr-dialogue-hr { border-left-color: var(--tr-warning); }
-  .tr-jrisk { margin-top: 10px; padding: 8px 10px; border-radius: 7px; font-size: 11.5px; background: color-mix(in srgb, var(--tr-warning) 16%, var(--tr-card-bg)); border: 1px solid color-mix(in srgb, var(--tr-warning) 45%, transparent); color: #fff; }
+  .tr-jrisk { margin-top: 10px; padding: 8px 10px; border-radius: 7px; font-size: 11.5px; background: color-mix(in srgb, var(--tr-warning) 16%, var(--card-bg)); border: 1px solid color-mix(in srgb, var(--tr-warning) 45%, transparent); color: #fff; }
   .tr-jrisk b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 2px; }
 
   /* Tab 06 Cross-Team OKR & 2-Week Sprint Matrix Specific Styles */
@@ -304,6 +305,11 @@
     background-color: color-mix(in srgb, var(--cyan) 8%, var(--card-bg));
     box-shadow: inset 0 0 0 1.5px var(--cyan); color: #ffffff;
   }
+  .tab06-legend-list {
+    list-style: none; padding: 18px 20px; background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .tab06-legend-list li { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; }
 
   /* 甘特圖 2-Week Sprint 專屬樣式 */
   .gantt-board-card {
@@ -655,7 +661,7 @@
     </div>
   </div>
 
-  <!-- ================= 06 跨團隊 OKR 對齊 (8 業務線 × 4 Sprint 矩陣) ================= -->
+  <!-- ================= 06 跨團隊 OKR 對齊 (8 業務線 × 4 Sprint 矩陣 + 團隊健康度) ================= -->
   <div id="pane_tab06" class="pane">
     <div class="tab06-header">
       <div>
@@ -1381,6 +1387,66 @@
         </table>
       </div>
     </div>
+
+    <!-- 06-3: 完整回補 團隊健康度評分模型與應對策略 (Health Scorecard) -->
+    <div class="tab06-sec-title" id="tab06_sec2_title">團隊健康度評分模型與應對策略 (Health Scorecard)</div>
+    <div class="tab06-table-wrap">
+      <table id="healthTableTab06">
+        <thead>
+          <tr>
+            <th style="width:18%; text-align:left;" id="th_health_dim">維度</th>
+            <th style="width:40%; text-align:left;" id="th_health_metric">衡量指標</th>
+            <th style="width:16%; text-align:center;" id="th_health_score">實際表現得分 (100分制)</th>
+            <th style="width:12%; text-align:center;" id="th_health_wt">權重</th>
+            <th style="width:14%; text-align:center;" id="th_health_wtd_score">加權分數</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; color:#fff;">人效與交付</td>
+            <td contenteditable="true">Sprint 達成率 85%、插單率 10%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; font-weight:700;">90</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace;">30%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; color:var(--series-3); font-weight:700;">27.0</td>
+          </tr>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; color:#fff;">人才穩定度</td>
+            <td contenteditable="true">當季主動離職率 2%（含 1 名核心離職）</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; font-weight:700;">70</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace;">30%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; color:var(--series-3); font-weight:700;">21.0</td>
+          </tr>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; color:#fff;">組織敬業度</td>
+            <td contenteditable="true">eNPS 為 +15，加班滿意度偏低</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; font-weight:700;">65</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace;">20%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; color:var(--warning); font-weight:700;">13.0</td>
+          </tr>
+          <tr>
+            <td contenteditable="true" style="font-weight:bold; color:#fff;">管理與合規</td>
+            <td contenteditable="true">ER 案件 100% 按時處理，升級事件 1 起</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; font-weight:700;">85</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace;">20%</td>
+            <td contenteditable="true" style="text-align:center; font-family:monospace; color:var(--series-3); font-weight:700;">17.0</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr style="background:#090d16; font-weight:bold;">
+            <td contenteditable="true" colspan="4" style="text-align:left; color:#fff;" id="td_health_total_label">合計評分：當前團隊健康度總分</td>
+            <td contenteditable="true" style="text-align:center; color:var(--warning); font-size:15px; font-weight:800;">78.0 分</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- 06-4: 健康等級劃分與 HRBP 應對策略 -->
+    <div class="tab06-sec-title" id="tab06_sec3_title">健康等級劃分與 HRBP 應對策略</div>
+    <ul class="tab06-legend-list" id="tab06_legend_content">
+      <li>🟢 <b>85 – 100 分（綠燈 - 健康高效）</b>：保持現狀，專注於 key player 的梯隊培養與激勵。</li>
+      <li>🟡 <b>70 – 84 分（黃燈 - 預警狀態）</b>：團隊交付尚可，但敬業度與離職率已出現警訊。HRBP 應立即介入（暫停非必要擴招、1-on-1 脈衝訪談、優化雙月 KPI 排期）。</li>
+      <li>🔴 <b>&lt; 70 分（紅燈 - 高風險）</b>：團隊面臨 Burnout 或管理失能，需與 CTO/Head 共同進行架構重組與管理介入。</li>
+    </ul>
   </div>
 
 </div>
@@ -1481,18 +1547,18 @@ const COMP_FUNCTIONS = {
   legal: {
     nameZh: "法務與合規 (Legal & Compliance)", nameEn: "Legal & Compliance",
     roles: [
-      { lvlKey: "L3", lvl: "L3", titleZh: "Legal / Compliance Specialist", titleEn: "Legal/Compliance Specialist", scopeZh: "標準合約審閱、日常 AML 警報初篩、公文查詢函初審", scopeEn: "NDA/vendor contract review, initial AML triage & regulatory intake" },
-      { lvlKey: "L4", lvl: "L4", titleZh: "Legal Counsel / AML Officer", titleEn: "Legal Counsel / AML Officer", scopeZh: "獨立承接跨國商務協議談判、牌照申請對接、爭議處置協商", scopeEn: "Cross-border negotiation, regulatory licensing filings & dispute settlement" },
-      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Legal Counsel", titleEn: "Senior Legal Counsel", scopeZh: "跨國子公司設立架構、海外併購協議、各國監管審計現場應對", scopeEn: "Entity structuring, M&A due diligence, onsite regulatory audits & exams" },
-      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Staff Regulatory Architect / Lead", titleEn: "Staff Counsel / Lead", scopeZh: "專家軌：全球牌照藍圖設計 ｜ 管理軌：管理 3–6 人合規審查組", scopeEn: "IC: Global license strategy | Mgmt: Lead 3-6 AML/legal team members" },
-      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Legal Director", titleEn: "Legal Director", scopeZh: "掌管跨國重大涉訴防禦、行業立法倡導、調配外聘律師預算", scopeEn: "Complex litigation defense, public policy advocacy & outside counsel mgmt" },
-      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "General Counsel / CCO", titleEn: "General Counsel / CCO", scopeZh: "董事會最高法規顧問、全球法律風險與執法免責最高防線", scopeEn: "Board advisor, enterprise legal risk mitigation & regulatory defense" }
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Legal / Compliance Specialist", titleEn: "Junior Specialist", scopeZh: "標準合約審閱、日常 AML 警報初篩、公文查詢函初審", scopeEn: "Standard contract reviews, triage & basic AML logging" },
+      { lvlKey: "L4", lvl: "L4", titleZh: "Legal Counsel / Compliance Specialist", titleEn: "Legal Counsel", scopeZh: "牌照合規申請、爭議商務談判、高風險監管審計對接", scopeEn: "Licensing applications, dispute negotiation & risk filings" },
+      { lvlKey: "L5", lvl: "L5", titleZh: "Senior Legal Counsel", titleEn: "Senior Counsel", scopeZh: "跨國子公司架構設置、重組協議談判、防禦架構落實", scopeEn: "Cross-border entity architecture & regulatory defense" },
+      { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Lead Legal Counsel", titleEn: "Legal Lead", scopeZh: "全球合規政策藍圖制定、帶領法務審核團隊", scopeEn: "Global regulatory strategy & lead compliance teams" },
+      { lvlKey: "L7_M2", lvl: "L7 / M2", titleZh: "Head of Legal & Compliance", titleEn: "Head of Legal", scopeZh: "掌管全球涉訴防禦體系、監管沙盒對接、外聘預算調配", scopeEn: "Oversee global litigation defense & regulatory bodies" },
+      { lvlKey: "L8_M3", lvl: "L8 / M3", titleZh: "General Counsel / Chief Compliance Officer", titleEn: "General Counsel", scopeZh: "董事會最高法規顧問、全球免責防線最高架構師", scopeEn: "Executive board legal counsel & global regulatory defense" }
     ]
   },
   fin_hr: {
     nameZh: "財務與人資 (Finance & HR)", nameEn: "Finance & HR",
     roles: [
-      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Analyst / HR Specialist", titleEn: "Junior Analyst / Specialist", scopeZh: "日常會計憑證核算、報銷初審、入轉調離手續與考勤審查", scopeEn: "Voucher booking, expense audit, onboarding ops & attendance tracking" },
+      { lvlKey: "L3", lvl: "L3", titleZh: "Junior Analyst / HR Specialist", titleEn: "Junior Specialist", scopeZh: "日常會計憑證核算、報銷初審、入轉調離手續與考勤審查", scopeEn: "Voucher booking, expense audit, onboarding ops & attendance tracking" },
       { lvlKey: "L4", lvl: "L4", titleZh: "Senior Accountant / HRBP", titleEn: "Senior Accountant / HRBP", scopeZh: "獨立主導月結關帳、預算追蹤 ｜ 事業群招聘閉環與常規員工關係", scopeEn: "Month-end close, FP&A variance | Business unit recruiting & employee relations" },
       { lvlKey: "L5", lvl: "L5", titleZh: "Senior Finance / HR Specialist", titleEn: "Senior Finance / HR Specialist", scopeZh: "跨國稅收籌劃與多主體合併 ｜ 9-Box 人才盤點與爭議離職談判", scopeEn: "International tax planning, consolidation | 9-Box calibration & separation" },
       { lvlKey: "L6_M1", lvl: "L6 / M1", titleZh: "Principal Architect / People Lead", titleEn: "Principal Architect / Lead", scopeZh: "專家軌：全球資金池或薪酬架構 ｜ 管理軌：領導會計/HR小組", scopeEn: "IC: Global treasury/comp model | Mgmt: Lead accounting/people pods" },
@@ -2023,7 +2089,7 @@ function renderTrRetentionCards(team, t){
 
   if(b3.length > 0){
     html += `
-      <div class="tr-pcard" style="grid-column:1 / -1; background:color-mix(in srgb, var(--tr-warning) 10%, var(--tr-card-bg));">
+      <div class="tr-pcard" style="grid-column:1 / -1; background:color-mix(in srgb, var(--tr-warning) 10%, var(--card-bg));">
         <div class="pc-head">
           <div><div class="pc-title">${b3.length} Box 3 · Rough Diamonds — Mobility Review</div><div class="pc-sub">High agility/potential with role mismatch in current operational track</div></div>
         </div>
@@ -2036,7 +2102,7 @@ function renderTrRetentionCards(team, t){
         </div>
       </div>`;
   }
-  return html || `<div style="color:var(--tr-text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
+  return html || `<div style="color:var(--text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
 }
 
 function renderTrPIPCards(team, t){
@@ -2064,7 +2130,7 @@ function renderTrPIPCards(team, t){
         <div class="tr-jrisk"><b>${guide.title}</b>${guide.text}</div>
       </div>
     </div>`;
-  }).join('') || `<div style="color:var(--tr-text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
+  }).join('') || `<div style="color:var(--text-muted); font-size:12px; padding:12px;">No candidates in this tier.</div>`;
 }
 
 function buildTrPane(team, idx, t){
@@ -2202,9 +2268,10 @@ async function initAllTalentReviewTeams() {
   });
 }
 
-// Tab 06 二級切換與儲存邏輯 (8 Business Lines & 4 Sprints)
-const STORAGE_KEY_OKR_ALL = 'EXEC_OKR_DASHBOARD_ALL_V2';
+// Tab 06 二級切換、進度同步與 LocalStorage 持久化
+const STORAGE_KEY_OKR_ALL = 'EXEC_OKR_DASHBOARD_ALL_V3';
 const STORAGE_KEY_GANTT_PROGRESS = 'app_tab06_gantt_progress';
+const STORAGE_KEY_HEALTH_DATA = 'app_tab06_health_data';
 let tab06TimeoutId = null;
 
 let ganttProgress = {
@@ -2283,6 +2350,12 @@ function initTab06Storage() {
     }
   }
 
+  const savedHealth = localStorage.getItem(STORAGE_KEY_HEALTH_DATA);
+  if (savedHealth) {
+    const healthEl = document.getElementById('healthTableTab06');
+    if (healthEl) healthEl.innerHTML = savedHealth;
+  }
+
   bindTab06InputEvents();
 }
 
@@ -2313,6 +2386,9 @@ function saveTab06ToStorage() {
   localStorage.setItem(STORAGE_KEY_OKR_ALL, JSON.stringify(data));
   localStorage.setItem(STORAGE_KEY_GANTT_PROGRESS, JSON.stringify(ganttProgress));
   
+  const healthEl = document.getElementById('healthTableTab06');
+  if (healthEl) localStorage.setItem(STORAGE_KEY_HEALTH_DATA, healthEl.innerHTML);
+
   const statusTip = document.getElementById('saveStatusTab06');
   if (statusTip) {
     statusTip.innerText = currentLang === 'zh' ? '✓ 所有變更已即時自動儲存 (Local)' : '✓ All changes auto-saved (Local)';
@@ -2325,7 +2401,7 @@ function manualSaveTab06() {
   const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'Executive_Dashboard_CrossTeam_OKR_Sprints.html';
+  a.download = 'Executive_Dashboard_CrossTeam_OKR_Health.html';
   a.click();
   
   const statusTip = document.getElementById('saveStatusTab06');
@@ -2336,8 +2412,10 @@ function manualSaveTab06() {
 }
 
 function resetTab06Data() {
-  if (confirm(currentLang === 'zh' ? "確定要放棄自訂修改並恢復預設 OKR 矩陣嗎？" : "Reset custom OKR matrix modifications back to defaults?")) {
+  if (confirm(currentLang === 'zh' ? "確定要放棄自訂修改並恢復預設 OKR 與團隊健康度矩陣嗎？" : "Reset custom OKR & Health matrix modifications back to defaults?")) {
     localStorage.removeItem(STORAGE_KEY_OKR_ALL);
+    localStorage.removeItem(STORAGE_KEY_GANTT_PROGRESS);
+    localStorage.removeItem(STORAGE_KEY_HEALTH_DATA);
     window.location.reload();
   }
 }
@@ -2364,6 +2442,14 @@ function setLanguage(lang) {
     document.getElementById('gantt_leg_exec').innerText = "敏捷執行與追蹤 (Sprint 2–6)";
     document.getElementById('gantt_ctrl_title').innerText = "⚡ 雙週 Sprint 進度動態同步：";
     document.getElementById('gantt_sub_timeline').innerText = "季度推進時程 · 2-Week 敏捷迭代節奏 (Weeks)";
+    document.getElementById('tab06_sec2_title').innerText = "團隊健康度評分模型與應對策略 (Health Scorecard)";
+    document.getElementById('tab06_sec3_title').innerText = "健康等級劃分與 HRBP 應對策略";
+    document.getElementById('th_health_dim').innerText = "維度";
+    document.getElementById('th_health_metric').innerText = "衡量指標";
+    document.getElementById('th_health_score').innerText = "實際表現得分 (100分制)";
+    document.getElementById('th_health_wt').innerText = "權重";
+    document.getElementById('th_health_wtd_score').innerText = "加權分數";
+    document.getElementById('td_health_total_label').innerText = "合計評分：當前團隊健康度總分";
   } else {
     document.getElementById('nav_01').innerText = "01 Global Compensation Benchmark";
     document.getElementById('nav_02').innerText = "02 Dual-Track Career Ladder";
@@ -2380,6 +2466,14 @@ function setLanguage(lang) {
     document.getElementById('gantt_leg_exec').innerText = "Execution & Dashboard Tracking (Sprint 2–6)";
     document.getElementById('gantt_ctrl_title').innerText = "⚡ Synchronize Pipeline Progress:";
     document.getElementById('gantt_sub_timeline').innerText = "Quarter Timeline · 2-Week Agile Iteration Cadence";
+    document.getElementById('tab06_sec2_title').innerText = "Team Health Scorecard & Metric Drivers";
+    document.getElementById('tab06_sec3_title').innerText = "Health Thresholds & Action Playbook";
+    document.getElementById('th_health_dim').innerText = "Dimension";
+    document.getElementById('th_health_metric').innerText = "Metric Definition";
+    document.getElementById('th_health_score').innerText = "Raw Score (100 Max)";
+    document.getElementById('th_health_wt').innerText = "Weight";
+    document.getElementById('th_health_wtd_score').innerText = "Weighted Score";
+    document.getElementById('td_health_total_label').innerText = "Aggregate Evaluation: Current Team Health Score";
   }
 
   ['eng', 'comm', 'ops'].forEach(k => {

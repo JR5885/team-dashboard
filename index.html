@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cross-Team OKR Matrix (8-Week Roadmap)</title>
+    <title>OKR Alignment Dashboard | 8 Business Lines & 4 Sprints</title>
     <style>
         :root {
-            --bg-main: #0b0f19;
-            --bg-card: #111827;
-            --bg-table-head: #1e293b;
-            --bg-row-alt: #162032;
-            --border-color: #1f293d;
-            --border-highlight: #374151;
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1f293d;
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
-            --accent-blue: #38bdf8;
-            --accent-cyan: #06b6d4;
-            --badge-front: #0284c7;
-            --badge-mid: #0d9488;
-            --badge-back: #4f46e5;
-            --badge-hrbp: #e11d48;
+            --accent-cyan: #38bdf8;
+            --accent-blue: #2563eb;
+            --border-color: #374151;
+            --table-hover: #1e293b;
+            --badge-front: #065f46;
+            --badge-mid: #1e40af;
+            --badge-back: #4c1d95;
+            --badge-text: #e0e7ff;
+            --editable-focus-bg: #1e293b;
+            --editable-focus-outline: #38bdf8;
         }
 
         * {
@@ -29,200 +30,239 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
-            background-color: var(--bg-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-primary);
             color: var(--text-primary);
-            padding: 32px 24px;
-            line-height: 1.6;
+            line-height: 1.5;
+            padding: 24px;
         }
 
         .container {
-            max-width: 1500px;
+            max-width: 1440px;
             margin: 0 auto;
         }
 
-        /* 頂部標題 */
         header {
-            margin-bottom: 28px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
         }
 
-        .title-bar {
+        .header-main {
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 8px;
-        }
-
-        .title-indicator {
-            width: 4px;
-            height: 28px;
-            background-color: var(--accent-blue);
-            border-radius: 2px;
         }
 
         h1 {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-size: 1.75rem;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sub-header {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .action-btn {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .save-btn {
+            background-color: var(--accent-blue);
+            color: #ffffff;
+            border-color: var(--accent-blue);
+        }
+
+        .save-btn:hover {
+            background-color: #1d4ed8;
             color: #ffffff;
         }
 
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-left: 16px;
+        .save-hint {
+            font-size: 0.8rem;
+            color: #34d399;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        /* Sprint 頁籤 Tab */
         .tabs {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            flex-wrap: wrap;
         }
 
         .tab-btn {
-            background-color: #1f2937;
-            border: 1px solid var(--border-highlight);
+            background-color: var(--bg-card);
             color: var(--text-secondary);
+            border: 1px solid var(--border-color);
             padding: 10px 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             transition: all 0.2s ease;
         }
 
         .tab-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-cyan);
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-blue);
             color: #ffffff;
             border-color: var(--accent-blue);
         }
 
-        .tab-btn.active {
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(6, 182, 212, 0.1));
-            color: var(--accent-blue);
-            border-color: var(--accent-blue);
-        }
-
-        /* 表格包裝與滾動 */
         .tab-content {
             display: none;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
         }
 
         .tab-content.active {
             display: block;
-            animation: fadeIn 0.25s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .table-responsive {
-            width: 100%;
+        .table-wrapper {
             overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-secondary);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.85rem;
             text-align: left;
-            font-size: 13.5px;
-            min-width: 1180px;
         }
 
         th {
-            background-color: var(--bg-table-head);
-            color: #e2e8f0;
-            padding: 14px 16px;
-            font-weight: 600;
-            border-bottom: 2px solid var(--border-color);
+            background-color: #0f172a;
+            color: #cbd5e1;
+            padding: 12px 14px;
+            font-weight: 700;
             text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.75px;
+            letter-spacing: 0.04em;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
         }
 
         td {
-            padding: 18px 16px;
-            vertical-align: top;
+            padding: 12px 14px;
             border-bottom: 1px solid var(--border-color);
-            line-height: 1.6;
+            vertical-align: top;
         }
 
-        tbody tr:nth-child(even) {
-            background-color: var(--bg-row-alt);
+        /* 可手動編輯樣式與聚焦狀態 */
+        td[contenteditable="true"] {
+            outline: none;
+            transition: background-color 0.15s, box-shadow 0.15s;
+            cursor: text;
         }
 
-        tbody tr:hover {
-            background-color: rgba(56, 189, 248, 0.04);
+        td[contenteditable="true"]:hover {
+            background-color: rgba(56, 189, 248, 0.05);
         }
 
-        /* 欄位寬度與標籤樣式 */
-        .col-org { width: 10%; }
-        .col-cell { width: 22.5%; }
-
-        .org-badge {
-            font-weight: 700;
-            color: var(--accent-blue);
-            font-size: 13px;
+        td[contenteditable="true"]:focus {
+            background-color: var(--editable-focus-bg);
+            box-shadow: inset 0 0 0 2px var(--editable-focus-outline);
+            border-radius: 4px;
         }
 
-        .obj-title {
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
             font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 6px;
-            display: block;
+            color: var(--badge-text);
         }
 
-        .kr-list {
+        .badge-front { background-color: var(--badge-front); }
+        .badge-mid { background-color: var(--badge-mid); }
+        .badge-back { background-color: var(--badge-back); }
+
+        .okr-title {
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+        }
+
+        ul.kr-list {
             list-style: none;
-            padding: 0;
-            margin: 0;
+            padding-left: 0;
         }
 
-        .kr-list li {
+        ul.kr-list li {
             position: relative;
             padding-left: 14px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: #cbd5e1;
-            font-size: 13px;
         }
 
-        .kr-list li:last-child {
-            margin-bottom: 0;
-        }
-
-        .kr-list li::before {
+        ul.kr-list li::before {
             content: "•";
             position: absolute;
             left: 0;
-            color: var(--accent-blue);
-            font-weight: bold;
-        }
-
-        .kr-tag {
             color: var(--accent-cyan);
-            font-weight: 600;
         }
 
-        /* 頁尾資訊 */
-        footer {
+        .metrics-list {
+            color: #93c5fd;
+            font-weight: 500;
+            list-style: none;
+        }
+
+        .metrics-list li {
+            margin-bottom: 3px;
+        }
+
+        .metrics-list li::before {
+            content: "• ";
+            color: #60a5fa;
+        }
+
+        .metadata {
             margin-top: 24px;
+            padding: 16px;
+            border-radius: 8px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
     </style>
@@ -231,100 +271,263 @@
 
 <div class="container">
     <header>
-        <div class="title-bar">
-            <div class="title-indicator"></div>
-            <h1>Cross-Team OKR Matrix</h1>
+        <div class="header-main">
+            <div>
+                <h1>Cross-Team OKR Matrix & Sprint Delivery Plan</h1>
+                <p class="sub-header">表格所有內容格均已支援<b>點擊直接編輯 (contenteditable)</b>，點擊「儲存修改」可持久化保存至瀏覽器。</p>
+            </div>
+            <div class="action-bar">
+                <span id="saveHint" class="save-hint">已成功儲存至本機！</span>
+                <button class="action-btn save-btn" onclick="saveData()">儲存修改 (Save)</button>
+                <button class="action-btn" onclick="resetData()">重設為預設值</button>
+            </div>
         </div>
-        <div class="subtitle">8-Week Roadmap (Front / Mid / Back-Office & Strategic HRBP Alignment)</div>
     </header>
 
-    <!-- 頁籤控制 -->
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchSprint('sprint1', this)">Sprint 1 (W1–W2)</button>
-        <button class="tab-btn" onclick="switchSprint('sprint2', this)">Sprint 2 (W3–W4)</button>
-        <button class="tab-btn" onclick="switchSprint('sprint3', this)">Sprint 3 (W5–W6)</button>
-        <button class="tab-btn" onclick="switchSprint('sprint4', this)">Sprint 4 (W7–W8)</button>
+        <button class="tab-btn active" onclick="switchTab('business-lines')">8 Business Lines Alignment</button>
+        <button class="tab-btn" onclick="switchTab('sprint-1')">Sprint 1: W1–W2</button>
+        <button class="tab-btn" onclick="switchTab('sprint-2')">Sprint 2: W3–W4</button>
+        <button class="tab-btn" onclick="switchTab('sprint-3')">Sprint 3: W5–W6</button>
+        <button class="tab-btn" onclick="switchTab('sprint-4')">Sprint 4: W7–W8</button>
     </div>
 
-    <!-- Sprint 1 -->
-    <div id="sprint1" class="tab-content active">
-        <div class="table-responsive">
+    <!-- TAB 1: 8 BUSINESS LINES OKR ALIGNMENT -->
+    <div id="business-lines" class="tab-content active">
+        <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                        <th class="col-org">ORG LEVEL</th>
-                        <th class="col-cell">FRONT-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">SPOT / DERIVATIVE / MEME</span></th>
-                        <th class="col-cell">MID-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">MATCHING / MIGRATION</span></th>
-                        <th class="col-cell">BACK-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">SRE / SECURITY / COMPLIANCE</span></th>
-                        <th class="col-cell">ALIGNED HRBP OKR<br><span style="color: #64748b; font-size: 11px;">STRATEGIC ENABLEMENT</span></th>
+                        <th style="width: 100px;">Quadrant</th>
+                        <th style="width: 50px;">#</th>
+                        <th style="width: 130px;">Business Line</th>
+                        <th style="width: 180px;">Core Metrics</th>
+                        <th>Business Objective & Key Results (Business OKRs)</th>
+                        <th>Aligned HRBP OKR (Strategic Enablement)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="org-badge">目標 (O1)</td>
-                        <td><span class="obj-title">O1：確立商業激勵機制與防套利基線</span></td>
-                        <td><span class="obj-title">O1：啟動工具遷移與交付基線鎖定</span></td>
-                        <td><span class="obj-title">O1：構築零信任安全防線與帳號收斂</span></td>
-                        <td><span class="obj-title">O1：制度落地與關鍵技術人才鎖定</span></td>
-                    </tr>
-                    <tr>
-                        <td class="org-badge">關鍵結果 (KRs)</td>
-                        <td>
-                            <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>現貨/合約 BD 新佣金制度上線，佣金與淨手續費收益 100% 掛鉤</li>
-                                <li><span class="kr-tag">KR2：</span>上線 T+1 延遲結算與設備 ID 重疊監控，截斷首波黑產套利</li>
+                        <td><span class="badge badge-front">Front Office</span></td>
+                        <td><strong>01</strong></td>
+                        <td contenteditable="true"><strong>Spot Trading</strong></td>
+                        <td contenteditable="true">
+                            <ul class="metrics-list">
+                                <li>Net Fee Revenue</li>
+                                <li>Hot-Coin First-to-List Rate</li>
+                                <li>Listing Lead Time (&le;3h)</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 極速搶佔熱點現貨首發並確保零虛假刷量</div>
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>完成 Slack 遷移全員環境配置與團隊權限初始化 (進度 50%)</li>
-                                <li><span class="kr-tag">KR2：</span>鎖定 8/7 功能開發範圍，明確雙週排期阻礙點清單</li>
+                                <li><strong>KR1:</strong> 熱幣首發上市時間 (Lead Time) 壓縮至 &le; 3 小時</li>
+                                <li><strong>KR2:</strong> 極速搶上線機制下維持 0 洗量/虛假交易事故</li>
+                                <li><strong>KR3:</strong> 核心熱門代幣首發率達成市場對標領先</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 重構 BD 激勵機制與極速上幣敏捷小隊 (Pod)</div>
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>阻斷未授權 AI 工具 (ChatGPT/DeepSeek 等) 外部存取率達 100%</li>
-                                <li><span class="kr-tag">KR2：</span>盤點 AWS Root 帳號使用日誌，高權限角色清退率達 50%</li>
-                            </ul>
-                        </td>
-                        <td>
-                            <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>頒布 BD 考核底線制度 (連 2 季未達 $1.5M 觸發退出流程)</li>
-                                <li><span class="kr-tag">KR2：</span>完成 Top 20% 高潛力交易引擎核心人才 1-on-1 保留溝通 (保留率 100%)</li>
+                                <li><strong>KR1:</strong> BD 人均年化淨收益 &ge; $1.5M (連續 2 季未達標觸發淘汰)</li>
+                                <li><strong>KR2:</strong> Hot-Coin Agile Squad 單兵人效提升 +25%</li>
+                                <li><strong>KR3:</strong> 跨部門協同 SLA 監控，零內部溝通延遲</li>
                             </ul>
                         </td>
                     </tr>
                     <tr>
-                        <td class="org-badge">目標 (O2)</td>
-                        <td><span class="obj-title">O2：啟動高收益與衍生品資金沉澱</span></td>
-                        <td><span class="obj-title">O2：優化跨部門資產對接節奏</span></td>
-                        <td><span class="obj-title">O2：硬件認證與離職合規流程重塑</span></td>
-                        <td><span class="obj-title">O2：全員安全紅線制度化與簽署</span></td>
+                        <td><span class="badge badge-front">Front Office</span></td>
+                        <td><strong>02</strong></td>
+                        <td contenteditable="true"><strong>Futures Trading</strong></td>
+                        <td contenteditable="true">
+                            <ul class="metrics-list">
+                                <li>Whale/KOL Scale</li>
+                                <li>Open Interest (OI)</li>
+                                <li>System Throughput (TPS)</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 擴大黏性大戶流動性並斬斷黑產套利穿透</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 提升頂級 Whale/KOL 深度與未平倉合約量 (OI)</li>
+                                <li><strong>KR2:</strong> 撮合系統高頻吞吐穩定度保持零當機</li>
+                                <li><strong>KR3:</strong> 杜絕黑產返佣與對敲套利行為</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 規範銷售結算治理並鎖定核心交易引擎專家</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 階梯返佣 SOP 落地，帶動 BD 淨收益增長 +20%</li>
+                                <li><strong>KR2:</strong> 黏性資產納入計分卡，BD 人均持倉量 &ge; $10M</li>
+                                <li><strong>KR3:</strong> 核心 Top 20% 交易引擎關鍵人才留任率 &ge; 95%</li>
+                            </ul>
+                        </td>
                     </tr>
                     <tr>
-                        <td class="org-badge">關鍵結果 (KRs)</td>
-                        <td>
-                            <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>合約 BD 人均持倉量 (OI) 目標分解至團隊 ($10M/人)</li>
-                                <li><span class="kr-tag">KR2：</span>鎖定高淨值客戶 (Whale/KOL) 存量結構，制定防羊毛黨方案</li>
+                        <td><span class="badge badge-front">Front Office</span></td>
+                        <td><strong>03</strong></td>
+                        <td contenteditable="true"><strong>Earn &amp; Lending</strong></td>
+                        <td contenteditable="true">
+                            <ul class="metrics-list">
+                                <li>Total AUM</li>
+                                <li>Fund-Matching Efficiency</li>
+                                <li>Product NIM</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 提升資產沉澱規模與優化資金撮合淨利差</div>
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>建立理財 (Earn) 與合約清算撮合週度同步機制</li>
-                                <li><span class="kr-tag">KR2：</span>撮合對接卡點平均排查耗時縮短 20%</li>
+                                <li><strong>KR1:</strong> 擴大理財總 AUM 並維持健康利差結構 (Positive NIM)</li>
+                                <li><strong>KR2:</strong> 資金撮合匹配效率提升，縮減閒置週期 50%</li>
+                                <li><strong>KR3:</strong> 嚴打理財高收益產品之快進快出套利</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 推行全員人均 AUM 責任制與產研聯動機制</div>
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>完成 YubiKey 採購與金鑰發放管理流程制定</li>
-                                <li><span class="kr-tag">KR2：</span>確立離職當日 100% 權限即時凍結與防護 SOP</li>
+                                <li><strong>KR1:</strong> 落實人均 AUM 責任制，團隊人均 AUM &ge; $20M</li>
+                                <li><strong>KR2:</strong> 主導 Earn-Futures 雙週同步會，對接耗時降低 50%</li>
+                                <li><strong>KR3:</strong> 獎金池與實際產品淨收入嚴格掛鉤 (相關係數 r &ge; 0.85)</li>
                             </ul>
                         </td>
-                        <td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-mid">Middle Office</span></td>
+                        <td><strong>04</strong></td>
+                        <td contenteditable="true"><strong>Project Milestone</strong></td>
+                        <td contenteditable="true">
+                            <ul class="metrics-list">
+                                <li>8/1 Slack Migration 100%</li>
+                                <li>8/7 Feature Dev Complete</li>
+                                <li>8/14 Release Freeze Entry</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 嚴守系統切換與研發封版交付節點</div>
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>全員 AI 與資安紅線電子簽署率 (e-Signature) 達 100%</li>
-                                <li><span class="kr-tag">KR2：</span>確立違規即進 PIP/調查機制，組織宣導覆蓋率 100%</li>
+                                <li><strong>KR1:</strong> 8/1 完成全公司 100% 遷移至 Slack 並停用舊通訊工具</li>
+                                <li><strong>KR2:</strong> 8/7 完成 100% 規劃功能代碼開發</li>
+                                <li><strong>KR3:</strong> 8/14 零重大阻塞順利進入 Release Freeze 封版</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 組織變革管理與研發防倦怠值班機制保障</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> Slack 遷移變革滿意度 &ge; 90%</li>
+                                <li><strong>KR2:</strong> 建立 24 小時支援專線與彈性補休 (Comp-time) 制度</li>
+                                <li><strong>KR3:</strong> 8/14 封版驗證期間 Standby 人力就緒率達 100%</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-mid">Middle Office</span></td>
+                        <td><strong>05</strong></td>
+                        <td contenteditable="true"><strong>Go-Live Validation</strong></td>
+                        <td contenteditable="true">
+                            <ul class="metrics-list">
+                                <li>Functional UAT 100%</li>
+                                <li>Procedural Testing 100%</li>
+                                <li>8/28 Dress Rehearsal</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 零缺陷通過驗收測試並完成全真上線預演</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 8/14 前完成 100% 功能性 UAT 驗收</li>
+                                <li><strong>KR2:</strong> 100% 完成運營程序測試與應急預案校驗</li>
+                                <li><strong>KR3:</strong> 8/28 完成全系統端到端 Dress Rehearsal 演練</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 驅動跨部門卡點日清與領導層驗收連動機制</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 組織每日 15 分鐘跨部門 Standup，卡點日清率 = 100%</li>
+                                <li><strong>KR2:</strong> 建立運營簽核公開看板，進度納入主管 MBO 考核</li>
+                                <li><strong>KR3:</strong> 建立重大卡點升級通道，確保跨部門零溝通阻礙</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-back">Back Office</span></td>
+                        <td><strong>06</strong></td>
+                        <td contenteditable="true"><strong>AI &amp; Security</strong></td>
+                        <td contenteditable="true">
+                            <ul class="metrics-list">
+                                <li>100% Ban on Unapproved AI</li>
+                                <li>Code Leaks = 0</li>
+                                <li>API Key Leaks = 0</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 構築零信任企業資料與代碼安全邊界</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 嚴格執行 100% 封鎖未授權外部 AI 工具 (ChatGPT/DeepSeek 等)</li>
+                                <li><strong>KR2:</strong> 代碼庫及金鑰公網洩漏事故 = 0</li>
+                                <li><strong>KR3:</strong> 核心敏感資料外洩事故 = 0</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 安全紅線文化落地與違規懲處機制機制化</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 全員 100% 完成 AI 安全政策電子簽署與培訓驗收</li>
+                                <li><strong>KR2:</strong> 任何資安違規 100% 觸發調查與績效 PIP 處分</li>
+                                <li><strong>KR3:</strong> 資安外洩事件列為年度/季度績效一票否決項</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-back">Back Office</span></td>
+                        <td><strong>07</strong></td>
+                        <td contenteditable="true"><strong>Vulnerability</strong></td>
+                        <td contenteditable="true">
+                            <ul class="metrics-list">
+                                <li>FastJson Patch On Deadline</li>
+                                <li>100% Code Review Pass</li>
+                                <li>Jackson Migration 100%</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 限時修復高危架構債並達成依賴庫完全升級</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 於既定排程前完成 FastJson 全面升級至 FastJson2/Jackson</li>
+                                <li><strong>KR2:</strong> 100% 漏洞補丁與重構代碼通過嚴格 Code Review</li>
+                                <li><strong>KR3:</strong> 封版前解決現有高危安全漏洞待辦項</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 產研代碼能力賦能與修復質量掛鉤機制</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 舉辦「代碼熟悉與安全開發」實戰工作坊</li>
+                                <li><strong>KR2:</strong> 建立 Jira 漏洞修復進度透明看板，追蹤修復速率</li>
+                                <li><strong>KR3:</strong> 漏洞修復與 CR 質量直接計入 Tech Lead 績效考評</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-back">Back Office</span></td>
+                        <td><strong>08</strong></td>
+                        <td contenteditable="true"><strong>AWS &amp; YubiKey</strong></td>
+                        <td contenteditable="true">
+                            <ul class="metrics-list">
+                                <li>AWS Least-Privilege IAM</li>
+                                <li>100% Mandatory YubiKey</li>
+                                <li>No Root Account Daily Use</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 雲端最小權限治理與硬件級身份鑑權強制化</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 執行 AWS 最小權限 IAM 策略，嚴禁日常使用 Root 帳戶</li>
+                                <li><strong>KR2:</strong> 所有高敏控制台 100% 強制使用 YubiKey 硬件登入</li>
+                                <li><strong>KR3:</strong> 完成雲端冗餘憑證與非活躍金鑰完全收斂</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <div class="okr-title">Objective: 員工生命週期資產閉環與 SoD 職責分離審計</div>
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 建立入職發放與離職當日 100% 實體回收 YubiKey SOP</li>
+                                <li><strong>KR2:</strong> 協同資安部執行 SoD 審查，100% 註銷過期與冗餘特權權限</li>
+                                <li><strong>KR3:</strong> 離職員工當日系統權限凍結達成率 100%</li>
                             </ul>
                         </td>
                     </tr>
@@ -333,85 +536,85 @@
         </div>
     </div>
 
-    <!-- Sprint 2 -->
-    <div id="sprint2" class="tab-content">
-        <div class="table-responsive">
+    <!-- TAB 2: SPRINT 1 -->
+    <div id="sprint-1" class="tab-content">
+        <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                        <th class="col-org">ORG LEVEL</th>
-                        <th class="col-cell">FRONT-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">SPOT / DERIVATIVE / MEME</span></th>
-                        <th class="col-cell">MID-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">MATCHING / MIGRATION</span></th>
-                        <th class="col-cell">BACK-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">SRE / SECURITY / COMPLIANCE</span></th>
-                        <th class="col-cell">ALIGNED HRBP OKR<br><span style="color: #64748b; font-size: 11px;">STRATEGIC ENABLEMENT</span></th>
+                        <th style="width: 110px;">ORG LEVEL</th>
+                        <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
+                        <th>MID-OFFICE OKR (MATCHING / MIGRATION)</th>
+                        <th>BACK-OFFICE OKR (SECURITY / IAM)</th>
+                        <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="org-badge">目標 (O1)</td>
-                        <td><span class="obj-title">O1：激活熱幣綠色通道與做市產能</span></td>
-                        <td><span class="obj-title">O1：全量交付 Slack 工具遷移 (8/1)</span></td>
-                        <td><span class="obj-title">O1：啟動技術債清零與漏洞修復</span></td>
-                        <td><span class="obj-title">O1：賦能極速上幣敏捷小組與變更管理</span></td>
+                        <td contenteditable="true"><strong>目標 (O1)</strong></td>
+                        <td contenteditable="true"><strong>確立商業激勵機制與防套利基線</strong></td>
+                        <td contenteditable="true"><strong>啟動工具遷移與交付基線鎖定</strong></td>
+                        <td contenteditable="true"><strong>構築零信任安全防線與帳號收斂</strong></td>
+                        <td contenteditable="true"><strong>制度落地與關鍵技術人才鎖定</strong></td>
                     </tr>
                     <tr>
-                        <td class="org-badge">關鍵結果 (KRs)</td>
-                        <td>
+                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>熱幣極速上幣前置流程打通，審核耗時壓縮至 ≤ 3 小時</li>
-                                <li><span class="kr-tag">KR2：</span>跨業務線建立每日熱幣搶首發監控機制，首發率提升 15%</li>
+                                <li><strong>KR1:</strong> 現貨/合約 BD 新佣金制度上線，佣金與淨手續費收益 100% 掛鉤</li>
+                                <li><strong>KR2:</strong> 上線 T+1 延遲結算與設備 ID 重疊監控，截斷首波黑產套利</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span><strong>8/1 完成 100% Slack 遷移</strong>，關閉舊通訊工具</li>
-                                <li><span class="kr-tag">KR2：</span>8/7 功能開發交付進度達標率 ≥ 70%</li>
+                                <li><strong>KR1:</strong> 完成 Slack 遷移全員環境配置與團隊權限初始化 (進度 50%)</li>
+                                <li><strong>KR2:</strong> 鎖定 8/7 功能開發範圍，明確雙週排期阻礙點清單</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>啟動 FastJson 升級至 FastJson2/Jackson，修復進度 ≥ 40%</li>
-                                <li><span class="kr-tag">KR2：</span>漏洞修復提交之程式碼 100% 導入嚴格 Code Review</li>
+                                <li><strong>KR1:</strong> 阻斷未授權 AI 工具 (ChatGPT/DeepSeek 等) 外部存取率達 100%</li>
+                                <li><strong>KR2:</strong> 盤點 AWS Root 帳號使用日誌，高權限角色清退率達 50%</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>建立 Hot-Coin Agile Squad 看板，單兵交付產出提升 15%</li>
-                                <li><span class="kr-tag">KR2：</span>組織變革滿意度 (Slack Adoption) 達 ≥ 90%</li>
+                                <li><strong>KR1:</strong> 頒布 BD 考核底線制度 (連 2 季未達 $1.5M 觸發退出流程)</li>
+                                <li><strong>KR2:</strong> 完成 Top 20% 高潛力交易引擎核心人才 1-on-1 保留溝通 (保留率 100%)</li>
                             </ul>
                         </td>
                     </tr>
                     <tr>
-                        <td class="org-badge">目標 (O2)</td>
-                        <td><span class="obj-title">O2：驅動理財資金沉澱與撮合提速</span></td>
-                        <td><span class="obj-title">O2：降低資產配對延遲與流程摩擦</span></td>
-                        <td><span class="obj-title">O2：強化研發代碼架構與安全認知</span></td>
-                        <td><span class="obj-title">O2：落實 24 小時支援與防倦怠機制</span></td>
+                        <td contenteditable="true"><strong>目標 (O2)</strong></td>
+                        <td contenteditable="true"><strong>啟動高收益與衍生品資金沉澱</strong></td>
+                        <td contenteditable="true"><strong>優化跨部門資產對接節奏</strong></td>
+                        <td contenteditable="true"><strong>硬件認證與離職合規流程重塑</strong></td>
+                        <td contenteditable="true"><strong>全員安全紅線制度化與簽署</strong></td>
                     </tr>
                     <tr>
-                        <td class="org-badge">關鍵結果 (KRs)</td>
-                        <td>
+                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>理財人均 AUM 責任制上線，推進人均 AUM ≥ $20M 基線</li>
-                                <li><span class="kr-tag">KR2：</span>剔除高頻套利快進快出資金，產品利差 (NIM) 保持正向</li>
+                                <li><strong>KR1:</strong> 合約 BD 人均持倉量 (OI) 目標分解至團隊 ($10M/人)</li>
+                                <li><strong>KR2:</strong> 鎖定高淨值客戶 (Whale/KOL) 存量結構，制定防羊毛黨方案</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>理財-合約跨模組資產配對時間縮短 30%</li>
-                                <li><span class="kr-tag">KR2：</span>跨系統溝通延遲工單清零</li>
+                                <li><strong>KR1:</strong> 建立理財 (Earn) 與合約清算撮合週度同步機制</li>
+                                <li><strong>KR2:</strong> 撮合對接卡點平均排查耗時縮短 20%</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>盤點核心系統歷史依賴，標記所有高危組件清單</li>
-                                <li><span class="kr-tag">KR2：</span>阻斷所有外部 API Key / 機密程式碼外洩 (維持 0 事故)</li>
+                                <li><strong>KR1:</strong> 完成 YubiKey 採購與金鑰發放管理流程制定</li>
+                                <li><strong>KR2:</strong> 確立離職當日 100% 權限即時凍結與防護 SOP</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>落地 24 小時支援通道與彈性補休制度 (Comp-time Policy)</li>
-                                <li><span class="kr-tag">KR2：</span>舉辦「代碼架構熟悉與安全開發」實戰工作坊，產研覆蓋率 > 80%</li>
+                                <li><strong>KR1:</strong> 全員 AI 與資安紅線電子簽署率 (e-Signature) 達 100%</li>
+                                <li><strong>KR2:</strong> 確立違規即進 PIP/調查機制，組織宣導覆蓋率 100%</li>
                             </ul>
                         </td>
                     </tr>
@@ -420,85 +623,85 @@
         </div>
     </div>
 
-    <!-- Sprint 3 -->
-    <div id="sprint3" class="tab-content">
-        <div class="table-responsive">
+    <!-- TAB 3: SPRINT 2 -->
+    <div id="sprint-2" class="tab-content">
+        <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                        <th class="col-org">ORG LEVEL</th>
-                        <th class="col-cell">FRONT-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">SPOT / DERIVATIVE / MEME</span></th>
-                        <th class="col-cell">MID-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">MATCHING / MIGRATION</span></th>
-                        <th class="col-cell">BACK-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">SRE / SECURITY / COMPLIANCE</span></th>
-                        <th class="col-cell">ALIGNED HRBP OKR<br><span style="color: #64748b; font-size: 11px;">STRATEGIC ENABLEMENT</span></th>
+                        <th style="width: 110px;">ORG LEVEL</th>
+                        <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
+                        <th>MID-OFFICE OKR (MATCHING / MIGRATION)</th>
+                        <th>BACK-OFFICE OKR (VULNERABILITY / SECURE DEV)</th>
+                        <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="org-badge">目標 (O1)</td>
-                        <td><span class="obj-title">O1：確保封版期間業務平穩與黏性鎖定</span></td>
-                        <td><span class="obj-title">O1：達成 8/14 程式碼封版與全量 UAT 驗證</span></td>
-                        <td><span class="obj-title">O1：落實高敏系統 YubiKey 強制管控</span></td>
-                        <td><span class="obj-title">O1：跨部門卡點日清與領導層 MBO 連動</span></td>
+                        <td contenteditable="true"><strong>目標 (O1)</strong></td>
+                        <td contenteditable="true"><strong>激活熱幣綠色通道與做市產能</strong></td>
+                        <td contenteditable="true"><strong>全量交付 Slack 工具遷移 (8/1)</strong></td>
+                        <td contenteditable="true"><strong>啟動技術債清零與漏洞修復</strong></td>
+                        <td contenteditable="true"><strong>賦能極速上幣敏捷小組與變更管理</strong></td>
                     </tr>
                     <tr>
-                        <td class="org-badge">關鍵結果 (KRs)</td>
-                        <td>
+                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>大戶/KOL 黏性合約持倉比例提升 20%，零虛假刷量</li>
-                                <li><span class="kr-tag">KR2：</span>配合技術封版，暫停非緊急產品變更，全力支援測試</li>
+                                <li><strong>KR1:</strong> 熱幣極速上幣前置流程打通，審核耗時壓縮至 &le; 3 小時</li>
+                                <li><strong>KR2:</strong> 跨業務線建立每日熱幣搶首發監控機制，首發率提升 15%</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span><strong>8/7 完成 100% 功能代碼開發</strong></li>
-                                <li><span class="kr-tag">KR2：</span><strong>8/14 正式進入 Release Freeze</strong>，UAT 完成度 100%</li>
+                                <li><strong>KR1:</strong> <strong>8/1 完成 100% Slack 遷移</strong>，關閉所有舊通訊工具通道</li>
+                                <li><strong>KR2:</strong> 8/7 功能開發交付進度達標率 &ge; 70%</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>敏感雲端控制台 100% 強制綁定 YubiKey 實體認證登入</li>
-                                <li><span class="kr-tag">KR2：</span>AWS Least-Privilege IAM 落地，全面停用 Root 每日操作</li>
+                                <li><strong>KR1:</strong> 啟動 FastJson 全面升級至 FastJson2/Jackson，修復進度 &ge; 40%</li>
+                                <li><strong>KR2:</strong> 漏洞修復提交之程式碼 100% 導入嚴格 Code Review</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>每日 15 分鐘跨部門 Standup 卡點當日排除率 = 100%</li>
-                                <li><span class="kr-tag">KR2：</span>將驗收簽核進度 100% 折算納入管理層/Tech Lead 考評</li>
+                                <li><strong>KR1:</strong> 建立 Hot-Coin Agile Squad 跨職能看板，單兵交付產出提升 15%</li>
+                                <li><strong>KR2:</strong> 組織變革滿意度 (Slack Adoption Satisfaction) 達 &ge; 90%</li>
                             </ul>
                         </td>
                     </tr>
                     <tr>
-                        <td class="org-badge">目標 (O2)</td>
-                        <td><span class="obj-title">O2：理財利差最佳化與業績對齊</span></td>
-                        <td><span class="obj-title">O2：交付流程測試與演練環境搭建</span></td>
-                        <td><span class="obj-title">O2：攻堅剩餘架構債與漏洞修復</span></td>
-                        <td><span class="obj-title">O2：封版值班人力部署與倦怠監控</span></td>
+                        <td contenteditable="true"><strong>目標 (O2)</strong></td>
+                        <td contenteditable="true"><strong>驅動理財資金沉澱與撮合提速</strong></td>
+                        <td contenteditable="true"><strong>降低資產配對延遲與流程摩擦</strong></td>
+                        <td contenteditable="true"><strong>強化研發代碼架構與安全認知</strong></td>
+                        <td contenteditable="true"><strong>落實 24 小時支援與防倦怠機制</strong></td>
                     </tr>
                     <tr>
-                        <td class="org-badge">關鍵結果 (KRs)</td>
-                        <td>
+                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>理財與合約聯動利潤核算完成，達成率與獎金池緊密掛鉤</li>
-                                <li><span class="kr-tag">KR2：</span>確保封版驗證期間資金出入帳通道零堵塞</li>
+                                <li><strong>KR1:</strong> 理財人均 AUM 責任制上線，推進人均 AUM &ge; $20M 基線</li>
+                                <li><strong>KR2:</strong> 剔除高頻套利快進快出資金，產品利差 (NIM) 保持正向</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>完成 100% 程序性測試與回滾預案驗證</li>
-                                <li><span class="kr-tag">KR2：</span>搭建 8/28 正式演練 (Dress Rehearsal) 所需之沙盒環境</li>
+                                <li><strong>KR1:</strong> 理財-合約跨模組資產配對時間縮短 30%</li>
+                                <li><strong>KR2:</strong> 跨系統溝通延遲工單清零</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>FastJson 依賴全面遷移至 FastJson2/Jackson 達成率 100%</li>
-                                <li><span class="kr-tag">KR2：</span>配合資安團隊完成 100% 權限隔離 (SoD) 交叉抽查</li>
+                                <li><strong>KR1:</strong> 盤點核心系統歷史依賴，標記所有高危組件清單</li>
+                                <li><strong>KR2:</strong> 阻斷所有外部 API Key / 機密程式碼公網洩漏事故 (維持 0 洩漏)</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>8/14 Freeze 期間 Standby 輪值支援人力就緒率 = 100%</li>
-                                <li><span class="kr-tag">KR2：</span>連續高強度加班人員主動介入關懷，核心留任率 100%</li>
+                                <li><strong>KR1:</strong> 落地 24 小時支援通道與彈性補休制度 (Comp-time Policy)</li>
+                                <li><strong>KR2:</strong> 舉辦「代碼架構熟悉與安全開發」實戰工作坊，產研覆蓋率 &gt; 80%</li>
                             </ul>
                         </td>
                     </tr>
@@ -507,85 +710,85 @@
         </div>
     </div>
 
-    <!-- Sprint 4 -->
-    <div id="sprint4" class="tab-content">
-        <div class="table-responsive">
+    <!-- TAB 4: SPRINT 3 -->
+    <div id="sprint-3" class="tab-content">
+        <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                        <th class="col-org">ORG LEVEL</th>
-                        <th class="col-cell">FRONT-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">SPOT / DERIVATIVE / MEME</span></th>
-                        <th class="col-cell">MID-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">MATCHING / MIGRATION</span></th>
-                        <th class="col-cell">BACK-OFFICE OKR<br><span style="color: #64748b; font-size: 11px;">SRE / SECURITY / COMPLIANCE</span></th>
-                        <th class="col-cell">ALIGNED HRBP OKR<br><span style="color: #64748b; font-size: 11px;">STRATEGIC ENABLEMENT</span></th>
+                        <th style="width: 110px;">ORG LEVEL</th>
+                        <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
+                        <th>MID-OFFICE OKR (FREEZE / UAT)</th>
+                        <th>BACK-OFFICE OKR (SECURITY / HARDWARE MFA)</th>
+                        <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="org-badge">目標 (O1)</td>
-                        <td><span class="obj-title">O1：業務人效達標與商務激勵兌現</span></td>
-                        <td><span class="obj-title">O1：執行 8/28 全真預演與平穩上線</span></td>
-                        <td><span class="obj-title">O1：資安閉環驗收與資產生命週期鎖定</span></td>
-                        <td><span class="obj-title">O1：人效復盤、末位淘汰執行與長期賦能</span></td>
+                        <td contenteditable="true"><strong>目標 (O1)</strong></td>
+                        <td contenteditable="true"><strong>確保封版期間交易業務平穩與黏性鎖定</strong></td>
+                        <td contenteditable="true"><strong>達成 8/14 程式碼封版與全量 UAT 驗證</strong></td>
+                        <td contenteditable="true"><strong>落實高敏系統 YubiKey 強制管控</strong></td>
+                        <td contenteditable="true"><strong>跨部門卡點日清與領導層 MBO 連動</strong></td>
                     </tr>
                     <tr>
-                        <td class="org-badge">關鍵結果 (KRs)</td>
-                        <td>
+                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>BD 人均淨收益達成率評定，人均淨收達到 ≥ $1.5M/年</li>
-                                <li><span class="kr-tag">KR2：</span>綠色通道常態化運作，熱幣上幣時間穩定保持 ≤ 3 小時</li>
+                                <li><strong>KR1:</strong> 大戶/KOL 黏性合約持倉比例提升 20%，零虛假刷量</li>
+                                <li><strong>KR2:</strong> 配合技術封版，暫停非緊急產品變更，全力支援測試</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span><strong>8/28 完成 100% 全真模擬預演 (Dress Rehearsal)</strong></li>
-                                <li><span class="kr-tag">KR2：</span>正式發版割接期間重大 P0/P1 故障 = 0，營運 Sign-off 100%</li>
+                                <li><strong>KR1:</strong> <strong>8/7 完成 100% 功能代碼開發</strong></li>
+                                <li><strong>KR2:</strong> <strong>8/14 正式進入 Release Freeze</strong>，功能與流程 UAT 完成度 100%</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>離職人員 YubiKey 回收與權限即日凍結達成率 = 100%</li>
-                                <li><span class="kr-tag">KR2：</span>清退 100% 冗餘/過期特權帳號，保持長期 SoD 合規</li>
+                                <li><strong>KR1:</strong> 敏感雲端控制台 100% 強制綁定 YubiKey 實體認證登入</li>
+                                <li><strong>KR2:</strong> AWS Least-Privilege IAM 落地，全面停用 Root 每日操作</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>連續 2 季未達標人員 100% 啟動退出/轉崗流程</li>
-                                <li><span class="kr-tag">KR2：</span>獎金與實際產品淨收入相關係數達成 r ≥ 0.85 嚴格兌現</li>
+                                <li><strong>KR1:</strong> 每日 15 分鐘跨部門 Standup 卡點當日排除率 (Clearance) = 100%</li>
+                                <li><strong>KR2:</strong> 將驗收簽核進度 100% 折算納入管理層/Tech Lead 考評指標</li>
                             </ul>
                         </td>
                     </tr>
                     <tr>
-                        <td class="org-badge">目標 (O2)</td>
-                        <td><span class="obj-title">O2：合約深度與理財規模沉澱</span></td>
-                        <td><span class="obj-title">O2：跨部門復盤與交付閉環</span></td>
-                        <td><span class="obj-title">O2：產研代碼質量與安全評級入檔</span></td>
-                        <td><span class="obj-title">O2：敏捷團隊整體效能總評</span></td>
+                        <td contenteditable="true"><strong>目標 (O2)</strong></td>
+                        <td contenteditable="true"><strong>理財利差最佳化與業績對齊</strong></td>
+                        <td contenteditable="true"><strong>交付流程測試與演練環境搭建</strong></td>
+                        <td contenteditable="true"><strong>攻堅剩餘架構債與漏洞修復</strong></td>
+                        <td contenteditable="true"><strong>封版值班人力部署與倦怠監控</strong></td>
                     </tr>
                     <tr>
-                        <td class="org-badge">關鍵結果 (KRs)</td>
-                        <td>
+                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>BD 人均合約持倉 (OI) 穩定在 ≥ $10M，零返佣黑產穿透</li>
-                                <li><span class="kr-tag">KR2：</span>理財總規模 (AUM) 達標，資金撮合配對時間縮短 50%</li>
+                                <li><strong>KR1:</strong> 理財與合約聯動利潤核算完成，達成率與獎金池緊密掛鉤</li>
+                                <li><strong>KR2:</strong> 確保封版驗證期間資金出入帳通道零堵塞</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>上線後首週跨部門協同 SLA 達成率 100% (零溝通延誤)</li>
-                                <li><span class="kr-tag">KR2：</span>產出《跨團隊上線復盤報告》與技術優化待辦清單</li>
+                                <li><strong>KR1:</strong> 完成 100% 程序性測試與回滾預案驗證</li>
+                                <li><strong>KR2:</strong> 搭建 8/28 正式演練 (Dress Rehearsal) 所需之全量沙盒環境</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>FastJson 升級上線後零回退、零相容性報警</li>
-                                <li><span class="kr-tag">KR2：</span>程式碼與 API 外洩事故保持為 0，安全防線完全閉環</li>
+                                <li><strong>KR1:</strong> FastJson 依賴全面遷移至 FastJson2/Jackson 達成率 100%</li>
+                                <li><strong>KR2:</strong> 配合資安團隊完成 100% 權限隔離 (SoD) 交叉抽查</li>
                             </ul>
                         </td>
-                        <td>
+                        <td contenteditable="true">
                             <ul class="kr-list">
-                                <li><span class="kr-tag">KR1：</span>Hot-Coin Agile Squad 單兵人效提升 +25% 驗收歸檔</li>
-                                <li><span class="kr-tag">KR2：</span>將漏洞修復品質與 Code Review 通過率納入 Team Lead 考評</li>
+                                <li><strong>KR1:</strong> 8/14 Freeze 期間 Standby 輪值支援人力就緒率 = 100%</li>
+                                <li><strong>KR2:</strong> 連續高強度加班人員主動介入關懷，確保關鍵工程師留任率 100%</li>
                             </ul>
                         </td>
                     </tr>
@@ -594,26 +797,168 @@
         </div>
     </div>
 
-    <footer>
-        <div>Dashboard Status: Ready | OKR Alignment Verified</div>
-        <div>Release Target: 8/14 Freeze ➔ 8/28 Dress Rehearsal</div>
-    </footer>
+    <!-- TAB 5: SPRINT 4 -->
+    <div id="sprint-4" class="tab-content">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 110px;">ORG LEVEL</th>
+                        <th>FRONT-OFFICE OKR (SPOT / FUTURES / EARN)</th>
+                        <th>MID-OFFICE OKR (DRESS REHEARSAL / CUTOVER)</th>
+                        <th>BACK-OFFICE OKR (AUDIT / LIFECYCLE LOCKDOWN)</th>
+                        <th>ALIGNED HRBP OKR (STRATEGIC ENABLEMENT)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true"><strong>目標 (O1)</strong></td>
+                        <td contenteditable="true"><strong>業務人效達標與商務激勵兌現</strong></td>
+                        <td contenteditable="true"><strong>執行 8/28 全真預演與平穩上線</strong></td>
+                        <td contenteditable="true"><strong>資安閉環驗收與資產生命週期鎖定</strong></td>
+                        <td contenteditable="true"><strong>人效復盤、末位淘汰執行與長期賦能</strong></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+                        <td contenteditable="true">
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> BD 人均淨收益達成率評定，人均淨收達到 &ge; $1.5M/年</li>
+                                <li><strong>KR2:</strong> 綠色通道常態化運作，熱幣上幣交付時間穩定保持 &le; 3 小時</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> <strong>8/28 完成 100% 全真模擬預演 (Dress Rehearsal)</strong></li>
+                                <li><strong>KR2:</strong> 正式發版割接期間重大 P0/P1 故障 = 0，營運 Sign-off 100%</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 離職人員 YubiKey 回收與系統權限即日凍結達成率 = 100%</li>
+                                <li><strong>KR2:</strong> 清退 100% 冗餘、過期之特權帳號，保持長期 SoD 合規</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 連續 2 季未達標人員 100% 啟動退出/轉崗流程</li>
+                                <li><strong>KR2:</strong> 獎金與實際產品淨收入相關係數達成 r &ge; 0.85 嚴格兌現</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true"><strong>目標 (O2)</strong></td>
+                        <td contenteditable="true"><strong>合約深度與理財規模沉澱</strong></td>
+                        <td contenteditable="true"><strong>跨部門復盤與交付閉環</strong></td>
+                        <td contenteditable="true"><strong>產研代碼質量與安全評級入檔</strong></td>
+                        <td contenteditable="true"><strong>敏捷團隊整體效能總評</strong></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true"><strong>關鍵結果 (KRs)</strong></td>
+                        <td contenteditable="true">
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> BD 人均合約持倉 (OI) 穩定在 &ge; $10M，零返佣黑產穿透</li>
+                                <li><strong>KR2:</strong> 理財資產總規模 (AUM) 達成既定目標，資金配對時間縮短 50%</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> 上線後首週跨部門協同 SLA 達成率 100% (零溝通延誤)</li>
+                                <li><strong>KR2:</strong> 產出《跨團隊上線復盤報告》與技術優化待辦清單</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> FastJson 升級上線後零回退、零相容性報警</li>
+                                <li><strong>KR2:</strong> 程式碼洩漏與 API 外洩事故保持為 0，安全防線完全閉環</li>
+                            </ul>
+                        </td>
+                        <td contenteditable="true">
+                            <ul class="kr-list">
+                                <li><strong>KR1:</strong> Hot-Coin Agile Squad 單兵人效整體提升 +25% 驗收歸檔</li>
+                                <li><strong>KR2:</strong> 將漏洞修復品質與 Code Review 通過率納入 Team Lead 季度考評</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="metadata">
+        <span><strong>操作模式：</strong>已開啟所有儲存格的 `contenteditable="true"` 編輯功能，修改後可透過右上角「儲存修改」保存至瀏覽器 LocalStorage。</span>
+        <span><strong>信心指數：</strong>10/10</span>
+    </div>
 </div>
 
 <script>
-    function switchSprint(sprintId, btnElement) {
-        // 隱藏所有 tab 內容
-        const contents = document.querySelectorAll('.tab-content');
-        contents.forEach(content => content.classList.remove('active'));
+    // 切換分頁
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
 
-        // 取消所有 tab 按鈕選中狀態
-        const buttons = document.querySelectorAll('.tab-btn');
-        buttons.forEach(btn => btn.classList.remove('active'));
+        const targetTab = document.getElementById(tabId);
+        if (targetTab) {
+            targetTab.classList.add('active');
+        }
 
-        // 啟用當前選中項
-        document.getElementById(sprintId).classList.add('active');
-        btnElement.classList.add('active');
+        const clickedBtn = Array.from(document.querySelectorAll('.tab-btn'))
+            .find(btn => btn.getAttribute('onclick').includes(tabId));
+        if (clickedBtn) {
+            clickedBtn.classList.add('active');
+        }
     }
+
+    const STORAGE_KEY = 'OKR_DASHBOARD_DATA_V1';
+
+    // 儲存編輯內容至 LocalStorage
+    function saveData() {
+        const tabsData = {};
+        const tabIds = ['business-lines', 'sprint-1', 'sprint-2', 'sprint-3', 'sprint-4'];
+        
+        tabIds.forEach(id => {
+            const tableWrap = document.querySelector(`#${id} .table-wrapper`);
+            if (tableWrap) {
+                tabsData[id] = tableWrap.innerHTML;
+            }
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tabsData));
+
+        const hint = document.getElementById('saveHint');
+        hint.style.opacity = '1';
+        setTimeout(() => {
+            hint.style.opacity = '0';
+        }, 2500);
+    }
+
+    // 載入已儲存內容
+    function loadSavedData() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+
+        try {
+            const tabsData = JSON.parse(raw);
+            Object.keys(tabsData).forEach(id => {
+                const tableWrap = document.querySelector(`#${id} .table-wrapper`);
+                if (tableWrap && tabsData[id]) {
+                    tableWrap.innerHTML = tabsData[id];
+                }
+            });
+        } catch (e) {
+            console.error("載入本機資料失敗", e);
+        }
+    }
+
+    // 重設為原始預設值
+    function resetData() {
+        if (confirm("確定要放棄自訂修改並恢復預設 OKR 矩陣嗎？")) {
+            localStorage.removeItem(STORAGE_KEY);
+            window.location.reload();
+        }
+    }
+
+    // 頁面初始化自動載入
+    window.addEventListener('DOMContentLoaded', loadSavedData);
 </script>
 
 </body>
